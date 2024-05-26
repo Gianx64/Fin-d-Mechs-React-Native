@@ -1,7 +1,8 @@
 {
   "expo": {
     "name": "Fin-d-Mechs",
-    "slug": "Fin-d-Mechs",
+    "slug": "fin-d-mechs",
+    "scheme": "Fin-d-Mechs",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,7 +22,12 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "package": "com.estoyop.rntest"
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
