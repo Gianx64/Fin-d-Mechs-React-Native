@@ -5,6 +5,7 @@ import { Image, Text, View } from "react-native";
 import { icons } from "../../constants";
 import { Loader } from "../../components";
 import { useGlobalContext } from "../../context/GlobalProvider";
+import tailwindConfig from "../../tailwind.config";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -34,7 +35,7 @@ const TabLayout = () => {
     <>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: "#FFA001",
+          tabBarActiveTintColor: tailwindConfig.theme.extend.colors.secondary.DEFAULT,
           tabBarInactiveTintColor: "#CDCDE0",
           tabBarShowLabel: false,
           tabBarStyle: {
@@ -55,6 +56,21 @@ const TabLayout = () => {
                 icon={icons.home}
                 color={color}
                 name="Inicio"
+                focused={focused}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="create"
+          options={{
+            title: "Create",
+            headerShown: false,
+            tabBarIcon: ({ color, focused }) => (
+              <TabIcon
+                icon={icons.plus}
+                color={color}
+                name="Crear"
                 focused={focused}
               />
             ),

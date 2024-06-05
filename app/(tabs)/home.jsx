@@ -5,7 +5,7 @@ import { useGlobalContext } from "../../context/GlobalProvider";
 import { images } from "../../constants";
 
 const Home = () => {
-  const { user, setUser, setIsLogged } = useGlobalContext();
+  const { user } = useGlobalContext();
 
   return (
     <SafeAreaView className="bg-primary">

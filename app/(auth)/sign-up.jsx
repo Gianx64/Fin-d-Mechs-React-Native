@@ -7,6 +7,7 @@ import { images } from "../../constants";
 import { createUser } from "../../lib/appwrite";
 import { CustomButton, FormField } from "../../components";
 import { useGlobalContext } from "../../context/GlobalProvider";
+import { CheckBox } from "react-native-btr";
 
 const SignUp = () => {
   const { setUser, setIsLogged } = useGlobalContext();
@@ -15,6 +16,7 @@ const SignUp = () => {
     username: "",
     email: "",
     password: "",
+    mech: false,
   });
 
   const submit = async () => {
@@ -24,7 +26,7 @@ const SignUp = () => {
 
     setSubmitting(true);
     try {
-      const result = await createUser(form.email, form.password, form.username);
+      const result = await createUser(form.email, form.password, form.username, form.mech);
       setUser(result);
       setIsLogged(true);
 
@@ -76,6 +78,18 @@ const SignUp = () => {
             handleChangeText={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-7"
           />
+
+          <View className="mt-7 flex-row">
+            <Text className="text-base text-gray-100 font-medium">¿Eres un mecánico?</Text>
+            <View className="ml-8 w-6.5">
+              <CheckBox
+                borderRadius={10}
+                borderWidth={5}
+                checked={form.mech}
+                onPress={() => setForm({ ...form, mech: !form.mech })}
+              />
+            </View>
+          </View>
 
           <CustomButton
             title="Registrarse"
