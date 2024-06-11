@@ -50,6 +50,8 @@ const Profile = () => {
           </View>
         )}
       />
+      <View>
+      </View>
     </SafeAreaView>
   );
 };

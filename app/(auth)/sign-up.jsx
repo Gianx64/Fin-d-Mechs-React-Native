@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
+import { CheckBox } from "react-native-btr";
 
 import { images } from "../../constants";
 import { createUser } from "../../lib/appwrite";
 import { CustomButton, FormField } from "../../components";
 import { useGlobalContext } from "../../context/GlobalProvider";
-import { CheckBox } from "react-native-btr";
+import tailwindConfig from "../../tailwind.config";
 
 const SignUp = () => {
   const { setUser, setIsLogged } = useGlobalContext();
@@ -21,7 +22,7 @@ const SignUp = () => {
 
   const submit = async () => {
     if (form.username === "" || form.email === "" || form.password === "") {
-      Alert.alert("Error", "Please fill in all fields");
+      Alert.alert("Error", "Por favor llene todos los campos");
     }
 
     setSubmitting(true);
@@ -83,9 +84,10 @@ const SignUp = () => {
             <Text className="text-base text-gray-100 font-medium">¿Eres un mecánico?</Text>
             <View className="ml-8 w-6.5">
               <CheckBox
+                checked={form.mech}
+                color= {tailwindConfig.theme.extend.colors.secondary.DEFAULT}
                 borderRadius={10}
                 borderWidth={5}
-                checked={form.mech}
                 onPress={() => setForm({ ...form, mech: !form.mech })}
               />
             </View>

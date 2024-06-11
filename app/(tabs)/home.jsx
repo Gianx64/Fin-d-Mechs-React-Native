@@ -1,12 +1,15 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FlatList, Image, Text, View } from "react-native";
-import { useGlobalContext } from "../../context/GlobalProvider";
 
+import { useGlobalContext } from "../../context/GlobalProvider";
+import { getAppointments } from "../../lib/appwrite";
 import { images } from "../../constants";
 
 const Home = () => {
   const { user } = useGlobalContext();
+  const appointments = getAppointments();
 
+  console.log(user?.email+" appointments: "+appointments[0]);
   return (
     <SafeAreaView className="bg-primary">
       <FlatList
@@ -33,6 +36,9 @@ const Home = () => {
           </View>
         )}
       />
+      <View>
+        {/*appointments*/}
+      </View>
     </SafeAreaView>
   );
 };
