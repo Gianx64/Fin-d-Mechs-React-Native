@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-import { getCurrentUser } from "../lib/appwrite";
+import { getCurrentUser, getAppointments } from "../lib/appwrite";
 
 const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -8,6 +8,7 @@ export const useGlobalContext = () => useContext(GlobalContext);
 const GlobalProvider = ({ children }) => {
   const [isLogged, setIsLogged] = useState(false);
   const [user, setUser] = useState(null);
+  const [appointments, setAppointments] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,7 +26,24 @@ const GlobalProvider = ({ children }) => {
         console.log(error);
       })
       .finally(() => {
-        setLoading(false);
+        if (user) {
+          getAppointments(user)
+            .then((gotAppointments) => {
+              if (gotAppointments) {
+                setAppointments(gotAppointments);
+              } else {
+                setAppointments([]);
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        } else {
+          setAppointments([]);
+        }
       });
   }, []);
 
@@ -36,6 +54,8 @@ const GlobalProvider = ({ children }) => {
         setIsLogged,
         user,
         setUser,
+        appointments,
+        setAppointments,
         loading,
       }}
     >

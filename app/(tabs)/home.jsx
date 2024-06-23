@@ -7,16 +7,15 @@ import { useEffect, useState } from "react";
 import { getAppointments } from "../../lib/appwrite";
 
 const Home = () => {
-  const { user } = useGlobalContext();
+  const { user, appointments, setAppointments } = useGlobalContext();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [appointments, setAppointments] = useState(null);
+  //const [appointments, setAppointments] = useState(null);
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const response = await getAppointments(user);
-      console.log("appointment 0:"+response[0].$id);
       setAppointments(response);
     } catch (error) {
       Alert.alert("Error", error.message);
@@ -33,45 +32,12 @@ const Home = () => {
     setRefreshing(false);
   }
 
-  if (loading)
-    return (
-      <SafeAreaView className="bg-primary">
-        <FlatList
-          ListHeaderComponent={() => (
-            <View className="flex my-6 px-4 space-y-6">
-              <View className="flex justify-between items-start flex-row mb-6">
-                <View>
-                  <Text className="font-medium text-sm text-gray-100">
-                    Bienvenid@ de vuelta
-                  </Text>
-                  <Text className="text-2xl font-semibold text-white">
-                    {user?.username}
-                  </Text>
-                </View>
-  
-                <View>
-                  <Image
-                    source={images.logo}
-                    className="w-20 h-12"
-                    resizeMode="contain"
-                  />
-                </View>
-              </View>
-            </View>
-          )}
-        />
-        <View className="w-full flex-1 pt-5 pb-8">
-          <Text className="font-medium text-sm text-gray-100">Cargando...</Text>
-        </View>
-      </SafeAreaView>
-  );
-
   return (
-    <SafeAreaView className="bg-primary">
+    <SafeAreaView className="bg-primary h-full">
       <FlatList
         ListHeaderComponent={() => (
-          <View className="flex my-6 px-4 space-y-6">
-            <View className="flex justify-between items-start flex-row mb-6">
+          <View className="flex my-6 px-4">
+            <View className="flex justify-between items-start flex-row">
               <View>
                 <Text className="font-medium text-sm text-gray-100">
                   Bienvenid@ de vuelta
@@ -84,7 +50,7 @@ const Home = () => {
               <View>
                 <Image
                   source={images.logo}
-                  className="w-20 h-12"
+                  className="w-40 h-24"
                   resizeMode="contain"
                 />
               </View>
@@ -92,12 +58,17 @@ const Home = () => {
           </View>
         )}
       />
-      <View className="w-full flex-1 pt-5 pb-8">
+      <View className="">
         <FlatList
           data = {appointments}
-          keyExtractor={(appointment) => appointment.$id}
-          renderItem={({appointment}) => (
-            <Text className="font-medium text-sm text-gray-100">{appointment.$id}</Text>
+          keyExtractor={(item) => item.$id}
+          renderItem={({item}) => (
+            <View className="flex-col pt-5">
+              <Text className="font-medium text-sm text-gray-100">{item.$id}</Text>
+              <Text className="font-medium text-sm text-gray-100">{item.user}</Text>
+              <Text className="font-medium text-sm text-gray-100">{item.car_model}</Text>
+              <Text className="font-medium text-sm text-gray-100">{item.mech}</Text>
+            </View>
           )}
           ListEmptyComponent={() => (
             <Text className="font-medium text-sm text-gray-100">¡Agende una cita con el botón "Crear" en la barra inferior!</Text>
