@@ -21,11 +21,13 @@ const CreateAppointment = () => {
     car_model: "",
     description: "",
     service: true,
-    workshop_id: null,
+    workshop_id: "",
     mech: ""
   });
 
   const submit = async () => {
+    if (form.service != true)
+      setForm({ ...form, workshop_id: "" });
     if (form.date === "" ||
       form.city === "" ||
       form.address === "" ||
@@ -39,7 +41,7 @@ const CreateAppointment = () => {
 
     setSubmitting(true);
     try {
-      await createAppointment(form.user, form.date, form.city, form.address, form.car_make, form.car_model, form.description, form.service, form.workshop_id, form.mech);
+      await createAppointment(form);
       Alert.alert("Éxito", "Agendamiento creado exitosamente");
     } catch (error) {
       Alert.alert("Error", error.message);
