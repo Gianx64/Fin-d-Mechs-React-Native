@@ -26,7 +26,8 @@ const GlobalProvider = ({ children }) => {
         console.log(error);
       })
       .finally(() => {
-        if (user) {
+        if (isLogged && user) {
+          console.log("Trying to get appointments for: "+user.email);
           getAppointments(user)
             .then((gotAppointments) => {
               if (gotAppointments) {
@@ -43,6 +44,7 @@ const GlobalProvider = ({ children }) => {
             });
         } else {
           setAppointments([]);
+          setLoading(false);
         }
       });
   }, []);
