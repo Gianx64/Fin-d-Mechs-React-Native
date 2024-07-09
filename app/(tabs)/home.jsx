@@ -1,5 +1,6 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Alert, FlatList, Image, Text, View } from "react-native";
+import { Link } from "expo-router";
 
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { images } from "../../constants";
@@ -33,41 +34,42 @@ const Home = () => {
   }
 
   return (
-    <SafeAreaView className="bg-primary h-full">
-      <FlatList
-        ListHeaderComponent={() => (
-          <View className="flex my-6 px-4">
-            <View className="flex justify-between items-start flex-row">
-              <View>
-                <Text className="font-medium text-sm text-gray-100">
-                  Bienvenid@ de vuelta
-                </Text>
-                <Text className="text-2xl font-semibold text-white">
-                  {user?.username}
-                </Text>
-              </View>
-
-              <View>
-                <Image
-                  source={images.logo}
-                  className="w-40 h-24"
-                  resizeMode="contain"
-                />
-              </View>
-            </View>
+    <SafeAreaView className="bg-primary h-screen">
+      <View className="flex my-6 px-4">
+        <View className="flex justify-between items-start flex-row">
+          <View>
+            <Text className="font-medium text-sm text-gray-100">
+              Bienvenid@ de vuelta
+            </Text>
+            <Text className="text-2xl font-semibold text-white">
+              {user?.username}
+            </Text>
           </View>
-        )}
-      />
-      <View className="">
+          <View>
+            <Image
+              source={images.logo}
+              className="w-40 h-24"
+              resizeMode="contain"
+            />
+          </View>
+        </View>
+      </View>
+      <View className="h-max place-content-center">
         <FlatList
           data = {appointments}
           keyExtractor={(item) => item.$id}
           renderItem={({item}) => (
             <View className="flex-col pt-5">
-              <Text className="font-medium text-sm text-gray-100">{item.$id}</Text>
-              <Text className="font-medium text-sm text-gray-100">{item.user}</Text>
-              <Text className="font-medium text-sm text-gray-100">{item.car_model}</Text>
-              <Text className="font-medium text-sm text-gray-100">{item.mech}</Text>
+              <Text className="font-medium text-sm text-gray-100">{item.date}, {item.user}, {item.car_model}, {item.mech}</Text>
+              <Link
+                className="font-medium text-sm text-gray-100"
+                href={{
+                  pathname: "/edit",
+                  params: { id: item.$id, user: item.user, date: item.date, city: item.city, address: item.address, car_make: item.car_make, car_model: item.car_model, description: item.description, service: item.service, workshop_id: item.workshop_id, mech: item.mech },
+                }}
+              >
+                Go to Details
+              </Link>
             </View>
           )}
           ListEmptyComponent={() => (
