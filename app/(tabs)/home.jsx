@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Alert, FlatList, Image, Text, View } from "react-native";
+import { Alert, FlatList, Image, Text, View, ScrollView } from "react-native";
 import { Link } from "expo-router";
 
 import { useGlobalContext } from "../../context/GlobalProvider";
@@ -34,7 +34,7 @@ const Home = () => {
   }
 
   return (
-    <SafeAreaView className="bg-primary h-screen">
+    <SafeAreaView className="bg-primary h-full">
       <View className="flex my-6 px-4">
         <View className="flex justify-between items-start flex-row">
           <View>
@@ -54,18 +54,31 @@ const Home = () => {
           </View>
         </View>
       </View>
-      <View className="h-max place-content-center">
+      <ScrollView>
         <FlatList
           data = {appointments}
           keyExtractor={(item) => item.$id}
           renderItem={({item}) => (
             <View className="flex-col pt-5">
-              <Text className="font-medium text-sm text-gray-100">{item.date}, {item.user}, {item.car_model}, {item.mech}</Text>
+              <Text className="font-medium text-sm text-gray-100">{item.date.split(".")[0].split("T")[0]} {item.date.split(".")[0].split("T")[1]}, {item.car_model}, {item.mech}</Text>
               <Link
                 className="font-medium text-sm text-gray-100"
                 href={{
                   pathname: "/edit",
-                  params: { id: item.$id, user: item.user, date: item.date, city: item.city, address: item.address, car_make: item.car_make, car_model: item.car_model, description: item.description, service: item.service, workshop_id: item.workshop_id, mech: item.mech },
+                  params: {
+                    id: item.$id,
+                    user: item.user,
+                    date: item.date,
+                    city: item.city,
+                    address: item.address,
+                    car_make: item.car_make,
+                    car_model: item.car_model,
+                    description: item.description,
+                    service: item.service,
+                    workshop_id: item.workshop_id,
+                    mech: item.mech,
+                    confirmed: item.confirmed
+                  },
                 }}
               >
                 Go to Details
@@ -76,7 +89,7 @@ const Home = () => {
             <Text className="font-medium text-sm text-gray-100">¡Agende una cita con el botón "Crear" en la barra inferior!</Text>
           )}
         />
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

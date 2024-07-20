@@ -113,10 +113,10 @@ const EditAppointment = ({route}) => {
 
   if (user.mech)
     return (
-      <SafeAreaView className="bg-primary">
+      <SafeAreaView className="bg-primary h-full">
         <ScrollView>
           <View
-            className="w-full flex justify-center h-full px-4 my-2"
+            className="w-full flex justify-center px-4 my-2"
             style={{
               minHeight: Dimensions.get("window").height - 100,
             }}
@@ -157,7 +157,7 @@ const EditAppointment = ({route}) => {
               {form.mech}
             </Text>
 
-            { !params.confirmed &&
+            { params.confirmed == "false" &&
               <CustomButton
                 title="Confirmar"
                 handlePress={confirm}
@@ -169,12 +169,12 @@ const EditAppointment = ({route}) => {
         </ScrollView>
       </SafeAreaView>
   )
-  else if (params.confirmed)
+  else if (params.confirmed == "true")
     return (
-      <SafeAreaView className="bg-primary">
+      <SafeAreaView className="bg-primary h-full">
         <ScrollView>
           <View
-            className="w-full flex justify-center h-full px-4 my-2"
+            className="w-full flex justify-center px-4 my-2"
             style={{
               minHeight: Dimensions.get("window").height - 100,
             }}
@@ -221,32 +221,22 @@ const EditAppointment = ({route}) => {
               containerStyles="mt-7"
               isLoading={isSubmitting}
             />
-            { user.mech &&
-              <CustomButton
-                title="Confirmar"
-                handlePress={confirm}
-                containerStyles="mt-7"
-                isLoading={isSubmitting}
-              />
-            }
-            { params.confirmed &&
-              <CustomButton
-                title="Marcar como completado"
-                handlePress={complete}
-                containerStyles="mt-7"
-                isLoading={isSubmitting}
-              />
-            }
+            <CustomButton
+              title="Marcar como completado"
+              handlePress={complete}
+              containerStyles="mt-7"
+              isLoading={isSubmitting}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
     )
   else
     return (
-      <SafeAreaView className="bg-primary">
+      <SafeAreaView className="bg-primary h-full">
         <ScrollView>
           <View
-            className="w-full flex justify-center h-full px-4 my-2"
+            className="w-full flex justify-center px-4 my-2"
             style={{
               minHeight: Dimensions.get("window").height - 100,
             }}
