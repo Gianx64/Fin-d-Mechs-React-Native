@@ -1,0 +1,7 @@
+Ubicacion por GPS
+Menu administrador
+Menu mecánico
+Menu taller
+Cita con el primer mecanico que acepte
+Correos, SMS
+Rating y reviews
