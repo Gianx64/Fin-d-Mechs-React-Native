@@ -1,7 +1,9 @@
-Ubicacion por GPS
+Agenda mech
 Menu administrador
 Menu mecánico
 Menu taller
 Cita con el primer mecanico que acepte
+Ubicacion por GPS
 Correos, SMS
 Rating y reviews
+Chat
