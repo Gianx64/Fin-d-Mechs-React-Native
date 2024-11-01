@@ -1,60 +1,57 @@
-import { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, ScrollView, Dimensions, Alert } from 'react-native'
-import React from 'react'
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Dropdown } from 'react-native-element-dropdown';
 import { useLocalSearchParams } from "expo-router";
+import React, { useState } from "react";
+import { View, Text, ScrollView, Dimensions, Alert } from 'react-native'
+import { Dropdown } from 'react-native-element-dropdown';
+import { SafeAreaView } from "react-native-safe-area-context";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-import { updateAppointment, cancelAppointment, confirmAppointment, completeAppointment } from "../lib/appwrite";
 import { CustomButton, FormField } from "../components";
-import { useGlobalContext } from "../context/GlobalProvider";
+import { modifyAppointment, updateAppointment } from "../api/apiAppointments";
+import { useGlobalContext } from "../api/GlobalProvider";
 
-const EditAppointment = ({route}) => {
+const EditAppointment = ({ route }) => {
   const { user } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const params = useLocalSearchParams();
   const [form, setForm] = useState({
-    user: params.user,
-    date: params.date,
-    city: params.city,
-    address: params.address,
-    car_make: params.car_make,
-    car_model: params.car_model,
-    description: params.description,
-    service: params.service,
-    workshop_id: params.workshop_id,
+    usuario: user?.correo,
+    fecha: `${params.fecha.split('.')[0].split('T')[0]} ${params.fecha.split('.')[0].split('T')[1]}`,
+    ciudad: params.ciudad,
+    direccion: params.direccion,
+    auto_marca: params.auto_marca,
+    auto_modelo: params.auto_modelo,
+    detalles: params.detalles,
+    servicio: params.servicio,
+    id_taller: params.id_taller || null,
     mech: params.mech
   });
 
   const submit = async () => {
-    if (form.date === "" ||
-      form.city === "" ||
-      form.address === "" ||
-      form.car_make === "" ||
-      form.car_model === "" ||
-      form.description === "" ||
-      (form.service && form.workshop_id == null) ||
-      form.mech === "" ) {
+    if (form.fecha === "Ingrese una fecha" ||
+      form.ciudad === "" ||
+      form.direccion === "" ||
+      form.auto_marca === "" ||
+      form.auto_modelo === "" ||
+      form.detalles === "" ||
+      (form.servicio === "01" && form.id_taller == null) ||
+      form.mech === "") {
       Alert.alert("Error", "Por favor llene todos los campos");
-    }
-
-    setSubmitting(true);
-    try {
-      await updateAppointment(form);
-      Alert.alert("Éxito", "Agendamiento actualizado exitosamente");
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setSubmitting(false);
+    } else {
+      setSubmitting(true);
+      try {
+        await modifyAppointment(form);
+      } catch (error) {
+        Alert.alert("Error", error.message);
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
 
   const cancel = async () => {
     setSubmitting(true);
     try {
-      await cancelAppointment(params.id);
-      Alert.alert("Éxito", "Agendamiento cancelado exitosamente");
+      await updateAppointment(params.id, 1);
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
@@ -65,8 +62,7 @@ const EditAppointment = ({route}) => {
   const confirm = async () => {
     setSubmitting(true);
     try {
-      await confirmAppointment(params.id);
-      Alert.alert("Éxito", "Agendamiento confirmado exitosamente");
+      await updateAppointment(params.id, 2);
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
@@ -77,17 +73,16 @@ const EditAppointment = ({route}) => {
   const complete = async () => {
     setSubmitting(true);
     try {
-      await completeAppointment(params.id);
-      Alert.alert("Éxito", "Agendamiento marcado como completado");
+      await updateAppointment(params.id, 5);
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
       setSubmitting(false);
     }
   };
-  
+
   //Picker de fechas y hora
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(new Date(params.fecha));
   const [mode, setPickerMode] = useState('date');
   const [showPicker, setShowPicker] = useState(false);
   const onChangePicker = (event, selectedDate) => {
@@ -108,7 +103,7 @@ const EditAppointment = ({route}) => {
   };
 
   //Dropdown de servicio
-  const [dropdownValue, setDropdownValuealue] = useState(0);
+  const [dropdownValue, setDropdownValue] = useState(params.servicio);
   const [isFocus, setIsFocus] = useState(false);
 
   if (user.mech)
@@ -125,39 +120,39 @@ const EditAppointment = ({route}) => {
               Detalles de cita con mecánico
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.user}
+              {form.usuario}
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.date}
+              {form.fecha}
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.city}
+              {form.ciudad}
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.address}
+              {form.direccion}
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.car_make}
+              {form.auto_marca}
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.car_model}
+              {form.auto_modelo}
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.description}
+              {form.detalles}
             </Text>
-            { form.service === "null" && <Text className="text-2xl text-white mt-10">Cliente lleva a taller</Text>}
-            { form.service === "true" && <Text className="text-2xl text-white mt-10">Atención a domicilio</Text>}
-            { form.service === "false" && <Text className="text-2xl text-white mt-10">Mecánico lleva a taller</Text>}
-            { form.workshop_id &&
+            {form.servicio === "01" && <Text className="text-2xl text-white mt-10">Cliente lleva a taller</Text>}
+            {form.servicio === "00" && <Text className="text-2xl text-white mt-10">Atención a domicilio</Text>}
+            {form.servicio === "10" && <Text className="text-2xl text-white mt-10">Mecánico lleva a taller</Text>}
+            {form.id_taller &&
               <Text className="text-2xl text-white mt-10">
-                {form.workshop_id}
+                {form.id_taller}
               </Text>
             }
             <Text className="text-2xl text-white mt-10">
               {form.mech}
             </Text>
 
-            { params.confirmed == "false" &&
+            {params.confirmed == "false" &&
               <CustomButton
                 title="Confirmar"
                 handlePress={confirm}
@@ -168,7 +163,7 @@ const EditAppointment = ({route}) => {
           </View>
         </ScrollView>
       </SafeAreaView>
-  )
+    )
   else if (params.confirmed == "true")
     return (
       <SafeAreaView className="bg-primary h-full">
@@ -183,32 +178,32 @@ const EditAppointment = ({route}) => {
               Detalles de cita con mecánico
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.user}
+              {form.usuario}
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.date}
+              {form.fecha}
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.city}
+              {form.ciudad}
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.address}
+              {form.direccion}
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.car_make}
+              {form.auto_marca}
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.car_model}
+              {form.auto_modelo}
             </Text>
             <Text className="text-2xl text-white mt-10">
-              {form.description}
+              {form.detalles}
             </Text>
-            { form.service === "null" && <Text className="text-2xl text-white mt-10">Cliente lleva a taller</Text>}
-            { form.service === "true" && <Text className="text-2xl text-white mt-10">Atención a domicilio</Text>}
-            { form.service === "false" && <Text className="text-2xl text-white mt-10">Mecánico lleva a taller</Text>}
-            { form.workshop_id &&
+            {form.servicio === "01" && <Text className="text-2xl text-white mt-10">Cliente lleva a taller</Text>}
+            {form.servicio === "00" && <Text className="text-2xl text-white mt-10">Atención a domicilio</Text>}
+            {form.servicio === "10" && <Text className="text-2xl text-white mt-10">Mecánico lleva a taller</Text>}
+            {form.id_taller &&
               <Text className="text-2xl text-white mt-10">
-                {form.workshop_id}
+                {form.id_taller}
               </Text>
             }
             <Text className="text-2xl text-white mt-10">
@@ -247,7 +242,7 @@ const EditAppointment = ({route}) => {
 
             <FormField
               title="Correo de usuario"
-              value={form.user}
+              value={form.usuario}
               readOnly={true}
               otherStyles="mt-7"
               keyboardType="email-address"
@@ -255,7 +250,7 @@ const EditAppointment = ({route}) => {
 
             <FormField
               title="Fecha, hora"
-              value={form.date}
+              value={form.fecha}
               readOnly={true}
               onPress={showDatepicker}
               otherStyles="mt-7"
@@ -284,36 +279,36 @@ const EditAppointment = ({route}) => {
 
             <FormField
               title="Ciudad"
-              value={form.city}
-              handleChangeText={(e) => setForm({ ...form, city: e })}
+              value={form.ciudad}
+              handleChangeText={(e) => setForm({ ...form, ciudad: e })}
               otherStyles="mt-7"
             />
 
             <FormField
               title="Dirección"
-              value={form.address}
-              handleChangeText={(e) => setForm({ ...form, address: e })}
+              value={form.direccion}
+              handleChangeText={(e) => setForm({ ...form, direccion: e })}
               otherStyles="mt-7"
             />
 
             <FormField
               title="Marca de vehículo"
-              value={form.car_make}
-              handleChangeText={(e) => setForm({ ...form, car_make: e })}
+              value={form.auto_marca}
+              handleChangeText={(e) => setForm({ ...form, auto_marca: e })}
               otherStyles="mt-7"
             />
 
             <FormField
               title="Modelo de vehículo"
-              value={form.car_model}
-              handleChangeText={(e) => setForm({ ...form, car_model: e })}
+              value={form.auto_modelo}
+              handleChangeText={(e) => setForm({ ...form, auto_modelo: e })}
               otherStyles="mt-7"
             />
 
             <FormField
               title="Descripción del agendamiento"
-              value={form.description}
-              handleChangeText={(e) => setForm({ ...form, description: e })}
+              value={form.detalles}
+              handleChangeText={(e) => setForm({ ...form, detalles: e })}
               otherStyles="mt-7"
             />
 
@@ -323,32 +318,27 @@ const EditAppointment = ({route}) => {
               <View className="w-full h-16 px-4 bg-black-100 rounded-2xl border-2 border-black-200 focus:border-secondary flex">
                 <Dropdown
                   className="flex-1 text-white font-semibold text-base"
-                  data={[ { label: "Cliente lleva a taller", value: 0 }, { label: "Atención a domicilio", value: 1 }, { label: "Mecánico lleva a taller", value: 2 }]}
+                  data={[{ label: "Cliente lleva a taller", value: "01" }, { label: "Servicio a domicilio", value: "00" }, { label: "Mecánico lleva a taller", value: "10" }]}
                   labelField="label"
                   selectedTextStyle={{ color: 'white' }}
                   valueField="value"
                   value={dropdownValue}
                   onFocus={() => setIsFocus(true)}
                   onBlur={() => setIsFocus(false)}
-                  placeholder={!isFocus ? 'Select item' : '...'}
+                  placeholder={!isFocus ? 'Seleccionar item' : '...'}
                   onChange={(e) => {
-                    setDropdownValuealue(e.value);
-                    if (dropdownValue == 0)
-                      setForm({ ...form, service: true });
-                    else if (dropdownValue == 1)
-                      setForm({ ...form, service: null });
-                    else if (dropdownValue == 2)
-                      setForm({ ...form, service: false });
+                    setDropdownValue(e.value);
+                    setForm({ ...form, servicio: e.value });
                     setIsFocus(false);
                   }}
                 />
               </View>
             </View>
 
-            { dropdownValue == 0 && <FormField
+            {dropdownValue === "01" && <FormField
               title="Taller"
-              value={form.workshop_id}
-              handleChangeText={(e) => setForm({ ...form, workshop_id: e })}
+              value={form.id_taller}
+              handleChangeText={(e) => setForm({ ...form, id_taller: e })}
               otherStyles="mt-7"
             />}
 

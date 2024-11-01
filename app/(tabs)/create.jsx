@@ -1,57 +1,58 @@
-import { useState } from "react";
+import { router } from "expo-router";
+import React, { useState } from "react";
+import { View, Text, ScrollView, Dimensions, Alert } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, ScrollView, Dimensions, Alert } from 'react-native'
-import React from 'react'
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Dropdown } from 'react-native-element-dropdown';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-import { createAppointment } from "../../lib/appwrite";
 import { CustomButton, FormField } from "../../components";
-import { useGlobalContext } from "../../context/GlobalProvider";
+import { createAppointment } from "../../api/apiAppointments";
+import { useGlobalContext } from "../../api/GlobalProvider";
 
 const CreateAppointment = () => {
   const { user } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
-    user: user?.email,
-    date: "Ingrese una fecha",
-    city: "",
-    address: "",
-    car_make: "",
-    car_model: "",
-    description: "",
-    service: true,
-    workshop_id: "",
+    usuario: user?.id,
+    fecha: "Ingrese una fecha",
+    ciudad: "",
+    direccion: "",
+    auto_marca: "",
+    auto_modelo: "",
+    detalles: "",
+    servicio: "01",
+    id_taller: null,
     mech: ""
   });
 
   const submit = async () => {
-    if (form.service != true)
-      setForm({ ...form, workshop_id: "" });
-    if (form.date === "" ||
-      form.city === "" ||
-      form.address === "" ||
-      form.car_make === "" ||
-      form.car_model === "" ||
-      form.description === "" ||
-      (form.service && form.workshop_id == null) ||
+    if (form.servicio != "01")
+      setForm({ ...form, id_taller: null });
+    console.log("Submitting form:", JSON.stringify(form));
+    if (form.fecha === "Ingrese una fecha" ||
+      form.ciudad === "" ||
+      form.direccion === "" ||
+      form.auto_marca === "" ||
+      form.auto_modelo === "" ||
+      form.detalles === "" ||
+      (form.servicio === "01" && form.id_taller == null) ||
       form.mech === "" ) {
       Alert.alert("Error", "Por favor llene todos los campos");
-    }
-
-    setSubmitting(true);
-    try {
-      await createAppointment(form);
-      Alert.alert("Éxito", "Agendamiento creado exitosamente");
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setSubmitting(false);
+    } else {
+      setSubmitting(true);
+      try {
+        await createAppointment(form);
+        router.replace("/home");
+      } catch (error) {
+        Alert.alert("Error de cliente", error.message);
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
   
   //Picker de fechas y hora
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(new Date());
   const [mode, setPickerMode] = useState('date');
   const [showPicker, setShowPicker] = useState(false);
   const onChangePicker = (event, selectedDate) => {
@@ -72,7 +73,7 @@ const CreateAppointment = () => {
   };
 
   //Dropdown de servicio
-  const [dropdownValue, setDropdownValuealue] = useState(0);
+  const [dropdownValue, setDropdownValue] = useState(0);
   const [isFocus, setIsFocus] = useState(false);
 
   return (
@@ -90,7 +91,8 @@ const CreateAppointment = () => {
 
           <FormField
             title="Correo de usuario"
-            value={form.user}
+            value={user?.correo}
+            editable={false}
             readOnly={true}
             otherStyles="mt-7"
             keyboardType="email-address"
@@ -98,7 +100,7 @@ const CreateAppointment = () => {
 
           <FormField
             title="Fecha, hora"
-            value={form.date}
+            value={form.fecha}
             readOnly={true}
             onPress={showDatepicker}
             otherStyles="mt-7"
@@ -127,36 +129,36 @@ const CreateAppointment = () => {
 
           <FormField
             title="Ciudad"
-            value={form.city}
-            handleChangeText={(e) => setForm({ ...form, city: e })}
+            value={form.ciudad}
+            handleChangeText={(e) => setForm({ ...form, ciudad: e })}
             otherStyles="mt-7"
           />
 
           <FormField
             title="Dirección"
-            value={form.address}
-            handleChangeText={(e) => setForm({ ...form, address: e })}
+            value={form.direccion}
+            handleChangeText={(e) => setForm({ ...form, direccion: e })}
             otherStyles="mt-7"
           />
 
           <FormField
             title="Marca de vehículo"
-            value={form.car_make}
-            handleChangeText={(e) => setForm({ ...form, car_make: e })}
+            value={form.auto_marca}
+            handleChangeText={(e) => setForm({ ...form, auto_marca: e })}
             otherStyles="mt-7"
           />
 
           <FormField
             title="Modelo de vehículo"
-            value={form.car_model}
-            handleChangeText={(e) => setForm({ ...form, car_model: e })}
+            value={form.auto_modelo}
+            handleChangeText={(e) => setForm({ ...form, auto_modelo: e })}
             otherStyles="mt-7"
           />
 
           <FormField
             title="Descripción del agendamiento"
-            value={form.description}
-            handleChangeText={(e) => setForm({ ...form, description: e })}
+            value={form.detalles}
+            handleChangeText={(e) => setForm({ ...form, detalles: e })}
             otherStyles="mt-7"
           />
 
@@ -166,32 +168,27 @@ const CreateAppointment = () => {
             <View className="w-full h-16 px-4 bg-black-100 rounded-2xl border-2 border-black-200 focus:border-secondary flex">
               <Dropdown
                 className="flex-1 text-white font-semibold text-base"
-                data={[ { label: "Cliente lleva a taller", value: 0 }, { label: "Atención a domicilio", value: 1 }, { label: "Mecánico lleva a taller", value: 2 }]}
+                data={[ { label: "Cliente lleva a taller", value: "01" }, { label: "Servicio a domicilio", value: "00" }, { label: "Mecánico lleva a taller", value: "10" }]}
                 labelField="label"
                 selectedTextStyle={{ color: 'white' }}
                 valueField="value"
                 value={dropdownValue}
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
-                placeholder={!isFocus ? 'Select item' : '...'}
+                placeholder={!isFocus ? 'Seleccionar item' : '...'}
                 onChange={(e) => {
-                  setDropdownValuealue(e.value);
-                  if (dropdownValue == 0)
-                    setForm({ ...form, service: true });
-                  else if (dropdownValue == 1)
-                    setForm({ ...form, service: null });
-                  else if (dropdownValue == 2)
-                    setForm({ ...form, service: false });
+                  setDropdownValue(e.value);
+                  setForm({ ...form, servicio: e.value });
                   setIsFocus(false);
                 }}
               />
             </View>
           </View>
 
-          { dropdownValue == 0 && <FormField
+          { dropdownValue === "01" && <FormField
             title="Taller"
-            value={form.workshop_id}
-            handleChangeText={(e) => setForm({ ...form, workshop_id: e })}
+            value={form.id_taller}
+            handleChangeText={(e) => setForm({ ...form, id_taller: e })}
             otherStyles="mt-7"
           />}
 

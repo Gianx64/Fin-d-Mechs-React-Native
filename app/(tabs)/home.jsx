@@ -1,22 +1,22 @@
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Alert, FlatList, Image, Text, View, ScrollView } from "react-native";
 import { Link } from "expo-router";
-
-import { useGlobalContext } from "../../context/GlobalProvider";
-import { images } from "../../constants";
 import { useEffect, useState } from "react";
-import { getAppointments } from "../../lib/appwrite";
+import { Alert, FlatList, Image, Text, View, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import { images, styles } from "../../constants";
+import { getAppointments } from "../../api/apiAppointments";
+import { useGlobalContext } from "../../api/GlobalProvider";
 
 const Home = () => {
-  const { user, appointments, setAppointments } = useGlobalContext();
+  const { user } = useGlobalContext();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  //const [appointments, setAppointments] = useState(null);
+  const [appointments, setAppointments] = useState(null);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await getAppointments(user);
+      const response = await getAppointments();
       setAppointments(response);
     } catch (error) {
       Alert.alert("Error", error.message);
@@ -42,46 +42,40 @@ const Home = () => {
               Bienvenid@ de vuelta
             </Text>
             <Text className="text-2xl font-semibold text-white">
-              {user?.username}
+              {user?.usuario}
             </Text>
           </View>
           <View>
             <Image
               source={images.logo}
-              className="w-40 h-24"
+              style={styles.tinyLogo}
               resizeMode="contain"
             />
           </View>
         </View>
       </View>
-      <ScrollView>
+      <ScrollView horizontal>
+        <View>
+          <Text className="font-medium text-sm text-gray-100" style={{width: 150}}>Fecha y hora</Text>
+          <Text className="font-medium text-sm text-gray-100" style={{width: 150}}>Mecánico</Text>
+          <Text className="font-medium text-sm text-gray-100" style={{width: 150}}></Text>
+        </View>
         <FlatList
           data = {appointments}
-          keyExtractor={(item) => item.$id}
+          keyExtractor={(item) => item.id}
           renderItem={({item}) => (
             <View className="flex-col pt-5">
-              <Text className="font-medium text-sm text-gray-100">{item.date.split(".")[0].split("T")[0]} {item.date.split(".")[0].split("T")[1]}, {item.car_model}, {item.mech}</Text>
+              <Text className="font-medium text-sm text-gray-100" style={{width: 150}}>{item.fecha.split(".")[0].split("T")[0]} {item.fecha.split(".")[0].split("T")[1]}</Text>
+              <Text className="font-medium text-sm text-gray-100" style={{width: 150}}>{item.mech_usuario} ({item.mech_correo})</Text>
               <Link
                 className="font-medium text-sm text-gray-100"
+                style={{width: 150}}
                 href={{
                   pathname: "/edit",
-                  params: {
-                    id: item.$id,
-                    user: item.user,
-                    date: item.date,
-                    city: item.city,
-                    address: item.address,
-                    car_make: item.car_make,
-                    car_model: item.car_model,
-                    description: item.description,
-                    service: item.service,
-                    workshop_id: item.workshop_id,
-                    mech: item.mech,
-                    confirmed: item.confirmed
-                  },
+                  params: item,
                 }}
               >
-                Go to Details
+                Ver detalles
               </Link>
             </View>
           )}

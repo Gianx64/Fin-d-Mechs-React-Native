@@ -1,20 +1,20 @@
-import { useState } from "react";
 import { Link, router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useState } from "react";
 import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 import { CheckBox } from "react-native-btr";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { images } from "../../constants";
-import { createUser } from "../../lib/appwrite";
 import { CustomButton, FormField } from "../../components";
-import { useGlobalContext } from "../../context/GlobalProvider";
-import tailwindConfig from "../../tailwind.config";
+import { images, styles } from "../../constants";
+import { createUser } from "../../api/apiUsers";
+import { useGlobalContext } from "../../api/GlobalProvider";
 
 const SignUp = () => {
-  const { setUser, setIsLogged } = useGlobalContext();
+  const { setUser, setIsLogged, loading, setLoading } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     username: "",
+    phone: "",
     email: "",
     password: "",
     mech: false,
@@ -23,19 +23,20 @@ const SignUp = () => {
   const submit = async () => {
     if (form.username === "" || form.email === "" || form.password === "") {
       Alert.alert("Error", "Por favor llene todos los campos");
-    }
-
-    setSubmitting(true);
-    try {
-      const result = await createUser(form.email, form.password, form.username, form.mech);
-      setUser(result);
-      setIsLogged(true);
-
-      router.replace("/home");
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setSubmitting(false);
+    } else {
+      setSubmitting(true);
+      try {
+        const result = await createUser(form.username, form.phone, form.email, form.password, form.mech);
+        if (result) {
+          setUser({ usuario: form.username, celular: form.phone, correo: form.email, ...result.data.user});
+          setIsLogged(true);
+          router.replace("/home");
+        }
+      } catch (error) {
+        Alert.alert("Error", error.message);
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
 
@@ -50,7 +51,7 @@ const SignUp = () => {
         >
           <Image
             source={images.logo}
-            className="w-[112px] h-[75px] w-full flex justify-center items-center"
+            style={styles.tinyLogo}
             resizeMode="contain"
           />
 
@@ -63,14 +64,26 @@ const SignUp = () => {
             value={form.username}
             handleChangeText={(e) => setForm({ ...form, username: e })}
             otherStyles="mt-10"
+            maxLength={64}
+          />
+
+          <FormField
+            title="Celular"
+            value={form.phone}
+            handleChangeText={(e) => setForm({ ...form, phone: e })}
+            otherStyles="mt-7"
+            inputmode="tel"
+            keyboardType="phone-pad"
+            maxLength={16}
           />
 
           <FormField
             title="Email"
             value={form.email}
-            handleChangeText={(e) => setForm({ ...form, email: e })}
+            handleChangeText={(e) => setForm({ ...form, email: e.toLowerCase() })}
             otherStyles="mt-7"
             keyboardType="email-address"
+            maxLength={64}
           />
 
           <FormField
@@ -78,6 +91,7 @@ const SignUp = () => {
             value={form.password}
             handleChangeText={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-7"
+            maxLength={64}
           />
 
           <View className="mt-7 flex-row">
@@ -85,7 +99,7 @@ const SignUp = () => {
             <View className="ml-8 w-6.5">
               <CheckBox
                 checked={form.mech}
-                color= {tailwindConfig.theme.extend.colors.secondary.DEFAULT}
+                color= {styles.colors.secondary.DEFAULT}
                 borderRadius={10}
                 borderWidth={5}
                 onPress={() => setForm({ ...form, mech: !form.mech })}

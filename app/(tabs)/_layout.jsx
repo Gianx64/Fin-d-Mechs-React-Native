@@ -1,11 +1,10 @@
-import { StatusBar } from "expo-status-bar";
 import { Redirect, Tabs } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { Image, Text, View } from "react-native";
 
-import { icons } from "../../constants";
 import { Loader } from "../../components";
-import { useGlobalContext } from "../../context/GlobalProvider";
-import tailwindConfig from "../../tailwind.config";
+import { icons, styles } from "../../constants";
+import { useGlobalContext } from "../../api/GlobalProvider";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -35,7 +34,7 @@ const TabLayout = () => {
     <>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: tailwindConfig.theme.extend.colors.secondary.DEFAULT,
+          tabBarActiveTintColor: styles.colors.secondary.DEFAULT,
           tabBarInactiveTintColor: "#CDCDE0",
           tabBarShowLabel: false,
           tabBarStyle: {

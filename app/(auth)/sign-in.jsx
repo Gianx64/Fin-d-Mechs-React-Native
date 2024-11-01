@@ -1,40 +1,39 @@
-import { useState } from "react";
 import { Link, router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useState } from "react";
 import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { images } from "../../constants";
 import { CustomButton, FormField } from "../../components";
-import { getCurrentUser, signIn } from "../../lib/appwrite";
-import { useGlobalContext } from "../../context/GlobalProvider";
+import { images, styles } from "../../constants";
+import { signIn } from "../../api/apiUsers";
+import { useGlobalContext } from "../../api/GlobalProvider";
 
 const SignIn = () => {
   const { setUser, setIsLogged } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
-    email: "",
-    password: "",
+    correo: "",
+    clave: "",
   });
 
   const submit = async () => {
-    if (form.email === "" || form.password === "") {
+    if (form.correo === "" || form.clave === "") {
       Alert.alert("Error", "Por favor llene todos los campos");
-    }
-
-    setSubmitting(true);
-
-    try {
-      await signIn(form.email, form.password);
-      const result = await getCurrentUser();
-      setUser(result);
-      setIsLogged(true);
-
-      Alert.alert("Éxito", "Sesión iniciada exitosamente");
-      router.replace("/home");
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setSubmitting(false);
+    } else {
+      setSubmitting(true);
+      try {
+        let result = await signIn(form.correo, form.clave);
+        if (result) {
+          delete result.data["token"];
+          setUser(result.data);
+          setIsLogged(true);
+          router.replace("/home");
+        }
+      } catch (error) {
+        Alert.alert("Error de cliente", error.message);
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
 
@@ -49,7 +48,7 @@ const SignIn = () => {
         >
           <Image
             source={images.logo}
-            className="w-[224px] h-[150px] w-full flex justify-center items-center"
+            style={styles.tinyLogo}
             resizeMode="contain"
           />
 
@@ -58,18 +57,20 @@ const SignIn = () => {
           </Text>
 
           <FormField
-            title="Email"
-            value={form.email}
-            handleChangeText={(e) => setForm({ ...form, email: e })}
+            title="Correo"
+            value={form.correo}
+            handleChangeText={(e) => setForm({ ...form, correo: e.toLowerCase() })}
             otherStyles="mt-7"
             keyboardType="email-address"
+            maxLength={64}
           />
 
           <FormField
             title="Contraseña"
-            value={form.password}
-            handleChangeText={(e) => setForm({ ...form, password: e })}
+            value={form.clave}
+            handleChangeText={(e) => setForm({ ...form, clave: e })}
             otherStyles="mt-7"
+            maxLength={64}
           />
 
           <CustomButton

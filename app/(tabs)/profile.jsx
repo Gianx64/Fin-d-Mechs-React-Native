@@ -1,17 +1,18 @@
 import { router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Image, FlatList, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { icons } from "../../constants";
-import { signOut } from "../../lib/appwrite";
-import { useGlobalContext } from "../../context/GlobalProvider";
 import { InfoBox } from "../../components";
+import { icons } from "../../constants";
+import { secureStoreDelete } from "../../api/apiManager";
+import { useGlobalContext } from "../../api/GlobalProvider";
 
 const Profile = () => {
   const { user, setUser, setIsLogged } = useGlobalContext();
 
   const logout = async () => {
-    await signOut();
+    //await signOut();
+    await secureStoreDelete("Token");
     setUser(null);
     setIsLogged(false);
 
@@ -43,7 +44,7 @@ const Profile = () => {
             </View>
 
             <InfoBox
-              title={user?.username}
+              title={user?.usuario}
               containerStyles="mt-5"
               titleStyles="text-lg"
             />
