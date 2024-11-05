@@ -4,7 +4,7 @@ import { View, Text, Image, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomButton, Loader } from "../components";
-import { images, styles } from "../constants";
+import { colors, images, styles } from "../constants";
 import { useGlobalContext } from "../api/GlobalProvider";
 
 const Welcome = () => {
@@ -13,7 +13,7 @@ const Welcome = () => {
   if (!loading && isLogged) return <Redirect href="/home" />;
 
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView style={[styles.container, {paddingVertical: 100}]}>
       <Loader isLoading={loading} />
 
       <ScrollView
@@ -21,29 +21,29 @@ const Welcome = () => {
           height: "100%",
         }}
       >
-        <View className="w-full flex justify-center items-center h-full px-4">
+        <View>
           <Image
             source={images.logo}
-            style={styles.tinyLogo}
+            style={styles.welcomeLogo}
             resizeMode="contain"
           />
 
-          <View className="relative mt-5">
-            <Text className="text-3xl text-white font-bold text-center">
+          <View>
+            <Text style={styles.welcomeText1}>
               Ahórrate problemas,{"\n"}
-              llama a un mecánico en {" "}
-              <Text className="text-secondary-200">Fin-d-Mechs</Text>
+              llama a un mecánico en{"\n"}
+              <Text style={{color: colors.secondary[200]}}>Fin-d-Mechs</Text>
             </Text>
           </View>
 
-          <Text className="text-sm text-gray-100 mt-7 text-center">
-            Agendamientos a domicilio o en taller,{"\n"}dependiendo de sus necesidades.
+          <Text style={styles.subtitleText}>
+            Agendamientos a domicilio o en taller,{"\n"}
+            dependiendo de sus necesidades.
           </Text>
 
           <CustomButton
             title="Continuar con Email"
             handlePress={() => router.push("/sign-in")}
-            containerStyles="w-full mt-7"
           />
         </View>
       </ScrollView>
