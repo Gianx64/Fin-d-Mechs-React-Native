@@ -3,7 +3,7 @@ import colors from "./colors";
 
 export default StyleSheet.create({
   container: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
     flex: 1,
     padding: 10
   },
@@ -22,6 +22,7 @@ export default StyleSheet.create({
   titleText: {
     color: "white",
     fontSize: 20,
+    paddingTop: 32,
     textAlign: 'center'
   },
   subtitleText: {
@@ -38,7 +39,7 @@ export default StyleSheet.create({
   mainButton: {
     alignSelf: 'center',
     alignItems: 'center',
-    backgroundColor: colors.secondary[100],
+    backgroundColor: colors.primary[100],
     borderRadius: 16,
     justifyContent: 'center',
     paddingVertical: 16,
@@ -50,16 +51,21 @@ export default StyleSheet.create({
     fontSize: 16
   },
   linkText: {
-    color: colors.secondary.DEFAULT,
+    color: colors.primary.DEFAULT,
     fontSize: 16,
     paddingVertical: 16
   },
   formField: {
-    flexDirection:'row',
-    justifyContent:'center'
+    color: "white",
+    backgroundColor: colors.gray,
+    borderRadius: 16,
+    borderWidth: 1,
+    fontSize: 20,
+    height: 50,
+    textAlign: "center"
   },
   tinyLogo: {
-    width: 50,
-    height: 50,
+    height: 90,
+    width: 150
   },
 });

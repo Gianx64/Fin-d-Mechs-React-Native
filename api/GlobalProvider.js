@@ -13,9 +13,10 @@ const GlobalProvider = ({ children }) => {
   useEffect(() => {
     (async () => {
       const response = await getCurrentUser()
-      if (response.data) {
+      if (response) {
         setIsLogged(true);
         setUser(response.data);
+        //console.log("User set: ", JSON.stringify(response.data));
       } else {
         setIsLogged(false);
         setUser(null);

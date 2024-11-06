@@ -14,7 +14,11 @@ export async function createAppointment(appointment) {
       Alert.alert("Éxito", res.data.message);
       return res.data;
     }).catch(error => {
-      Alert.alert("Error", error.response.data.message);
+      if (error.code === "ERR_NETWORK")
+        Alert.alert("Error", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+      else
+        Alert.alert("Error", error.response.data.message);
+      return null;
     });
 
     console.log("Appointment created, ID: "+result.data.id);
@@ -36,7 +40,11 @@ export const getAppointments = async () => {
     }).then((res) => {
       return res.data;
     }).catch(error => {
-      Alert.alert("Error", error.response.data.message);
+      if (error.code === "ERR_NETWORK")
+        Alert.alert("Error", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+      else
+        Alert.alert("Error", error.response.data.message);
+      return null;
     });
 
     if (!result) throw Error;
@@ -59,7 +67,11 @@ export const getAppointment = async (appointmentID) => {
     }).then((res) => {
       return res.data;
     }).catch(error => {
-      Alert.alert("Error", error.response.data.message);
+      if (error.code === "ERR_NETWORK")
+        Alert.alert("Error", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+      else
+        Alert.alert("Error", error.response.data.message);
+      return null;
     });
 
     if (!result) throw Error;
@@ -84,7 +96,11 @@ export const modifyAppointment = async (appointment) => {
       Alert.alert("Éxito", res.data.message);
       return res.data;
     }).catch(error => {
-      Alert.alert("Error", error.response.data.message);
+      if (error.code === "ERR_NETWORK")
+        Alert.alert("Error", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+      else
+        Alert.alert("Error", error.response.data.message);
+      return null;
     });
 
     return result.data;
@@ -105,7 +121,11 @@ export const updateAppointment = async (id, action) => {
       Alert.alert("Éxito", res.data.message);
       return res.data;
     }).catch(error => {
-      Alert.alert("Error", error.response.data.message);
+      if (error.code === "ERR_NETWORK")
+        Alert.alert("Error", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+      else
+        Alert.alert("Error", error.response.data.message);
+      return null;
     });
 
     return result.data;

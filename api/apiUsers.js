@@ -16,7 +16,11 @@ export async function createUser(username, phone, email, password, mech) {
       Alert.alert("Éxito", res.data.message);
       return res.data;
     }).catch(error => {
-      Alert.alert("Error", error.response.data.message);
+      if (error.code === "ERR_NETWORK")
+        Alert.alert("Error", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+      else
+        Alert.alert("Error", error.response.data.message);
+      return null;
     });
   } catch (error) {
     throw new Error(error);
@@ -34,7 +38,11 @@ export async function signIn(email, password) {
       Alert.alert("Éxito", "Sesión iniciada exitosamente");
       return res.data;
     }).catch(error => {
-      Alert.alert("Error", error.response.data.message);
+      if (error.code === "ERR_NETWORK")
+        Alert.alert("Error", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+      else
+        Alert.alert("Error", error.response.data.message);
+      return null;
     });
   } catch (error) {
     throw new Error(error);
@@ -53,11 +61,14 @@ export async function getCurrentUser() {
       }).then((res) => {
         return res.data;
       }).catch(error => {
-        Alert.alert("Error", error.response.data.message);
+        if (error.code === "ERR_NETWORK")
+          Alert.alert("Error", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+        else
+          Alert.alert("Error", error.response.data.message);
+        return null;
       });
     } catch (error) {
-      console.log(error);
-      return null;
+      throw new Error(error);
     }
   } else { console.log("No token stored."); }
 }

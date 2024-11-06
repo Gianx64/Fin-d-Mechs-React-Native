@@ -8,6 +8,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { CustomButton, FormField } from "../../components";
 import { createAppointment } from "../../api/apiAppointments";
 import { useGlobalContext } from "../../api/GlobalProvider";
+import { styles } from "../../constants";
 
 const CreateAppointment = () => {
   const { user } = useGlobalContext();
@@ -77,15 +78,9 @@ const CreateAppointment = () => {
   const [isFocus, setIsFocus] = useState(false);
 
   return (
-    <SafeAreaView className="bg-primary">
+    <SafeAreaView style={styles.container}>
       <ScrollView>
-        <View
-          className="w-full flex justify-center h-full px-4 my-2"
-          style={{
-            minHeight: Dimensions.get("window").height - 100,
-          }}
-        >
-          <Text className="text-2xl text-white mt-10">
+          <Text style={styles.titleText}>
             Crear cita con mecánico
           </Text>
 
@@ -94,7 +89,6 @@ const CreateAppointment = () => {
             value={user?.correo}
             editable={false}
             readOnly={true}
-            otherStyles="mt-7"
             keyboardType="email-address"
           />
 
@@ -103,18 +97,17 @@ const CreateAppointment = () => {
             value={form.fecha}
             readOnly={true}
             onPress={showDatepicker}
-            otherStyles="mt-7"
           />
-          <View className="mt-2 flex-row">
+          <View style={{flexDirection:'row', justifyContent: "space-between", paddingHorizontal: 16}}>
             <CustomButton
               title="Cambiar fecha"
               handlePress={showDatepicker}
-              containerStyles="w-1/2"
+              containerStyles={{paddingHorizontal: 32}}
             />
             <CustomButton
               title="Cambiar Hora"
               handlePress={showTimepicker}
-              containerStyles="w-1/2"
+              containerStyles={{paddingHorizontal: 32}}
             />
           </View>
           {showPicker && (
@@ -131,35 +124,30 @@ const CreateAppointment = () => {
             title="Ciudad"
             value={form.ciudad}
             handleChangeText={(e) => setForm({ ...form, ciudad: e })}
-            otherStyles="mt-7"
           />
 
           <FormField
             title="Dirección"
             value={form.direccion}
             handleChangeText={(e) => setForm({ ...form, direccion: e })}
-            otherStyles="mt-7"
           />
 
           <FormField
             title="Marca de vehículo"
             value={form.auto_marca}
             handleChangeText={(e) => setForm({ ...form, auto_marca: e })}
-            otherStyles="mt-7"
           />
 
           <FormField
             title="Modelo de vehículo"
             value={form.auto_modelo}
             handleChangeText={(e) => setForm({ ...form, auto_modelo: e })}
-            otherStyles="mt-7"
           />
 
           <FormField
             title="Descripción del agendamiento"
             value={form.detalles}
             handleChangeText={(e) => setForm({ ...form, detalles: e })}
-            otherStyles="mt-7"
           />
 
           <View className={`space-y-2 mt-7`}>
@@ -189,23 +177,20 @@ const CreateAppointment = () => {
             title="Taller"
             value={form.id_taller}
             handleChangeText={(e) => setForm({ ...form, id_taller: e })}
-            otherStyles="mt-7"
           />}
 
           <FormField
             title="Mecánico"
             value={form.mech}
             handleChangeText={(e) => setForm({ ...form, mech: e })}
-            otherStyles="mt-7"
+            otherStyles={{paddingBottom: 50}}
           />
 
           <CustomButton
             title="Agendar"
             handlePress={submit}
-            containerStyles="mt-7"
             isLoading={isSubmitting}
           />
-        </View>
       </ScrollView>
     </SafeAreaView>
   )

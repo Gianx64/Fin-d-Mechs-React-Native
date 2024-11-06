@@ -34,56 +34,50 @@ const Home = () => {
   }
 
   return (
-    <SafeAreaView className="bg-primary h-full">
-      <View className="flex my-6 px-4">
-        <View className="flex justify-between items-start flex-row">
-          <View>
-            <Text className="font-medium text-sm text-gray-100">
-              Bienvenid@ de vuelta
-            </Text>
-            <Text className="text-2xl font-semibold text-white">
-              {user?.usuario}
-            </Text>
-          </View>
-          <View>
-            <Image
-              source={images.logo}
-              style={styles.tinyLogo}
-              resizeMode="contain"
-            />
-          </View>
+    <SafeAreaView style={styles.container}>
+      <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+        <View>
+          <Text style={styles.normalText}>
+            Bienvenid@ de vuelta
+          </Text>
+          <Text style={{color: "white", fontSize: 16}}>
+            {user?.usuario}
+          </Text>
+        </View>
+        <View>
+          <Image
+            source={images.logo}
+            style={[styles.tinyLogo, {alignSelf: "flex-end"}]}
+            resizeMode="contain"
+          />
         </View>
       </View>
-      <ScrollView horizontal>
-        <View>
-          <Text className="font-medium text-sm text-gray-100" style={{width: 150}}>Fecha y hora</Text>
-          <Text className="font-medium text-sm text-gray-100" style={{width: 150}}>Mecánico</Text>
-          <Text className="font-medium text-sm text-gray-100" style={{width: 150}}></Text>
-        </View>
-        <FlatList
-          data = {appointments}
-          keyExtractor={(item) => item.id}
-          renderItem={({item}) => (
-            <View className="flex-col pt-5">
-              <Text className="font-medium text-sm text-gray-100" style={{width: 150}}>{item.fecha.split(".")[0].split("T")[0]} {item.fecha.split(".")[0].split("T")[1]}</Text>
-              <Text className="font-medium text-sm text-gray-100" style={{width: 150}}>{item.mech_usuario} ({item.mech_correo})</Text>
-              <Link
-                className="font-medium text-sm text-gray-100"
-                style={{width: 150}}
-                href={{
-                  pathname: "/edit",
-                  params: item,
-                }}
-              >
-                Ver detalles
-              </Link>
-            </View>
-          )}
-          ListEmptyComponent={() => (
-            <Text className="font-medium text-sm text-gray-100">¡Agende una cita con el botón "Crear" en la barra inferior!</Text>
-          )}
-        />
-      </ScrollView>
+      {appointments && 
+        <ScrollView horizontal>
+          <View>
+            <Text style={[styles.normalText, {width: 150}]}>Fecha y hora</Text>
+            <Text style={[styles.normalText, {width: 150}]}>Mecánico</Text>
+            <Text style={[styles.normalText, {width: 150}]}></Text>
+          </View>
+          <FlatList
+            data = {appointments}
+            keyExtractor={(item) => item.id}
+            renderItem={({item}) => (
+              <View>
+                <Text style={[styles.normalText, {width: 150}]}>{item.fecha.split(".")[0].split("T")[0]} {item.fecha.split(".")[0].split("T")[1]}</Text>
+                <Text style={[styles.normalText, {width: 150}]}>{item.mech_usuario} ({item.mech_correo})</Text>
+                <Link
+                  style={[styles.normalText, {width: 150}]}
+                  href={{ pathname: "/edit", params: item, }}
+                >
+                  Ver detalles
+                </Link>
+              </View>
+            )}
+          />
+        </ScrollView>
+      }
+      {!appointments && <Text style={styles.normalText}>¡Agende una cita con el botón "Crear" en la barra inferior!</Text>}
     </SafeAreaView>
   );
 };

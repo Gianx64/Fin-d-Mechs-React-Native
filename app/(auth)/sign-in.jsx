@@ -38,7 +38,7 @@ const SignIn = () => {
   };
 
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView style={styles.container}>
       <ScrollView>
         <View
           className="w-full flex justify-center h-full px-4 my-2"
@@ -48,11 +48,11 @@ const SignIn = () => {
         >
           <Image
             source={images.logo}
-            style={styles.tinyLogo}
+            style={styles.welcomeLogo}
             resizeMode="contain"
           />
 
-          <Text className="text-2xl font-semibold text-white mt-10">
+          <Text style={styles.titleText}>
             Iniciar sesión en Fin-d-Mechs
           </Text>
 
@@ -69,24 +69,23 @@ const SignIn = () => {
             title="Contraseña"
             value={form.clave}
             handleChangeText={(e) => setForm({ ...form, clave: e })}
-            otherStyles="mt-7"
+            otherStyles={{paddingBottom: 50}}
             maxLength={64}
           />
 
           <CustomButton
             title="Iniciar Sesión"
             handlePress={submit}
-            containerStyles="mt-7"
             isLoading={isSubmitting}
           />
 
-          <View className="flex justify-center pt-5 flex-row gap-2">
-            <Text className="text-lg text-gray-100">
-              ¿No tiene una cuenta?
+          <View style={{flexDirection:'row', justifyContent:'center', paddingTop: 32}}>
+            <Text style={styles.normalText}>
+              ¿No tiene una cuenta?{"\t\t\t\t"}
             </Text>
             <Link
               href="/sign-up"
-              className="text-lg font-semibold text-secondary"
+              style={styles.linkText}
             >
               Registrarse
             </Link>

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image, Dimensions } from "react-native";
 
-import { icons } from "../constants";
+import { icons, styles } from "../constants";
 
 const FormField = ({
   title,
@@ -15,16 +15,16 @@ const FormField = ({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <View className={`space-y-2 ${otherStyles}`}>
-      <Text className="text-base text-gray-100 font-medium">{title}</Text>
+    <View style={[{}, otherStyles]}>
+      <Text style={styles.subtitleText}>{title}</Text>
 
-      <View className="w-full h-16 px-4 bg-black-100 rounded-2xl border-2 border-black-200 focus:border-secondary flex flex-row items-center">
+      <View style={{flexDirection:'row', justifyContent:'center'}}>
         <TextInput
-          className="flex-1 text-white font-semibold text-base"
+          style={[styles.formField, title === "Contraseña" ? {width: Dimensions.get("screen").width-110} : {width: Dimensions.get("screen").width-50}]}
           readOnly={readOnly}
           value={value}
           placeholder={placeholder}
-          placeholderTextColor="#7B7B8B"
+          placeholderTextColor="white"
           onChangeText={handleChangeText}
           secureTextEntry={title === "Contraseña" && !showPassword}
           {...props}
@@ -34,7 +34,6 @@ const FormField = ({
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Image
               source={!showPassword ? icons.eye : icons.eyeHide}
-              className="w-6 h-6"
               resizeMode="contain"
             />
           </TouchableOpacity>

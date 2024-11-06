@@ -3,7 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { Image, Text, View } from "react-native";
 
 import { Loader } from "../../components";
-import { icons, styles } from "../../constants";
+import { colors, icons, styles } from "../../constants";
 import { useGlobalContext } from "../../api/GlobalProvider";
 
 const TabIcon = ({ icon, color, name, focused }) => {
@@ -13,11 +13,11 @@ const TabIcon = ({ icon, color, name, focused }) => {
         source={icon}
         resizeMode="contain"
         tintColor={color}
-        className="w-6 h-6"
+        style={{height: 50}}
       />
       <Text
         className={`text-xs`}
-        style={{ color: color }}
+        style={{color: color, textAlign: "center"}}
       >
         {name}
       </Text>
@@ -34,11 +34,11 @@ const TabLayout = () => {
     <>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: styles.colors.secondary.DEFAULT,
-          tabBarInactiveTintColor: "#CDCDE0",
+          tabBarActiveTintColor: colors.primary.DEFAULT,
+          tabBarInactiveTintColor: colors.gray,
           tabBarShowLabel: false,
           tabBarStyle: {
-            backgroundColor: "#161622",
+            backgroundColor: colors.secondary,
             borderTopWidth: 1,
             borderTopColor: "#232533",
             height: 84,
