@@ -52,32 +52,35 @@ const Home = () => {
           />
         </View>
       </View>
-      {appointments && 
-        <ScrollView horizontal>
-          <View>
-            <Text style={[styles.normalText, {width: 150}]}>Fecha y hora</Text>
-            <Text style={[styles.normalText, {width: 150}]}>Mecánico</Text>
-            <Text style={[styles.normalText, {width: 150}]}></Text>
-          </View>
-          <FlatList
-            data = {appointments}
-            keyExtractor={(item) => item.id}
-            renderItem={({item}) => (
-              <View>
-                <Text style={[styles.normalText, {width: 150}]}>{item.fecha.split(".")[0].split("T")[0]} {item.fecha.split(".")[0].split("T")[1]}</Text>
-                <Text style={[styles.normalText, {width: 150}]}>{item.mech_usuario} ({item.mech_correo})</Text>
-                <Link
-                  style={[styles.normalText, {width: 150}]}
-                  href={{ pathname: "/edit", params: item, }}
-                >
-                  Ver detalles
-                </Link>
-              </View>
-            )}
-          />
-        </ScrollView>
-      }
-      {!appointments && <Text style={styles.normalText}>¡Agende una cita con el botón "Crear" en la barra inferior!</Text>}
+      <ScrollView>
+        {appointments ?
+          <ScrollView horizontal>
+            <View>
+              <Text style={[styles.normalText, {width: 150}]}>Fecha y hora</Text>
+              <Text style={[styles.normalText, {width: 150}]}>Mecánico</Text>
+              <Text style={[styles.normalText, {width: 150}]}></Text>
+            </View>
+            <FlatList
+              data = {appointments}
+              keyExtractor={(item) => item.id}
+              renderItem={({item}) => (
+                <View>
+                  <Text style={[styles.normalText, {width: 150}]}>{item.fecha.split(".")[0].split("T")[0]} {item.fecha.split(".")[0].split("T")[1]}</Text>
+                  <Text style={[styles.normalText, {width: 150}]}>{item.mech_usuario} ({item.mech_correo})</Text>
+                  <Link
+                    style={[styles.normalText, {width: 150}]}
+                    href={{ pathname: "/edit", params: item, }}
+                  >
+                    Ver detalles
+                  </Link>
+                </View>
+              )}
+            />
+          </ScrollView>
+          :
+          <Text style={styles.normalText}>¡Agende una cita con el botón "Crear" en la barra inferior!</Text>
+        }
+      </ScrollView>
     </SafeAreaView>
   );
 };

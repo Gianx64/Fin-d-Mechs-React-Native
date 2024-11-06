@@ -1,8 +1,9 @@
 import { Redirect, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { ActivityIndicator, Platform } from "react-native";
 
-import { Loader } from "../../components";
 import { useGlobalContext } from "../../api/GlobalProvider";
+import { colors, styles } from "../../constants";
 
 const AuthLayout = () => {
   const { loading, isLogged } = useGlobalContext();
@@ -26,8 +27,13 @@ const AuthLayout = () => {
         />
       </Stack>
 
-      <Loader isLoading={loading} />
-      <StatusBar backgroundColor="#161622" style="light" />
+      {loading && <ActivityIndicator
+        animating={loading}
+        color="#fff"
+        size={Platform.OS === "ios" ? "large" : 50}
+        style={styles.loader}
+      />}
+      <StatusBar backgroundColor={colors.secondary} style="light" />
     </>
   );
 };

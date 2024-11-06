@@ -1,9 +1,8 @@
 import { router } from "expo-router";
-import { View, Image, FlatList, TouchableOpacity } from "react-native";
+import { View, Image, FlatList, TouchableOpacity, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { InfoBox } from "../../components";
-import { icons } from "../../constants";
+import { icons, styles } from "../../constants";
 import { secureStoreDelete } from "../../api/apiManager";
 import { useGlobalContext } from "../../api/GlobalProvider";
 
@@ -20,34 +19,31 @@ const Profile = () => {
   };
 
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView style={styles.container}>
       <FlatList
         ListHeaderComponent={() => (
-          <View className="w-full flex justify-center items-center mt-6 mb-12 px-4">
-            <TouchableOpacity
-              onPress={logout}
-              className="flex w-full items-end mb-10"
-            >
-              <Image
-                source={icons.logout}
-                resizeMode="contain"
-                className="w-6 h-6"
-              />
-            </TouchableOpacity>
-
-            <View className="w-16 h-16 border border-secondary rounded-lg flex justify-center items-center">
-              <Image
-                source={{ uri: user?.avatar }}
-                className="w-[90%] h-[90%] rounded-lg"
-                resizeMode="cover"
-              />
+          <View>
+            <View style={{flexDirection:'row', justifyContent: "flex-end", padding: 16}}>
+              <TouchableOpacity onPress={logout} >
+                <Image
+                  source={icons.logout}
+                  resizeMode="contain"
+                  style={{height: 50, width: 50}}
+                />
+              </TouchableOpacity>
             </View>
-
-            <InfoBox
-              title={user?.usuario}
-              containerStyles="mt-5"
-              titleStyles="text-lg"
-            />
+            <Text style={styles.titleText}>
+              {user?.usuario}
+            </Text>
+            <Text style={styles.titleText}>
+              {user?.celular}
+            </Text>
+            <Text style={styles.titleText}>
+              {user?.correo}
+            </Text>
+            <Text style={styles.titleText}>
+              {user?.rol == "11" ? "Admin" : user?.rol == "10" ? "Mech" : user?.rol == "00" ? "usuario" : ""}
+            </Text>
           </View>
         )}
       />

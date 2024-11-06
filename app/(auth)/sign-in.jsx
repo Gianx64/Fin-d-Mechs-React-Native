@@ -40,12 +40,7 @@ const SignIn = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <View
-          className="w-full flex justify-center h-full px-4 my-2"
-          style={{
-            minHeight: Dimensions.get("window").height - 100,
-          }}
-        >
+        <View style={{justifyContent: "center", height: Dimensions.get("window").height-20}}>
           <Image
             source={images.logo}
             style={styles.welcomeLogo}
@@ -79,9 +74,9 @@ const SignIn = () => {
             isLoading={isSubmitting}
           />
 
-          <View style={{flexDirection:'row', justifyContent:'center', paddingTop: 32}}>
-            <Text style={styles.normalText}>
-              ¿No tiene una cuenta?{"\t\t\t\t"}
+          <View style={{flexDirection: "row", justifyContent: "center", paddingTop: 32}}>
+            <Text style={[styles.normalText, {paddingRight: 32}]}>
+              ¿No tiene una cuenta?
             </Text>
             <Link
               href="/sign-up"

@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import colors from "./colors";
 
 export default StyleSheet.create({
@@ -15,14 +15,15 @@ export default StyleSheet.create({
   },
   welcomeText1: {
     color: "white",
-    fontWeight: 'bold',
     fontSize: 32,
+    fontWeight: 'bold',
+    paddingVertical: 16,
     textAlign: 'center'
   },
   titleText: {
     color: "white",
-    fontSize: 20,
-    paddingTop: 32,
+    fontSize: 22,
+    paddingVertical: 16,
     textAlign: 'center'
   },
   subtitleText: {
@@ -55,14 +56,22 @@ export default StyleSheet.create({
     fontSize: 16,
     paddingVertical: 16
   },
+  loader: {
+    alignSelf: "center",
+    backgroundColor: colors.secondary+"50",
+    height: Dimensions.get("window").height+20,
+    position: "absolute",
+    width: Dimensions.get("window").width
+  },
   formField: {
-    color: "white",
+    color: "black",
     backgroundColor: colors.gray,
     borderRadius: 16,
     borderWidth: 1,
     fontSize: 20,
     height: 50,
-    textAlign: "center"
+    textAlign: "center",
+    textAlignVertical: "center"
   },
   tinyLogo: {
     height: 90,

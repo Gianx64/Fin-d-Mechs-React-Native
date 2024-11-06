@@ -29,7 +29,6 @@ const CreateAppointment = () => {
   const submit = async () => {
     if (form.servicio != "01")
       setForm({ ...form, id_taller: null });
-    console.log("Submitting form:", JSON.stringify(form));
     if (form.fecha === "Ingrese una fecha" ||
       form.ciudad === "" ||
       form.direccion === "" ||
@@ -59,7 +58,7 @@ const CreateAppointment = () => {
   const onChangePicker = (event, selectedDate) => {
     const currentDate = selectedDate;
     setShowPicker(false);
-    setForm({ ...form, date: currentDate.toLocaleString() })
+    setForm({ ...form, fecha: currentDate.toLocaleString() })
     setDate(currentDate);
   };
   const showMode = (currentMode) => {
@@ -150,15 +149,14 @@ const CreateAppointment = () => {
             handleChangeText={(e) => setForm({ ...form, detalles: e })}
           />
 
-          <View className={`space-y-2 mt-7`}>
-            <Text className="text-base text-gray-100 font-medium">Tipo de servicio</Text>
-
-            <View className="w-full h-16 px-4 bg-black-100 rounded-2xl border-2 border-black-200 focus:border-secondary flex">
+          <View>
+            <Text style={styles.subtitleText}>Tipo de servicio</Text>
+            <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
               <Dropdown
-                className="flex-1 text-white font-semibold text-base"
                 data={[ { label: "Cliente lleva a taller", value: "01" }, { label: "Servicio a domicilio", value: "00" }, { label: "Mecánico lleva a taller", value: "10" }]}
                 labelField="label"
-                selectedTextStyle={{ color: 'white' }}
+                placeholderStyle={styles.formField}
+                selectedTextStyle={styles.formField}
                 valueField="value"
                 value={dropdownValue}
                 onFocus={() => setIsFocus(true)}

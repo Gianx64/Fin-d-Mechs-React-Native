@@ -1,8 +1,7 @@
 import { Redirect, Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Image, Text, View } from "react-native";
+import { ActivityIndicator, Image, Platform, Text, View } from "react-native";
 
-import { Loader } from "../../components";
 import { colors, icons, styles } from "../../constants";
 import { useGlobalContext } from "../../api/GlobalProvider";
 
@@ -92,8 +91,13 @@ const TabLayout = () => {
         />
       </Tabs>
 
-      <Loader isLoading={loading} />
-      <StatusBar backgroundColor="#161622" style="light" />
+      {loading && <ActivityIndicator
+        animating={loading}
+        color="#fff"
+        size={Platform.OS === "ios" ? "large" : 50}
+        style={styles.loader}
+      />}
+      <StatusBar backgroundColor={colors.secondary} style="light" />
     </>
   );
 };
