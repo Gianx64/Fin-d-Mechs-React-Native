@@ -1,17 +1,17 @@
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, Dimensions, Alert } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Dropdown } from 'react-native-element-dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { CustomButton, FormField } from "../../components";
-import { createAppointment } from "../../api/apiAppointments";
+import { createAppointment, getFormData } from "../../api/apiAppointments";
 import { useGlobalContext } from "../../api/GlobalProvider";
 import { styles } from "../../constants";
 
 const CreateAppointment = () => {
-  const { user } = useGlobalContext();
+  const { user, setLoading } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     usuario: user?.id,
@@ -21,28 +21,39 @@ const CreateAppointment = () => {
     auto_marca: "",
     auto_modelo: "",
     detalles: "",
+    mech: null,
     servicio: "01",
-    id_taller: null,
-    mech: ""
+    id_taller: null
   });
 
   const submit = async () => {
-    if (form.servicio != "01")
-      setForm({ ...form, id_taller: null });
     if (form.fecha === "Ingrese una fecha" ||
       form.ciudad === "" ||
       form.direccion === "" ||
       form.auto_marca === "" ||
       form.auto_modelo === "" ||
       form.detalles === "" ||
-      (form.servicio === "01" && form.id_taller == null) ||
-      form.mech === "" ) {
+      (form.servicio === "01" && form.id_taller == null)) {
       Alert.alert("Error", "Por favor llene todos los campos");
     } else {
       setSubmitting(true);
       try {
-        await createAppointment(form);
-        router.replace("/home");
+        const result = await createAppointment(form);
+        if (result) {
+          router.replace("/home");
+          setForm({
+            usuario: user?.id,
+            fecha: "Ingrese una fecha",
+            ciudad: "",
+            direccion: "",
+            auto_marca: "",
+            auto_modelo: "",
+            detalles: "",
+            mech: null,
+            servicio: "01",
+            id_taller: null
+          });
+        }
       } catch (error) {
         Alert.alert("Error de cliente", error.message);
       } finally {
@@ -75,6 +86,20 @@ const CreateAppointment = () => {
   //Dropdown de servicio
   const [dropdownValue, setDropdownValue] = useState(0);
   const [isFocus, setIsFocus] = useState(false);
+
+  //Dropdown de mech
+  const [dropdownMech, setDropdownMech] = useState(0);
+  const [isMechFocus, setIsMechFocus] = useState(false);
+  const [mechList, setMechList] = useState([{id: 0, usuario: "Primero que acepte.", correo: ""}]);
+  async function fetchFormData() {
+    setLoading(true);
+    const result = await getFormData();
+    setMechList(mechList.concat(result))
+    setLoading(false);
+  }
+  useEffect(() => {
+    fetchFormData()
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -164,6 +189,8 @@ const CreateAppointment = () => {
                 placeholder={!isFocus ? 'Seleccionar item' : '...'}
                 onChange={(e) => {
                   setDropdownValue(e.value);
+                  if (e.value != "01")
+                    setForm({ ...form, id_taller: null });
                   setForm({ ...form, servicio: e.value });
                   setIsFocus(false);
                 }}
@@ -171,18 +198,36 @@ const CreateAppointment = () => {
             </View>
           </View>
 
-          { dropdownValue === "01" && <FormField
+          { dropdownValue === "01" && dropdownMech != 0 && <FormField
             title="Taller"
             value={form.id_taller}
             handleChangeText={(e) => setForm({ ...form, id_taller: e })}
           />}
 
-          <FormField
-            title="Mecánico"
-            value={form.mech}
-            handleChangeText={(e) => setForm({ ...form, mech: e })}
-            otherStyles={{paddingBottom: 50}}
-          />
+          <View style={{paddingBottom: 50}}>
+            <Text style={styles.subtitleText}>Mecánico</Text>
+            <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
+              <Dropdown
+                data={mechList}
+                labelField="usuario"
+                placeholderStyle={styles.formField}
+                selectedTextStyle={styles.formField}
+                valueField="id"
+                value={dropdownMech}
+                onFocus={() => setIsMechFocus(true)}
+                onBlur={() => setIsMechFocus(false)}
+                placeholder={!isMechFocus ? 'Seleccionar item' : '...'}
+                onChange={(e) => {
+                  setDropdownMech(e.id);
+                  if (e.id === 0)
+                    setForm({ ...form, mech: null });
+                  else
+                    setForm({ ...form, mech: e.id });
+                  setIsMechFocus(false);
+                }}
+              />
+            </View>
+          </View>
 
           <CustomButton
             title="Agendar"

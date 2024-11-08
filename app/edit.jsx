@@ -1,29 +1,31 @@
-import { useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, Dimensions, Alert } from 'react-native'
 import { Dropdown } from 'react-native-element-dropdown';
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { CustomButton, FormField } from "../components";
-import { modifyAppointment, updateAppointment } from "../api/apiAppointments";
+import { getFormData, modifyAppointment, updateAppointment } from "../api/apiAppointments";
 import { useGlobalContext } from "../api/GlobalProvider";
+import { styles } from "../constants";
 
 const EditAppointment = ({ route }) => {
-  const { user } = useGlobalContext();
+  const { user, setLoading } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const params = useLocalSearchParams();
   const [form, setForm] = useState({
-    usuario: user?.correo,
+    id: params.id,
+    usuario: user?.id,
     fecha: `${params.fecha.split('.')[0].split('T')[0]} ${params.fecha.split('.')[0].split('T')[1]}`,
     ciudad: params.ciudad,
     direccion: params.direccion,
     auto_marca: params.auto_marca,
     auto_modelo: params.auto_modelo,
     detalles: params.detalles,
+    mech: params.mech || null,
     servicio: params.servicio,
-    id_taller: params.id_taller || null,
-    mech: params.mech
+    id_taller: params.id_taller || null
   });
 
   const submit = async () => {
@@ -33,13 +35,14 @@ const EditAppointment = ({ route }) => {
       form.auto_marca === "" ||
       form.auto_modelo === "" ||
       form.detalles === "" ||
-      (form.servicio === "01" && form.id_taller == null) ||
-      form.mech === "") {
+      (form.servicio === "01" && form.id_taller == null)) {
       Alert.alert("Error", "Por favor llene todos los campos");
     } else {
       setSubmitting(true);
       try {
-        await modifyAppointment(form);
+        const result = await modifyAppointment(form);
+        if (result)
+          router.back();
       } catch (error) {
         Alert.alert("Error", error.message);
       } finally {
@@ -82,13 +85,13 @@ const EditAppointment = ({ route }) => {
   };
 
   //Picker de fechas y hora
-  const [date, setDate] = useState(new Date(params.fecha));
+  const [date, setDate] = useState(new Date(form.fecha));
   const [mode, setPickerMode] = useState('date');
   const [showPicker, setShowPicker] = useState(false);
   const onChangePicker = (event, selectedDate) => {
     const currentDate = selectedDate;
     setShowPicker(false);
-    setForm({ ...form, date: currentDate.toLocaleString() })
+    setForm({ ...form, fecha: currentDate.toLocaleString() })
     setDate(currentDate);
   };
   const showMode = (currentMode) => {
@@ -106,9 +109,23 @@ const EditAppointment = ({ route }) => {
   const [dropdownValue, setDropdownValue] = useState(params.servicio);
   const [isFocus, setIsFocus] = useState(false);
 
+  //Dropdown de mech
+  const [dropdownMech, setDropdownMech] = useState(0);
+  const [isMechFocus, setIsMechFocus] = useState(false);
+  const [mechList, setMechList] = useState([{id: 0, usuario: "Primero que acepte.", correo: ""}]);
+  async function fetchFormData() {
+    setLoading(true);
+    const result = await getFormData();
+    setMechList(mechList.concat(result))
+    setLoading(false);
+  }
+  useEffect(() => {
+    fetchFormData()
+  }, []);
+
   if (user.mech)
     return (
-      <SafeAreaView className="bg-primary h-full">
+      <SafeAreaView style={styles.container}>
         <ScrollView>
           <View
             className="w-full flex justify-center px-4 my-2"
@@ -116,39 +133,39 @@ const EditAppointment = ({ route }) => {
               minHeight: Dimensions.get("window").height - 100,
             }}
           >
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.titleText}>
               Detalles de cita con mecánico
             </Text>
-            <Text className="text-2xl text-white mt-10">
-              {form.usuario}
+            <Text style={styles.subtitleText}>
+              {user?.correo}
             </Text>
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.fecha}
             </Text>
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.ciudad}
             </Text>
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.direccion}
             </Text>
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.auto_marca}
             </Text>
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.auto_modelo}
             </Text>
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.detalles}
             </Text>
-            {form.servicio === "01" && <Text className="text-2xl text-white mt-10">Cliente lleva a taller</Text>}
-            {form.servicio === "00" && <Text className="text-2xl text-white mt-10">Atención a domicilio</Text>}
-            {form.servicio === "10" && <Text className="text-2xl text-white mt-10">Mecánico lleva a taller</Text>}
+            {form.servicio === "01" && <Text style={styles.subtitleText}>Cliente lleva a taller</Text>}
+            {form.servicio === "00" && <Text style={styles.subtitleText}>Atención a domicilio</Text>}
+            {form.servicio === "10" && <Text style={styles.subtitleText}>Mecánico lleva a taller</Text>}
             {form.id_taller &&
-              <Text className="text-2xl text-white mt-10">
+              <Text style={styles.subtitleText}>
                 {form.id_taller}
               </Text>
             }
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.mech}
             </Text>
 
@@ -156,7 +173,6 @@ const EditAppointment = ({ route }) => {
               <CustomButton
                 title="Confirmar"
                 handlePress={confirm}
-                containerStyles="mt-7"
                 isLoading={isSubmitting}
               />
             }
@@ -166,7 +182,7 @@ const EditAppointment = ({ route }) => {
     )
   else if (params.confirmed == "true")
     return (
-      <SafeAreaView className="bg-primary h-full">
+      <SafeAreaView style={styles.container}>
         <ScrollView>
           <View
             className="w-full flex justify-center px-4 my-2"
@@ -174,52 +190,50 @@ const EditAppointment = ({ route }) => {
               minHeight: Dimensions.get("window").height - 100,
             }}
           >
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.titleText}>
               Detalles de cita con mecánico
             </Text>
-            <Text className="text-2xl text-white mt-10">
-              {form.usuario}
+            <Text style={styles.subtitleText}>
+              {user?.correo}
             </Text>
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.fecha}
             </Text>
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.ciudad}
             </Text>
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.direccion}
             </Text>
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.auto_marca}
             </Text>
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.auto_modelo}
             </Text>
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.detalles}
             </Text>
-            {form.servicio === "01" && <Text className="text-2xl text-white mt-10">Cliente lleva a taller</Text>}
-            {form.servicio === "00" && <Text className="text-2xl text-white mt-10">Atención a domicilio</Text>}
-            {form.servicio === "10" && <Text className="text-2xl text-white mt-10">Mecánico lleva a taller</Text>}
+            {form.servicio === "01" && <Text style={styles.subtitleText}>Cliente lleva a taller</Text>}
+            {form.servicio === "00" && <Text style={styles.subtitleText}>Atención a domicilio</Text>}
+            {form.servicio === "10" && <Text style={styles.subtitleText}>Mecánico lleva a taller</Text>}
             {form.id_taller &&
-              <Text className="text-2xl text-white mt-10">
+              <Text style={styles.subtitleText}>
                 {form.id_taller}
               </Text>
             }
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               {form.mech}
             </Text>
 
             <CustomButton
               title="Cancelar"
               handlePress={cancel}
-              containerStyles="mt-7"
               isLoading={isSubmitting}
             />
             <CustomButton
               title="Marcar como completado"
               handlePress={complete}
-              containerStyles="mt-7"
               isLoading={isSubmitting}
             />
           </View>
@@ -228,7 +242,7 @@ const EditAppointment = ({ route }) => {
     )
   else
     return (
-      <SafeAreaView className="bg-primary h-full">
+      <SafeAreaView style={styles.container}>
         <ScrollView>
           <View
             className="w-full flex justify-center px-4 my-2"
@@ -236,15 +250,14 @@ const EditAppointment = ({ route }) => {
               minHeight: Dimensions.get("window").height - 100,
             }}
           >
-            <Text className="text-2xl text-white mt-10">
+            <Text style={styles.subtitleText}>
               Editar cita con mecánico
             </Text>
 
             <FormField
               title="Correo de usuario"
-              value={form.usuario}
+              value={user?.correo}
               readOnly={true}
-              otherStyles="mt-7"
               keyboardType="email-address"
             />
 
@@ -253,18 +266,17 @@ const EditAppointment = ({ route }) => {
               value={form.fecha}
               readOnly={true}
               onPress={showDatepicker}
-              otherStyles="mt-7"
             />
-            <View className="mt-2 flex-row">
+            <View style={{flexDirection:'row', justifyContent: "space-between", paddingHorizontal: 16}}>
               <CustomButton
                 title="Cambiar fecha"
                 handlePress={showDatepicker}
-                containerStyles="w-1/2"
+                containerStyles={{paddingHorizontal: 32}}
               />
               <CustomButton
                 title="Cambiar Hora"
                 handlePress={showTimepicker}
-                containerStyles="w-1/2"
+                containerStyles={{paddingHorizontal: 32}}
               />
             </View>
             {showPicker && (
@@ -281,46 +293,40 @@ const EditAppointment = ({ route }) => {
               title="Ciudad"
               value={form.ciudad}
               handleChangeText={(e) => setForm({ ...form, ciudad: e })}
-              otherStyles="mt-7"
             />
 
             <FormField
               title="Dirección"
               value={form.direccion}
               handleChangeText={(e) => setForm({ ...form, direccion: e })}
-              otherStyles="mt-7"
             />
 
             <FormField
               title="Marca de vehículo"
               value={form.auto_marca}
               handleChangeText={(e) => setForm({ ...form, auto_marca: e })}
-              otherStyles="mt-7"
             />
 
             <FormField
               title="Modelo de vehículo"
               value={form.auto_modelo}
               handleChangeText={(e) => setForm({ ...form, auto_modelo: e })}
-              otherStyles="mt-7"
             />
 
             <FormField
               title="Descripción del agendamiento"
               value={form.detalles}
               handleChangeText={(e) => setForm({ ...form, detalles: e })}
-              otherStyles="mt-7"
             />
 
-            <View className={`space-y-2 mt-7`}>
-              <Text className="text-base text-gray-100 font-medium">Tipo de servicio</Text>
-
-              <View className="w-full h-16 px-4 bg-black-100 rounded-2xl border-2 border-black-200 focus:border-secondary flex">
+            <View>
+              <Text style={styles.subtitleText}>Tipo de servicio</Text>
+              <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
                 <Dropdown
-                  className="flex-1 text-white font-semibold text-base"
-                  data={[{ label: "Cliente lleva a taller", value: "01" }, { label: "Servicio a domicilio", value: "00" }, { label: "Mecánico lleva a taller", value: "10" }]}
+                  data={[ { label: "Cliente lleva a taller", value: "01" }, { label: "Servicio a domicilio", value: "00" }, { label: "Mecánico lleva a taller", value: "10" }]}
                   labelField="label"
-                  selectedTextStyle={{ color: 'white' }}
+                  placeholderStyle={styles.formField}
+                  selectedTextStyle={styles.formField}
                   valueField="value"
                   value={dropdownValue}
                   onFocus={() => setIsFocus(true)}
@@ -328,6 +334,8 @@ const EditAppointment = ({ route }) => {
                   placeholder={!isFocus ? 'Seleccionar item' : '...'}
                   onChange={(e) => {
                     setDropdownValue(e.value);
+                    if (e.value != "01")
+                      setForm({ ...form, id_taller: null });
                     setForm({ ...form, servicio: e.value });
                     setIsFocus(false);
                   }}
@@ -339,20 +347,36 @@ const EditAppointment = ({ route }) => {
               title="Taller"
               value={form.id_taller}
               handleChangeText={(e) => setForm({ ...form, id_taller: e })}
-              otherStyles="mt-7"
             />}
 
-            <FormField
-              title="Mecánico"
-              value={form.mech}
-              handleChangeText={(e) => setForm({ ...form, mech: e })}
-              otherStyles="mt-7"
-            />
+            <View style={{paddingBottom: 50}}>
+              <Text style={styles.subtitleText}>Mecánico</Text>
+              <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
+                <Dropdown
+                  data={mechList}
+                  labelField="usuario"
+                  placeholderStyle={styles.formField}
+                  selectedTextStyle={styles.formField}
+                  valueField="id"
+                  value={dropdownMech}
+                  onFocus={() => setIsMechFocus(true)}
+                  onBlur={() => setIsMechFocus(false)}
+                  placeholder={!isMechFocus ? 'Seleccionar item' : '...'}
+                  onChange={(e) => {
+                    setDropdownMech(e.id);
+                    if (e.id === 0)
+                      setForm({ ...form, mech: null });
+                    else
+                      setForm({ ...form, mech: e.id });
+                    setIsMechFocus(false);
+                  }}
+                />
+              </View>
+            </View>
 
             <CustomButton
               title="Actualizar"
               handlePress={submit}
-              containerStyles="mt-7"
               isLoading={isSubmitting}
             />
           </View>
