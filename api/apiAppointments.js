@@ -2,6 +2,33 @@ import { Alert } from "react-native";
 
 import { apiManager, secureStoreGet } from "./apiManager";
 
+// Get Appointments Form Data
+export const getFormData = async () => {
+  const token = await secureStoreGet("Token");
+  try {
+    const result = await apiManager.get('/auth/formdata', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    }).then((res) => {
+      return res.data;
+    }).catch(error => {
+      if (error.code === "ERR_NETWORK")
+        Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+      else
+        Alert.alert("Error de servidor", error.response.data.message);
+      return null;
+    });
+
+    if (!result) throw Error;
+    
+    return result.data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
 // Register Appointment
 export async function createAppointment(appointment) {
   const token = await secureStoreGet("Token");
@@ -15,9 +42,9 @@ export async function createAppointment(appointment) {
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
-        Alert.alert("Error", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+        Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message);
       return null;
     });
 
@@ -34,19 +61,17 @@ export const getAppointments = async () => {
   try {
     const result = await apiManager.get('/appointments', {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       },
     }).then((res) => {
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
-        Alert.alert("Error", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+        Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message);
       return null;
     });
-
     if (!result) throw Error;
     
     return result.data;
@@ -68,9 +93,9 @@ export const getAppointment = async (appointmentID) => {
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
-        Alert.alert("Error", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+        Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message);
       return null;
     });
 
@@ -78,7 +103,6 @@ export const getAppointment = async (appointmentID) => {
 
     return result.data;
   } catch (error) {
-    console.log("Error loading appointment id: "+appointmentID);
     console.log(error);
     return null;
   }
@@ -88,7 +112,7 @@ export const getAppointment = async (appointmentID) => {
 export const modifyAppointment = async (appointment) => {
   const token = await secureStoreGet("Token");
   try {
-    const result = await apiManager.post(`/appointments/${appointment.id}/0`, appointment, {
+    const result = await apiManager.patch(`/appointments/${appointment.id}/0`, appointment, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -97,15 +121,16 @@ export const modifyAppointment = async (appointment) => {
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
-        Alert.alert("Error", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+        Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message);
       return null;
     });
 
     return result.data;
   } catch (error) {
-    throw new Error(error);
+    console.log(error);
+    return null;
   }
 }
 
@@ -113,7 +138,7 @@ export const modifyAppointment = async (appointment) => {
 export const updateAppointment = async (id, action) => {
   const token = await secureStoreGet("Token");
   try {
-    const result = await apiManager.post(`/appointments/${id}/${action}`, {
+    const result = await apiManager.patch(`/appointments/${id}/${action}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -122,14 +147,15 @@ export const updateAppointment = async (id, action) => {
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
-        Alert.alert("Error", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+        Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message);
       return null;
     });
 
     return result.data;
   } catch (error) {
-    throw new Error(error);
+    console.log(error);
+    return null;
   }
 }
