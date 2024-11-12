@@ -293,30 +293,35 @@ const EditAppointment = ({ route }) => {
               title="Ciudad"
               value={form.ciudad}
               handleChangeText={(e) => setForm({ ...form, ciudad: e })}
+              maxLength={32}
             />
 
             <FormField
               title="Dirección"
               value={form.direccion}
               handleChangeText={(e) => setForm({ ...form, direccion: e })}
+              maxLength={64}
             />
 
             <FormField
               title="Marca de vehículo"
               value={form.auto_marca}
               handleChangeText={(e) => setForm({ ...form, auto_marca: e })}
+              maxLength={16}
             />
 
             <FormField
               title="Modelo de vehículo"
               value={form.auto_modelo}
               handleChangeText={(e) => setForm({ ...form, auto_modelo: e })}
+              maxLength={32}
             />
 
             <FormField
               title="Descripción del agendamiento"
               value={form.detalles}
               handleChangeText={(e) => setForm({ ...form, detalles: e })}
+              maxLength={128}
             />
 
             <View>

@@ -33,7 +33,7 @@ const Profile = () => {
               </TouchableOpacity>
             </View>
             <Text style={styles.titleText}>
-              {user?.usuario}
+              {user?.nombre}
             </Text>
             <Text style={styles.titleText}>
               {user?.celular}
@@ -42,7 +42,7 @@ const Profile = () => {
               {user?.correo}
             </Text>
             <Text style={styles.titleText}>
-              {user?.rol == "11" ? "Admin" : user?.rol == "10" ? "Mech" : user?.rol == "00" ? "usuario" : ""}
+              {user?.rol == "11" ? "Admin" : user?.rol == "10" ? "Mech verificado" : user?.rol == "00" ? "Usuario" : user?.rol == "01" ? "Mech no verificado" : ""}
             </Text>
           </View>
         )}

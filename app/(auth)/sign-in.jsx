@@ -24,8 +24,8 @@ const SignIn = () => {
       try {
         let result = await signIn(form.correo, form.clave);
         if (result) {
-          delete result.data["token"];
-          setUser(result.data);
+          delete result["token"];
+          setUser(result);
           setIsLogged(true);
           router.replace("/home");
         }

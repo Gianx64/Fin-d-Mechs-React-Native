@@ -6,29 +6,29 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomButton, FormField } from "../../components";
 import { colors, images, styles } from "../../constants";
-import { createUser } from "../../api/apiUsers";
+import { signUp } from "../../api/apiUsers";
 import { useGlobalContext } from "../../api/GlobalProvider";
 
 const SignUp = () => {
   const { setUser, setIsLogged } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
-    username: "",
-    phone: "",
-    email: "",
-    password: "",
-    mech: false,
+    nombre: "",
+    celular: "",
+    correo: "",
+    clave: "",
+    rol: false
   });
 
   const submit = async () => {
-    if (form.username === "" || form.email === "" || form.password === "") {
+    if (form.nombre === "" || form.correo === "" || form.clave === "") {
       Alert.alert("Error", "Por favor llene todos los campos");
     } else {
       setSubmitting(true);
       try {
-        const result = await createUser(form.username, form.phone, form.email, form.password, form.mech);
+        const result = await signUp(form);
         if (result) {
-          setUser({ usuario: form.username, celular: form.phone, correo: form.email, ...result.data.user});
+          setUser({id: result.id, nombre: form.nombre, celular: form.celular, correo: form.correo, rol: result.rol});
           setIsLogged(true);
           router.replace("/home");
         }
@@ -56,15 +56,15 @@ const SignUp = () => {
 
           <FormField
             title="Nombre de usuario"
-            value={form.username}
-            handleChangeText={(e) => setForm({ ...form, username: e })}
+            value={form.nombre}
+            handleChangeText={(e) => setForm({ ...form, nombre: e })}
             maxLength={64}
           />
 
           <FormField
             title="Celular"
-            value={form.phone}
-            handleChangeText={(e) => setForm({ ...form, phone: e })}
+            value={form.celular}
+            handleChangeText={(e) => setForm({ ...form, celular: e })}
             inputmode="tel"
             keyboardType="phone-pad"
             maxLength={16}
@@ -72,16 +72,16 @@ const SignUp = () => {
 
           <FormField
             title="Email"
-            value={form.email}
-            handleChangeText={(e) => setForm({ ...form, email: e.toLowerCase() })}
+            value={form.correo}
+            handleChangeText={(e) => setForm({ ...form, correo: e.toLowerCase() })}
             keyboardType="email-address"
             maxLength={64}
           />
 
           <FormField
             title="Contraseña"
-            value={form.password}
-            handleChangeText={(e) => setForm({ ...form, password: e })}
+            value={form.clave}
+            handleChangeText={(e) => setForm({ ...form, clave: e })}
             maxLength={64}
           />
 
@@ -89,11 +89,11 @@ const SignUp = () => {
             <Text style={[styles.normalText, {paddingRight: 16}]}>¿Eres un mecánico?</Text>
             <View style={{alignSelf: "center"}}>
               <CheckBox
-                checked={form.mech}
+                checked={form.rol}
                 color={colors.primary.DEFAULT}
                 borderRadius={10}
                 borderWidth={5}
-                onPress={() => setForm({ ...form, mech: !form.mech })}
+                onPress={() => setForm({ ...form, rol: !form.rol })}
               />
             </View>
           </View>

@@ -38,7 +38,7 @@ export async function createAppointment(appointment) {
         Authorization: `Bearer ${token}`
       }
     }).then((res) => {
-      Alert.alert("Éxito", res.data.message);
+      Alert.alert("Éxito", "Cita creada exitosamente.");
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
@@ -48,7 +48,7 @@ export async function createAppointment(appointment) {
       return null;
     });
 
-    console.log("Appointment created, ID: "+result.data.id);
+    console.log("Appointment created, ID: "+result.id);
     return result;
   } catch (error) {
     throw new Error(error);
@@ -117,7 +117,7 @@ export const modifyAppointment = async (appointment) => {
         Authorization: `Bearer ${token}`
       }
     }).then((res) => {
-      Alert.alert("Éxito", res.data.message);
+      Alert.alert("Éxito", "Cita modificada exitosamente.");
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
@@ -143,7 +143,21 @@ export const updateAppointment = async (id, action) => {
         Authorization: `Bearer ${token}`
       }
     }).then((res) => {
-      Alert.alert("Éxito", res.data.message);
+      switch(action) {
+        case 1:
+          Alert.alert("Éxito", "Cita cancelada exitosamente.");
+          break;
+        case 2:
+          Alert.alert("Éxito", "Cita confirmada exitosamente.");
+          break;
+        case 6:
+        case 7:
+          Alert.alert("Éxito", "Comentario añadido exitosamente.");
+          break;
+        default:
+          Alert.alert("Éxito", "Cita actualizada exitosamente.");
+          break;
+      }
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")

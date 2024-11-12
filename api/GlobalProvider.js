@@ -15,8 +15,7 @@ const GlobalProvider = ({ children }) => {
       const response = await getCurrentUser()
       if (response) {
         setIsLogged(true);
-        setUser(response.data);
-        //console.log("User set: ", JSON.stringify(response.data));
+        setUser(response);
       } else {
         setIsLogged(false);
         setUser(null);

@@ -1,6 +1,6 @@
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, FlatList, Image, Text, View, ScrollView } from "react-native";
+import { Alert, FlatList, Image, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { images, styles } from "../../constants";
@@ -8,26 +8,27 @@ import { getAppointments } from "../../api/apiAppointments";
 import { useGlobalContext } from "../../api/GlobalProvider";
 
 const Home = () => {
-  const { user } = useGlobalContext();
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [appointments, setAppointments] = useState(null);
+  const { user, setLoading } = useGlobalContext();
+  const [refreshing, setRefreshing] = useState(true);
+  const [appointments, setAppointments] = useState([]);
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const response = await getAppointments();
-      setAppointments(response);
+      if (response)
+        setAppointments(response);
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   }
   useEffect(() => {
     fetchData();
   }, []);
-  const onRefresh = async () => {
+  const handleRefresh = async () => {
     setRefreshing(true);
     await fetchData();
     setRefreshing(false);
@@ -41,7 +42,7 @@ const Home = () => {
             Bienvenid@ de vuelta
           </Text>
           <Text style={{color: "white", fontSize: 16}}>
-            {user?.usuario}
+            {user?.nombre}
           </Text>
         </View>
         <View>
@@ -52,35 +53,39 @@ const Home = () => {
           />
         </View>
       </View>
-      <ScrollView>
-        {appointments ?
-          <ScrollView horizontal>
-            <View>
-              <Text style={[styles.normalText, {width: 150}]}>Fecha y hora</Text>
-              <Text style={[styles.normalText, {width: 150}]}>Mecánico</Text>
-              <Text style={[styles.normalText, {width: 150}]}></Text>
+        {appointments.length ?
+          <View>
+            <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+              <Text style={[styles.normalText]}>Fecha y hora</Text>
+              <Text style={[styles.normalText]}>Mecánico</Text>
+              <Text style={[styles.normalText]}>Detalles</Text>
             </View>
             <FlatList
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
               data = {appointments}
               keyExtractor={(item) => item.id}
               renderItem={({item}) => (
-                <View>
-                  <Text style={[styles.normalText, {width: 150}]}>{item.fecha.split(".")[0].split("T")[0]} {item.fecha.split(".")[0].split("T")[1]}</Text>
-                  <Text style={[styles.normalText, {width: 150}]}>{item.mech_usuario} ({item.mech_correo})</Text>
+                <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+                  <Text style={[styles.normalText]}>{item.fecha.split(".")[0].split("T")[0]} {item.fecha.split(".")[0].split("T")[1]}</Text>
+                  <Text style={[styles.normalText]}>{item.mech_usuario ? item.mech_usuario+"("+item.mech_correo+")" : "Sin mech"}</Text>
                   <Link
-                    style={[styles.normalText, {width: 150}]}
-                    href={{ pathname: "/edit", params: item, }}
+                    style={[styles.normalText]}
+                    href={{pathname: "/edit", params: item}}
                   >
-                    Ver detalles
+                    Ver
                   </Link>
                 </View>
               )}
             />
-          </ScrollView>
+          </View>
           :
-          <Text style={styles.normalText}>¡Agende una cita con el botón "Crear" en la barra inferior!</Text>
+          <ScrollView
+            refreshing={refreshing}
+            onRefresh={handleRefresh}>
+            <Text style={styles.normalText}>¡Agende una cita con el botón "Crear" en la barra inferior!</Text>
+          </ScrollView>
         }
-      </ScrollView>
     </SafeAreaView>
   );
 };
