@@ -22,7 +22,7 @@ export const getFormData = async () => {
 
     if (!result) throw Error;
     
-    return result.data;
+    return result;
   } catch (error) {
     console.log(error);
     return null;
@@ -74,7 +74,7 @@ export const getAppointments = async () => {
     });
     if (!result) throw Error;
     
-    return result.data;
+    return result;
   } catch (error) {
     console.log(error);
     return null;
@@ -101,7 +101,7 @@ export const getAppointment = async (appointmentID) => {
 
     if (!result) throw Error;
 
-    return result.data;
+    return result;
   } catch (error) {
     console.log(error);
     return null;
@@ -127,7 +127,7 @@ export const modifyAppointment = async (appointment) => {
       return null;
     });
 
-    return result.data;
+    return result;
   } catch (error) {
     console.log(error);
     return null;
@@ -167,7 +167,7 @@ export const updateAppointment = async (id, action) => {
       return null;
     });
 
-    return result.data;
+    return result;
   } catch (error) {
     console.log(error);
     return null;
