@@ -4,8 +4,7 @@ import colors from "./colors";
 export default StyleSheet.create({
   container: {
     backgroundColor: colors.secondary,
-    flex: 1,
-    padding: 10
+    flex: 1
   },
   welcomeLogo: {
     alignItems: "center",

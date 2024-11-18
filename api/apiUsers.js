@@ -17,7 +17,8 @@ export async function signUp(form) {
       return null;
     });
   } catch (error) {
-    throw new Error(error);
+    console.log("signUp", error);
+    return null;
   }
 }
 
@@ -39,7 +40,8 @@ export async function signIn(email, password) {
       return null;
     });
   } catch (error) {
-    throw new Error(error);
+    console.log("signIn", error);
+    return null;
   }
 }
 
@@ -62,7 +64,8 @@ export async function getCurrentUser() {
         return null;
       });
     } catch (error) {
-      throw new Error(error);
+      console.log("getCurrentUser", error);
+      return null;
     }
   } else { console.log("No token stored."); }
 }

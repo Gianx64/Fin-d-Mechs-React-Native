@@ -16,14 +16,14 @@ const EditAppointment = ({ route }) => {
   const params = useLocalSearchParams();
   const [form, setForm] = useState({
     id: params.id,
-    usuario: user?.id,
+    id_usuario: user?.id,
     fecha: `${params.fecha.split('.')[0].split('T')[0]} ${params.fecha.split('.')[0].split('T')[1]}`,
     ciudad: params.ciudad,
     direccion: params.direccion,
     auto_marca: params.auto_marca,
     auto_modelo: params.auto_modelo,
     detalles: params.detalles,
-    mech: params.mech || null,
+    id_mech: params.id_mech || null,
     servicio: params.servicio,
     id_taller: params.id_taller || null
   });
@@ -116,19 +116,18 @@ const EditAppointment = ({ route }) => {
   async function fetchFormData() {
     setLoading(true);
     const result = await getFormData();
-    setMechList(mechList.concat(result))
+    setMechList(mechList.concat(result));
     setLoading(false);
   }
   useEffect(() => {
     fetchFormData()
   }, []);
 
-  if (user.mech)
+  if (user?.rol === "10")
     return (
       <SafeAreaView style={styles.container}>
-        <ScrollView>
+        <ScrollView style={{padding: 10}}>
           <View
-            className="w-full flex justify-center px-4 my-2"
             style={{
               minHeight: Dimensions.get("window").height - 100,
             }}
@@ -166,7 +165,7 @@ const EditAppointment = ({ route }) => {
               </Text>
             }
             <Text style={styles.subtitleText}>
-              {form.mech}
+              {form.id_mech}
             </Text>
 
             {params.confirmed == "false" &&
@@ -179,13 +178,12 @@ const EditAppointment = ({ route }) => {
           </View>
         </ScrollView>
       </SafeAreaView>
-    )
+    );
   else if (params.confirmed == "true")
     return (
       <SafeAreaView style={styles.container}>
-        <ScrollView>
+        <ScrollView style={{padding: 10}}>
           <View
-            className="w-full flex justify-center px-4 my-2"
             style={{
               minHeight: Dimensions.get("window").height - 100,
             }}
@@ -223,7 +221,7 @@ const EditAppointment = ({ route }) => {
               </Text>
             }
             <Text style={styles.subtitleText}>
-              {form.mech}
+              {form.id_mech}
             </Text>
 
             <CustomButton
@@ -239,13 +237,12 @@ const EditAppointment = ({ route }) => {
           </View>
         </ScrollView>
       </SafeAreaView>
-    )
+    );
   else
     return (
       <SafeAreaView style={styles.container}>
-        <ScrollView>
+        <ScrollView style={{padding: 10}}>
           <View
-            className="w-full flex justify-center px-4 my-2"
             style={{
               minHeight: Dimensions.get("window").height - 100,
             }}
@@ -370,9 +367,9 @@ const EditAppointment = ({ route }) => {
                   onChange={(e) => {
                     setDropdownMech(e.id);
                     if (e.id === 0)
-                      setForm({ ...form, mech: null });
+                      setForm({ ...form, id_mech: null });
                     else
-                      setForm({ ...form, mech: e.id });
+                      setForm({ ...form, id_mech: e.id });
                     setIsMechFocus(false);
                   }}
                 />
@@ -387,7 +384,7 @@ const EditAppointment = ({ route }) => {
           </View>
         </ScrollView>
       </SafeAreaView>
-    )
+    );
 }
 
 export default EditAppointment

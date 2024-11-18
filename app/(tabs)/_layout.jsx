@@ -1,28 +1,9 @@
 import { Redirect, Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator, Image, Platform, Text, View } from "react-native";
+import { ActivityIndicator, Image, Platform } from "react-native";
 
 import { colors, icons, styles } from "../../constants";
 import { useGlobalContext } from "../../api/GlobalProvider";
-
-const TabIcon = ({ icon, color, name, focused }) => {
-  return (
-    <View className="flex items-center justify-center gap-2">
-      <Image
-        source={icon}
-        resizeMode="contain"
-        tintColor={color}
-        style={{height: 50}}
-      />
-      <Text
-        className={`text-xs`}
-        style={{color: color, textAlign: "center"}}
-      >
-        {name}
-      </Text>
-    </View>
-  );
-};
 
 const TabLayout = () => {
   const { loading, isLogged } = useGlobalContext();
@@ -33,43 +14,52 @@ const TabLayout = () => {
     <>
       <Tabs
         screenOptions={{
+          tabBarShowLabel: true,
+          tabBarLabelPosition: "below-icon",
+          tabBarLabelStyle: {
+            fontSize: 16,
+            paddingTop: 8
+          },
           tabBarActiveTintColor: colors.primary.DEFAULT,
           tabBarInactiveTintColor: colors.gray,
-          tabBarShowLabel: false,
+          tabBarItemStyle: {
+            height: 80,
+            paddingTop: 10
+          },
+          tabBarHideOnKeyboard: true,
           tabBarStyle: {
             backgroundColor: colors.secondary,
             borderTopWidth: 1,
-            borderTopColor: "#232533",
-            height: 84,
+            height: 84
           },
         }}
       >
         <Tabs.Screen
           name="home"
           options={{
-            title: "Home",
+            title: "Inicio",
             headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.home}
-                color={color}
-                name="Inicio"
-                focused={focused}
+            tabBarIcon: ({color}) => (
+              <Image
+                source={icons.home}
+                resizeMode="contain"
+                tintColor={color}
+                style={{height: 40}}
               />
-            ),
+            )
           }}
         />
         <Tabs.Screen
           name="create"
           options={{
-            title: "Create",
+            title: "Crear",
             headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.plus}
-                color={color}
-                name="Crear"
-                focused={focused}
+            tabBarIcon: ({color}) => (
+              <Image
+                source={icons.plus}
+                resizeMode="contain"
+                tintColor={color}
+                style={{height: 40}}
               />
             ),
           }}
@@ -77,14 +67,14 @@ const TabLayout = () => {
         <Tabs.Screen
           name="profile"
           options={{
-            title: "Profile",
+            title: "Perfil",
             headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.profile}
-                color={color}
-                name="Perfil"
-                focused={focused}
+            tabBarIcon: ({color}) => (
+              <Image
+                source={icons.profile}
+                resizeMode="contain"
+                tintColor={color}
+                style={{height: 40}}
               />
             ),
           }}

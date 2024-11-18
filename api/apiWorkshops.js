@@ -2,11 +2,36 @@ import { Alert } from "react-native";
 
 import { apiManager, secureStoreGet } from "./apiManager";
 
-// Get Appointments Form Data
-export const getFormData = async () => {
+// Register Workshop
+export async function createWorkshop(workshop) {
   const token = await secureStoreGet("Token");
   try {
-    return await apiManager.get('/appointments/formdata', {
+    return await apiManager.post('/workshops', workshop, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).then((res) => {
+      Alert.alert("Éxito", "Auto creado exitosamente.");
+      console.log("Workshop created, ID: "+result.id);
+      return res.data;
+    }).catch(error => {
+      if (error.code === "ERR_NETWORK")
+        Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+      else
+        Alert.alert("Error de servidor", error.response.data.message);
+      return null;
+    });
+  } catch (error) {
+    console.log("createWorkshop", error);
+    return null;
+  }
+}
+
+// Get Workshops
+export const getWorkshops = async () => {
+  const token = await secureStoreGet("Token");
+  try {
+    return await apiManager.get('/workshops', {
       headers: {
         Authorization: `Bearer ${token}`
       },
@@ -20,22 +45,21 @@ export const getFormData = async () => {
       return null;
     });
   } catch (error) {
-    console.log("getFormData", error);
+    console.log("getWorkshops", error);
     return null;
   }
 }
 
-// Register Appointment
-export async function createAppointment(appointment) {
+// Modify Workshop
+export const modifyWorkshop = async (workshop) => {
   const token = await secureStoreGet("Token");
   try {
-    return await apiManager.post('/appointments', appointment, {
+    return await apiManager.patch(`/workshops/${workshop.id}`, workshop, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     }).then((res) => {
-      Alert.alert("Éxito", "Cita creada exitosamente.");
-      console.log("Appointment created, ID: "+result.id);
+      Alert.alert("Éxito", "Auto modificado exitosamente.");
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
@@ -45,20 +69,21 @@ export async function createAppointment(appointment) {
       return null;
     });
   } catch (error) {
-    console.log("createAppointment", error);
+    console.log("modifyWorkshop", error);
     return null;
   }
 }
 
-// Get Appointments
-export const getAppointments = async () => {
+// Update Workshop
+export const updateWorkshop = async (workshop) => {
   const token = await secureStoreGet("Token");
   try {
-    return await apiManager.get('/appointments', {
+    return await apiManager.patch(`/workshops/${workshop.id}`, workshop, {
       headers: {
         Authorization: `Bearer ${token}`
-      },
+      }
     }).then((res) => {
+      Alert.alert("Éxito", "Auto actualizado exitosamente.");
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
@@ -68,69 +93,7 @@ export const getAppointments = async () => {
       return null;
     });
   } catch (error) {
-    console.log("getAppointments", error);
-    return null;
-  }
-}
-
-// Modify Appointment
-export const modifyAppointment = async (appointment) => {
-  const token = await secureStoreGet("Token");
-  try {
-    return await apiManager.patch(`/appointments/${appointment.id}/0`, appointment, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }).then((res) => {
-      Alert.alert("Éxito", "Cita modificada exitosamente.");
-      return res.data;
-    }).catch(error => {
-      if (error.code === "ERR_NETWORK")
-        Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
-      else
-        Alert.alert("Error de servidor", error.response.data.message);
-      return null;
-    });
-  } catch (error) {
-    console.log("modifyAppointment", error);
-    return null;
-  }
-}
-
-// Update Appointment
-export const updateAppointment = async (id, action) => {
-  const token = await secureStoreGet("Token");
-  try {
-    return await apiManager.patch(`/appointments/${id}/${action}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }).then((res) => {
-      switch(action) {
-        case 1:
-          Alert.alert("Éxito", "Cita cancelada exitosamente.");
-          break;
-        case 2:
-          Alert.alert("Éxito", "Cita confirmada exitosamente.");
-          break;
-        case 6:
-        case 7:
-          Alert.alert("Éxito", "Comentario añadido exitosamente.");
-          break;
-        default:
-          Alert.alert("Éxito", "Cita actualizada exitosamente.");
-          break;
-      }
-      return res.data;
-    }).catch(error => {
-      if (error.code === "ERR_NETWORK")
-        Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
-      else
-        Alert.alert("Error de servidor", error.response.data.message);
-      return null;
-    });
-  } catch (error) {
-    console.log("updateAppointment", error);
+    console.log("updateWorkshop", error);
     return null;
   }
 }

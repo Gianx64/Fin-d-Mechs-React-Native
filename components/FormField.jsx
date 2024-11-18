@@ -20,7 +20,7 @@ const FormField = ({
 
       <View style={{flexDirection:'row', justifyContent:'center'}}>
         <TextInput
-          style={[styles.formField, title === "Contraseña" ? {width: Dimensions.get("screen").width-110} : {width: Dimensions.get("screen").width-50}]}
+          style={[styles.formField, title === "Contraseña" ? {width: Dimensions.get("window").width-110} : {width: Dimensions.get("window").width-50}]}
           readOnly={readOnly}
           value={value}
           placeholder={placeholder}

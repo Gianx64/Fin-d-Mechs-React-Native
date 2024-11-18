@@ -15,7 +15,8 @@ const RootLayout = () => {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="edit" options={{ headerShown: false }} />
+        <Stack.Screen name="editAppointment" options={{ headerShown: false }} />
+        <Stack.Screen name="editCar" options={{ headerShown: false }} />
       </Stack>
     </GlobalProvider>
   );

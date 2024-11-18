@@ -14,14 +14,14 @@ const CreateAppointment = () => {
   const { user, setLoading } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
-    usuario: user?.id,
+    id_usuario: user?.id,
     fecha: "Ingrese una fecha",
     ciudad: "",
     direccion: "",
     auto_marca: "",
     auto_modelo: "",
     detalles: "",
-    mech: null,
+    id_mech: null,
     servicio: "01",
     id_taller: null
   });
@@ -93,9 +93,15 @@ const CreateAppointment = () => {
   const [mechList, setMechList] = useState([{id: 0, usuario: "Primero que acepte.", correo: ""}]);
   async function fetchFormData() {
     setLoading(true);
-    const result = await getFormData();
-    setMechList(mechList.concat(result))
-    setLoading(false);
+    try {
+      const response = await getFormData();
+      if (response)
+        setMechList(mechList.concat(response));
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setLoading(false);
+    }
   }
   useEffect(() => {
     fetchFormData()
@@ -103,7 +109,7 @@ const CreateAppointment = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView style={{padding: 10}}>
           <Text style={styles.titleText}>
             Crear cita con mecánico
           </Text>
@@ -122,16 +128,16 @@ const CreateAppointment = () => {
             readOnly={true}
             onPress={showDatepicker}
           />
-          <View style={{flexDirection:'row', justifyContent: "space-between", paddingHorizontal: 16}}>
+          <View style={{flexDirection:'row', justifyContent: "space-between", paddingHorizontal: 16, paddingTop: 8}}>
             <CustomButton
               title="Cambiar fecha"
               handlePress={showDatepicker}
-              containerStyles={{paddingHorizontal: 32}}
+              buttonStyles={{paddingHorizontal: 32}}
             />
             <CustomButton
               title="Cambiar Hora"
               handlePress={showTimepicker}
-              containerStyles={{paddingHorizontal: 32}}
+              buttonStyles={{paddingHorizontal: 32}}
             />
           </View>
           {showPicker && (
@@ -209,7 +215,7 @@ const CreateAppointment = () => {
             handleChangeText={(e) => setForm({ ...form, id_taller: e })}
           />}
 
-          <View style={{paddingBottom: 50}}>
+          <View style={{paddingBottom: 20}}>
             <Text style={styles.subtitleText}>Mecánico</Text>
             <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
               <Dropdown
@@ -223,6 +229,7 @@ const CreateAppointment = () => {
                 onBlur={() => setIsMechFocus(false)}
                 placeholder={!isMechFocus ? 'Seleccionar item' : '...'}
                 onChange={(e) => {
+                  console.log(JSON.stringify(mechList));
                   setDropdownMech(e.id);
                   if (e.id === 0)
                     setForm({ ...form, mech: null });
@@ -238,6 +245,7 @@ const CreateAppointment = () => {
             title="Agendar"
             handlePress={submit}
             isLoading={isSubmitting}
+            containerStyles={{paddingBottom: 40}}
           />
       </ScrollView>
     </SafeAreaView>
