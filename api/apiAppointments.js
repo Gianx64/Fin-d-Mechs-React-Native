@@ -16,7 +16,7 @@ export const getFormData = async () => {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {
@@ -35,13 +35,13 @@ export async function createAppointment(appointment) {
       }
     }).then((res) => {
       Alert.alert("Éxito", "Cita creada exitosamente.");
-      console.log("Appointment created, ID: "+result.id);
+      console.log("Appointment created, ID: "+res.data.id);
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {
@@ -64,7 +64,7 @@ export const getAppointments = async () => {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {
@@ -88,7 +88,7 @@ export const modifyAppointment = async (appointment) => {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {
@@ -126,7 +126,7 @@ export const updateAppointment = async (id, action) => {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {

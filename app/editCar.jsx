@@ -1,17 +1,13 @@
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, Text, ScrollView, Dimensions, Alert } from 'react-native'
-import { Dropdown } from 'react-native-element-dropdown';
 import { SafeAreaView } from "react-native-safe-area-context";
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { CustomButton, FormField } from "../components";
-import { getFormData, modifyAppointment, updateAppointment } from "../api/apiAppointments";
-import { useGlobalContext } from "../api/GlobalProvider";
 import { styles } from "../constants";
+import { modifyCar } from "../api/apiCars";
 
 const EditCar = ({ route }) => {
-  const { user, setLoading } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const params = useLocalSearchParams();
   const [form, setForm] = useState({
@@ -43,7 +39,7 @@ const EditCar = ({ route }) => {
     }
   };
 
-  if (params.cita)
+  if (params.cita === "true")
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView style={{padding: 10}}>
@@ -96,6 +92,7 @@ const EditCar = ({ route }) => {
               title="Actualizar"
               handlePress={submit}
               isLoading={isSubmitting}
+              containerStyles={{paddingBottom: 40, paddingTop: 20}}
             />
           </View>
         </ScrollView>

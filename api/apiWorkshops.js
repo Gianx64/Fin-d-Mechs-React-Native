@@ -12,13 +12,13 @@ export async function createWorkshop(workshop) {
       }
     }).then((res) => {
       Alert.alert("Éxito", "Auto creado exitosamente.");
-      console.log("Workshop created, ID: "+result.id);
+      console.log("Workshop created, ID: "+res.data.id);
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {
@@ -41,7 +41,7 @@ export const getWorkshops = async () => {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {
@@ -65,7 +65,7 @@ export const modifyWorkshop = async (workshop) => {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {
@@ -89,7 +89,7 @@ export const updateWorkshop = async (workshop) => {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {

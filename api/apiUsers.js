@@ -13,7 +13,7 @@ export async function signUp(form) {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {
@@ -36,7 +36,7 @@ export async function signIn(email, password) {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {
@@ -60,7 +60,7 @@ export async function getCurrentUser() {
         if (error.code === "ERR_NETWORK")
           Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
         else
-          Alert.alert("Error de servidor", error.response.data.message);
+          Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
         return null;
       });
     } catch (error) {

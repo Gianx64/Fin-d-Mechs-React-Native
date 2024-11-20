@@ -215,7 +215,7 @@ const CreateAppointment = () => {
             handleChangeText={(e) => setForm({ ...form, id_taller: e })}
           />}
 
-          <View style={{paddingBottom: 20}}>
+          <View>
             <Text style={styles.subtitleText}>Mecánico</Text>
             <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
               <Dropdown
@@ -245,7 +245,7 @@ const CreateAppointment = () => {
             title="Agendar"
             handlePress={submit}
             isLoading={isSubmitting}
-            containerStyles={{paddingBottom: 40}}
+            containerStyles={{paddingBottom: 40, paddingTop: 20}}
           />
       </ScrollView>
     </SafeAreaView>

@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, Image, FlatList, TouchableOpacity, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -26,7 +26,7 @@ const Profile = () => {
     try {
       const response = await getCars();
       if (response)
-        setCarList(carList.concat(response));
+        setCarList(response);
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
@@ -77,6 +77,12 @@ const Profile = () => {
               )}
             />
             <View>
+            <Link
+              style={[styles.normalText]}
+              href={{pathname: "/createCar"}}
+            >
+              Registrar auto
+            </Link>
               {carList.length > 0 &&
                 <View style={{flexDirection: "row", justifyContent: "space-between"}}>
                   <Text style={[styles.normalText]}>Patente</Text>

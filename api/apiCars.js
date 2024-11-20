@@ -12,13 +12,13 @@ export async function createCar(car) {
       }
     }).then((res) => {
       Alert.alert("Éxito", "Auto creado exitosamente.");
-      console.log("Car created, ID: "+result.id);
+      console.log("Car created, ID: "+res.data.id);
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {
@@ -41,7 +41,7 @@ export const getCars = async () => {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {
@@ -65,7 +65,7 @@ export const modifyCar = async (car) => {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {
@@ -89,7 +89,7 @@ export const updateCar = async (car) => {
       if (error.code === "ERR_NETWORK")
         Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
       else
-        Alert.alert("Error de servidor", error.response.data.message);
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
   } catch (error) {
