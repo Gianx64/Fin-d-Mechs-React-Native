@@ -50,13 +50,13 @@ const TabLayout = () => {
           }}
         />
         <Tabs.Screen
-          name="create"
+          name="profile"
           options={{
-            title: "Crear",
+            title: "Perfil",
             headerShown: false,
             tabBarIcon: ({color}) => (
               <Image
-                source={icons.plus}
+                source={icons.profile}
                 resizeMode="contain"
                 tintColor={color}
                 style={{height: 40}}
@@ -65,13 +65,13 @@ const TabLayout = () => {
           }}
         />
         <Tabs.Screen
-          name="profile"
+          name="create"
           options={{
-            title: "Perfil",
+            title: "Crear",
             headerShown: false,
             tabBarIcon: ({color}) => (
               <Image
-                source={icons.profile}
+                source={icons.plus}
                 resizeMode="contain"
                 tintColor={color}
                 style={{height: 40}}

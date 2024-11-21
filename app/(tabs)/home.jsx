@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Image, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { images, styles } from "../../constants";
 import { getAppointments } from "../../api/apiAppointments";
 import { useGlobalContext } from "../../api/GlobalProvider";
+import CustomButton from "../../components/CustomButton";
 
 const Home = () => {
   const { user, setLoading } = useGlobalContext();
@@ -54,6 +55,13 @@ const Home = () => {
             />
           </View>
         </View>
+        <CustomButton
+          title={"Crear cita"}
+          buttonStyles={styles.normalButton}
+          handlePress={() => {
+            router.push("/create");
+          }}
+        />
         {appointments.length > 0 &&
           <View style={{flexDirection: "row", justifyContent: "space-between"}}>
             <Text style={[styles.normalText]}>Fecha y hora</Text>

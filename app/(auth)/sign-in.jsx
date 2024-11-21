@@ -71,6 +71,7 @@ const SignIn = () => {
           <CustomButton
             title="Iniciar Sesión"
             handlePress={submit}
+            buttonStyles={styles.mainButton}
             isLoading={isSubmitting}
           />
 

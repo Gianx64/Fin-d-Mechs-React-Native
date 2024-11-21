@@ -172,6 +172,7 @@ const EditAppointment = ({ route }) => {
               <CustomButton
                 title="Confirmar"
                 handlePress={confirm}
+                buttonStyles={styles.mainButton}
                 isLoading={isSubmitting}
               />
             }
@@ -232,6 +233,7 @@ const EditAppointment = ({ route }) => {
             <CustomButton
               title="Marcar como completado"
               handlePress={complete}
+              buttonStyles={styles.mainButton}
               isLoading={isSubmitting}
             />
           </View>
@@ -379,6 +381,7 @@ const EditAppointment = ({ route }) => {
             <CustomButton
               title="Actualizar"
               handlePress={submit}
+              buttonStyles={styles.mainButton}
               isLoading={isSubmitting}
             />
           </View>

@@ -14,7 +14,7 @@ const CustomButton = ({
       <TouchableOpacity
         onPress={handlePress}
         activeOpacity={0.7}
-        style={[styles.mainButton, buttonStyles, isLoading ? {opacity: 50} : {}]}
+        style={[buttonStyles, isLoading ? {opacity: 50} : {}]}
         disabled={isLoading}
       >
         <Text style={[styles.buttonText, textStyles]}>

@@ -7,6 +7,7 @@ import { icons, styles } from "../../constants";
 import { getCars } from "../../api/apiCars";
 import { secureStoreDelete } from "../../api/apiManager";
 import { useGlobalContext } from "../../api/GlobalProvider";
+import CustomButton from "../../components/CustomButton";
 
 const Profile = () => {
   const { user, setUser, setIsLogged, setLoading } = useGlobalContext();
@@ -77,12 +78,13 @@ const Profile = () => {
               )}
             />
             <View>
-            <Link
-              style={[styles.normalText]}
-              href={{pathname: "/createCar"}}
-            >
-              Registrar auto
-            </Link>
+              <CustomButton
+                title={"Registrar auto"}
+                buttonStyles={styles.normalButton}
+                handlePress={() => {
+                  router.push("/createCar");
+                }}
+              />
               {carList.length > 0 &&
                 <View style={{flexDirection: "row", justifyContent: "space-between"}}>
                   <Text style={[styles.normalText]}>Patente</Text>
@@ -97,16 +99,17 @@ const Profile = () => {
                 data = {carList}
                 keyExtractor={(item) => item.id}
                 renderItem={({item}) => (
-                  <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+                  <View style={{alignItems: "center", flexDirection: "row", justifyContent: "space-between"}}>
                     <Text style={[styles.normalText]}>{item.patente}</Text>
                     <Text style={[styles.normalText]}>{item.marca}</Text>
                     <Text style={[styles.normalText]}>{item.modelo}</Text>
-                    <Link
-                      style={[styles.normalText]}
-                      href={{pathname: "/editCar", params: item}}
-                    >
-                      Editar
-                    </Link>
+                    <CustomButton
+                      title={"Editar"}
+                      buttonStyles={styles.normalButton}
+                      handlePress={() => {
+                        router.push({pathname: "/editCar", params: item});
+                      }}
+                    />
                   </View>
                 )}
                 ListEmptyComponent={

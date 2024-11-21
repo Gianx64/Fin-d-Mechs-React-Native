@@ -101,6 +101,7 @@ const SignUp = () => {
           <CustomButton
             title="Registrarse"
             handlePress={submit}
+            buttonStyles={styles.mainButton}
             isLoading={isSubmitting}
           />
 

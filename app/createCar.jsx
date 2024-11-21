@@ -54,14 +54,14 @@ const EditCar = ({ route }) => {
           <FormField
             title="Patente"
             value={form.patente}
-            handleChangeText={(e) => setForm({ ...form, patente: e })}
+            handleChangeText={(e) => setForm({ ...form, patente: e.toUpperCase() })}
             maxLength={10}
           />
 
           <FormField
             title="VIN"
             value={form.vin}
-            handleChangeText={(e) => setForm({ ...form, vin: e })}
+            handleChangeText={(e) => setForm({ ...form, vin: e.toUpperCase() })}
             maxLength={17}
           />
 
@@ -82,8 +82,9 @@ const EditCar = ({ route }) => {
           <CustomButton
             title="Registrar"
             handlePress={submit}
-            isLoading={isSubmitting}
             containerStyles={{paddingBottom: 40, paddingTop: 20}}
+            buttonStyles={styles.mainButton}
+            isLoading={isSubmitting}
           />
         </View>
       </ScrollView>

@@ -44,10 +44,20 @@ export default StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 16,
     paddingHorizontal: 64,
-    zIndex: 1,
+    zIndex: 1
+  },
+  normalButton: {
+    alignSelf: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.primary[100],
+    borderRadius: 8,
+    justifyContent: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    zIndex: 1
   },
   buttonText: {
-    color: "black",
+    color: "white",
     fontSize: 16
   },
   linkText: {

@@ -244,6 +244,7 @@ const CreateAppointment = () => {
           <CustomButton
             title="Agendar"
             handlePress={submit}
+            buttonStyles={styles.mainButton}
             isLoading={isSubmitting}
             containerStyles={{paddingBottom: 40, paddingTop: 20}}
           />
