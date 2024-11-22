@@ -1,12 +1,13 @@
 import { Alert } from "react-native";
+import { setItemAsync, getItemAsync, deleteItemAsync } from "expo-secure-store";
 
-import { apiManager, secureStoreSet, secureStoreGet } from "./apiManager";
+import apiManager from "./apiManager";
 
 // Register user
 export async function signUp(form) {
   try {
     return await apiManager.post('/auth/signup', form).then((res) => {
-      secureStoreSet("Token", res.data.token);
+      setItemAsync("Token", res.data.token);
       Alert.alert("Éxito", "Usuario creado exitosamente.");
       return res.data;
     }).catch(error => {
@@ -29,7 +30,7 @@ export async function signIn(email, password) {
       correo: email,
       clave: password
     }).then((res) => {
-      secureStoreSet("Token", res.data.token);
+      setItemAsync("Token", res.data.token);
       Alert.alert("Éxito", "Sesión iniciada exitosamente");
       return res.data;
     }).catch(error => {
@@ -45,9 +46,15 @@ export async function signIn(email, password) {
   }
 }
 
+// Sign Out
+export async function signOut() {
+  await deleteItemAsync("Token");
+}
+
+
 // Get Current User
 export async function getCurrentUser() {
-  const token = await secureStoreGet("Token");
+  const token = await getItemAsync("Token");
   if (token) {
     try {
       return await apiManager.get('/auth', {

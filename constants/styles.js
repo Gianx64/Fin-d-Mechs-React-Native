@@ -15,21 +15,21 @@ export default StyleSheet.create({
   welcomeText1: {
     color: "white",
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     paddingVertical: 16,
-    textAlign: 'center'
+    textAlign: "center"
   },
   titleText: {
     color: "white",
     fontSize: 22,
     paddingVertical: 16,
-    textAlign: 'center'
+    textAlign: "center"
   },
   subtitleText: {
     color: colors.gray,
     fontSize: 16,
     paddingVertical: 16,
-    textAlign: 'center'
+    textAlign: "center"
   },
   normalText: {
     color: colors.gray,
@@ -37,21 +37,20 @@ export default StyleSheet.create({
     paddingVertical: 16
   },
   mainButton: {
-    alignSelf: 'center',
-    alignItems: 'center',
+    alignSelf: "center",
+    alignItems: "center",
     backgroundColor: colors.primary[100],
     borderRadius: 16,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingVertical: 16,
     paddingHorizontal: 64,
     zIndex: 1
   },
   normalButton: {
-    alignSelf: 'center',
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.primary[100],
     borderRadius: 8,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingVertical: 4,
     paddingHorizontal: 8,
     zIndex: 1

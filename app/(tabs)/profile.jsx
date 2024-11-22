@@ -1,11 +1,11 @@
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, Image, FlatList, TouchableOpacity, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { icons, styles } from "../../constants";
 import { getCars } from "../../api/apiCars";
-import { secureStoreDelete } from "../../api/apiManager";
+import { signOut } from "../../api/apiUsers";
 import { useGlobalContext } from "../../api/GlobalProvider";
 import CustomButton from "../../components/CustomButton";
 
@@ -15,8 +15,7 @@ const Profile = () => {
   const [carList, setCarList] = useState([]);
 
   const logout = async () => {
-    //await signOut();
-    await secureStoreDelete("Token");
+    await signOut();
     setUser(null);
     setIsLogged(false);
 
@@ -105,7 +104,7 @@ const Profile = () => {
                     <Text style={[styles.normalText]}>{item.modelo}</Text>
                     <CustomButton
                       title={"Editar"}
-                      buttonStyles={styles.normalButton}
+                      buttonStyles={[styles.normalButton, {alignSelf: 'center'}]}
                       handlePress={() => {
                         router.push({pathname: "/editCar", params: item});
                       }}

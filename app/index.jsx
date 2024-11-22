@@ -36,6 +36,7 @@ const Welcome = () => {
           <CustomButton
             title="Continuar con Email"
             handlePress={() => router.push("/sign-in")}
+            buttonStyles={styles.mainButton}
           />
         </View>
       </ScrollView>
