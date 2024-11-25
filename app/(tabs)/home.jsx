@@ -8,12 +8,12 @@ import { getAppointments } from "../../api/apiAppointments";
 import { useGlobalContext } from "../../api/GlobalProvider";
 import CustomButton from "../../components/CustomButton";
 
-const Home = () => {
+export default () => {
   const { user, setLoading } = useGlobalContext();
   const [refreshing, setRefreshing] = useState(true);
   const [appointments, setAppointments] = useState([]);
 
-  const fetchData = async () => {
+  const fetchAppointments = async () => {
     setLoading(true);
     try {
       const response = await getAppointments();
@@ -27,11 +27,11 @@ const Home = () => {
     }
   }
   useEffect(() => {
-    fetchData();
+    fetchAppointments();
   }, []);
   const handleRefresh = async () => {
     setRefreshing(true);
-    await fetchData();
+    await fetchAppointments();
     setRefreshing(false);
   }
 
@@ -55,44 +55,56 @@ const Home = () => {
             />
           </View>
         </View>
-        <CustomButton
-          title={"Crear cita"}
-          buttonStyles={styles.normalButton}
-          handlePress={() => {
-            router.push("/create");
-          }}
-        />
-        {appointments.length > 0 &&
-          <View style={{flexDirection: "row", justifyContent: "space-between"}}>
-            <Text style={[styles.normalText]}>Fecha y hora</Text>
-            <Text style={[styles.normalText]}>Mecánico</Text>
-            <Text style={[styles.normalText]}>Detalles</Text>
+        {(user?.rol === "11" || user?.rol === "00") &&
+          <View style={{alignItems: "flex-start"}}>
+            <CustomButton
+              title={"Agendar cita"}
+              buttonStyles={[styles.normalButton, {paddingVertical: 8, paddingHorizontal: 16}]}
+              handlePress={() => {
+                router.push("/appointmentCreate");
+              }}
+            />
           </View>
         }
-        <FlatList
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-          data = {appointments}
-          keyExtractor={(item) => item.id}
-          renderItem={({item}) => (
+        <View>
+          {appointments.length > 0 &&
             <View style={{flexDirection: "row", justifyContent: "space-between"}}>
-              <Text style={[styles.normalText]}>{item.fecha.split(".")[0].split("T")[0]} {item.fecha.split(".")[0].split("T")[1]}</Text>
-              <Text style={[styles.normalText]}>{item.mech_usuario ? item.mech_usuario+"("+item.mech_correo+")" : "Sin mech"}</Text>
-              <Link
-                style={[styles.normalText]}
-                href={{pathname: "/editAppointment", params: item}}
-              >
-                Ver
-              </Link>
+              <Text style={[styles.normalText]}>Fecha y hora</Text>
+              <Text style={[styles.normalText]}>Mecánico</Text>
+              <Text style={[styles.normalText]}>Detalles</Text>
             </View>
-          )}
-          ListEmptyComponent={
-            <Text style={[styles.normalText, {flex: 1}]}>¡Agende una cita con el botón "Crear" en la barra inferior!</Text>
           }
-        />
+          <FlatList
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            data = {appointments}
+            keyExtractor={(item) => item.id}
+            renderItem={({item}) => (
+              <View style={{alignItems: "center", flexDirection: "row", justifyContent: "space-between"}}>
+                <Text style={[styles.normalText]}>{item.fecha.split(".")[0].split("T")[0]} {item.fecha.split(".")[0].split("T")[1]}</Text>
+                <Text style={[styles.normalText]}>{item.mech_usuario ? item.mech_usuario+"("+item.mech_correo+")" : "Sin mech"}</Text>
+                <CustomButton
+                  title={"Ver"}
+                  buttonStyles={styles.normalButton}
+                  handlePress={() => {
+                    router.push({pathname: "/appointmentEdit", params: item});
+                  }}
+                />
+              </View>
+            )}
+            ListEmptyComponent={
+              <>
+                {(user?.rol === "11" || user?.rol === "00") &&
+                  <Text style={[styles.normalText, {flex: 1}]}>¡Agende una cita tocando el botón "Agendar cita"!</Text>
+                }
+                { user?.rol === "10" &&
+                  <Text style={[styles.normalText, {flex: 1}]}>¡Aún no hay citas para aceptar! Recargue la lista arrastrando este texto hacia abajo.</Text>
+                }
+              </>
+            }
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
 };
-
-export default Home;

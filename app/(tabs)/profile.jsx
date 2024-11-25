@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { View, Image, FlatList, TouchableOpacity, Text } from "react-native";
+import { View, Image, FlatList, TouchableOpacity, Text, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { icons, styles } from "../../constants";
@@ -9,7 +9,7 @@ import { signOut } from "../../api/apiUsers";
 import { useGlobalContext } from "../../api/GlobalProvider";
 import CustomButton from "../../components/CustomButton";
 
-const Profile = () => {
+export default () => {
   const { user, setUser, setIsLogged, setLoading } = useGlobalContext();
   const [refreshing, setRefreshing] = useState(true);
   const [carList, setCarList] = useState([]);
@@ -35,12 +35,15 @@ const Profile = () => {
     }
   }
   const handleRefresh = async () => {
-    setRefreshing(true);
-    await fetchCarData();
-    setRefreshing(false);
+    if (user?.rol === "11" || user?.rol === "00") {
+      setRefreshing(true);
+      await fetchCarData();
+      setRefreshing(false);
+    }
   }
   useEffect(() => {
-    fetchCarData()
+    if (user?.rol === "11" || user?.rol === "00")
+      fetchCarData()
   }, []);
 
   switch (user?.rol) {
@@ -49,41 +52,44 @@ const Profile = () => {
       return (
         <SafeAreaView style={styles.container}>
           <View style={{padding: 10}}>
-            <FlatList
-              ListHeaderComponent={() => (
-                <View>
-                  <View style={{flexDirection:'row', justifyContent: "flex-end", padding: 16}}>
-                    <TouchableOpacity onPress={logout} >
-                      <Image
-                        source={icons.logout}
-                        resizeMode="contain"
-                        style={{height: 50, width: 50}}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <Text style={styles.titleText}>
-                    {user?.nombre}
-                  </Text>
-                  <Text style={styles.titleText}>
-                    {user?.celular}
-                  </Text>
-                  <Text style={styles.titleText}>
-                    {user?.correo}
-                  </Text>
-                  <Text style={styles.titleText}>
-                    {user?.rol === "11" ? "Administrador" : "Usuario"}
-                  </Text>
-                </View>
-              )}
-            />
-            <View>
+            <View style={{flexDirection: "row", justifyContent: "space-between", padding: 2}}>
+              <View>
+                <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
+                  Nombre: {user?.nombre}
+                </Text>
+                <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
+                  Celular: {user?.celular}
+                </Text>
+                <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
+                  Correo: {user?.correo}
+                </Text>
+                <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
+                  Rol: {user?.rol === "11" ? "Administrador" : "Usuario"}
+                </Text>
+              </View>
+              <View>
+                <TouchableOpacity
+                  onPress={logout}
+                  style={{flexDirection:'row', justifyContent: "flex-end", paddingRight: 8, paddingTop: 8}}
+                >
+                  <Image
+                    source={icons.logout}
+                    resizeMode="contain"
+                    style={{height: 50, width: 50}}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={{alignItems: "flex-end"}}>
               <CustomButton
                 title={"Registrar auto"}
-                buttonStyles={styles.normalButton}
+                buttonStyles={[styles.normalButton, {paddingVertical: 8, paddingHorizontal: 16}]}
                 handlePress={() => {
-                  router.push("/createCar");
+                  router.push("/carCreate");
                 }}
               />
+            </View>
+            <View>
               {carList.length > 0 &&
                 <View style={{flexDirection: "row", justifyContent: "space-between"}}>
                   <Text style={[styles.normalText]}>Patente</Text>
@@ -104,9 +110,9 @@ const Profile = () => {
                     <Text style={[styles.normalText]}>{item.modelo}</Text>
                     <CustomButton
                       title={"Editar"}
-                      buttonStyles={[styles.normalButton, {alignSelf: 'center'}]}
+                      buttonStyles={styles.normalButton}
                       handlePress={() => {
-                        router.push({pathname: "/editCar", params: item});
+                        router.push({pathname: "/carEdit", params: item});
                       }}
                     />
                   </View>
@@ -120,110 +126,36 @@ const Profile = () => {
         </SafeAreaView>
       );
     case "10":
-      return (
-        <SafeAreaView style={styles.container}>
-          <View style={{padding: 10}}>
-            <FlatList
-              ListHeaderComponent={() => (
-                <View>
-                  <View style={{flexDirection:'row', justifyContent: "flex-end", padding: 16}}>
-                    <TouchableOpacity onPress={logout} >
-                      <Image
-                        source={icons.logout}
-                        resizeMode="contain"
-                        style={{height: 50, width: 50}}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <Text style={styles.titleText}>
-                    {user?.nombre}
-                  </Text>
-                  <Text style={styles.titleText}>
-                    {user?.celular}
-                  </Text>
-                  <Text style={styles.titleText}>
-                    {user?.correo}
-                  </Text>
-                  <Text style={styles.titleText}>
-                    Mech verificado
-                  </Text>
-                </View>
-              )}
-            />
-            <View></View>
-          </View>
-        </SafeAreaView>
-      );
     case "01":
       return (
         <SafeAreaView style={styles.container}>
           <View style={{padding: 10}}>
-            <FlatList
-              ListHeaderComponent={() => (
-                <View>
-                  <View style={{flexDirection:'row', justifyContent: "flex-end", padding: 16}}>
-                    <TouchableOpacity onPress={logout} >
-                      <Image
-                        source={icons.logout}
-                        resizeMode="contain"
-                        style={{height: 50, width: 50}}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <Text style={styles.titleText}>
-                    {user?.nombre}
-                  </Text>
-                  <Text style={styles.titleText}>
-                    {user?.celular}
-                  </Text>
-                  <Text style={styles.titleText}>
-                    {user?.correo}
-                  </Text>
-                  <Text style={styles.titleText}>
-                    Mech no verificado
-                  </Text>
-                </View>
-              )}
-            />
+            <View>
+              <View style={{flexDirection:'row', justifyContent: "flex-end", padding: 16}}>
+                <TouchableOpacity onPress={logout} >
+                  <Image
+                    source={icons.logout}
+                    resizeMode="contain"
+                    style={{height: 50, width: 50}}
+                  />
+                </TouchableOpacity>
+              </View>
+              <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
+                Nombre: {user?.nombre}
+              </Text>
+              <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
+                Celular: {user?.celular}
+              </Text>
+              <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
+                Correo: {user?.correo}
+              </Text>
+              <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
+                Rol: {user?.rol === "10" ? "Mech verificado": "Mech no verificado"}
+              </Text>
+            </View>
             <View></View>
           </View>
         </SafeAreaView>
       );
     }
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={{padding: 10}}>
-          <FlatList
-            ListHeaderComponent={() => (
-              <View>
-                <View style={{flexDirection:'row', justifyContent: "flex-end", padding: 16}}>
-                  <TouchableOpacity onPress={logout} >
-                    <Image
-                      source={icons.logout}
-                      resizeMode="contain"
-                      style={{height: 50, width: 50}}
-                    />
-                  </TouchableOpacity>
-                </View>
-                <Text style={styles.titleText}>
-                  {user?.nombre}
-                </Text>
-                <Text style={styles.titleText}>
-                  {user?.celular}
-                </Text>
-                <Text style={styles.titleText}>
-                  {user?.correo}
-                </Text>
-                <Text style={styles.titleText}>
-                  {user?.rol == "11" ? "Admin" : user?.rol == "10" ? "Mech verificado" : user?.rol == "00" ? "Usuario" : user?.rol == "01" ? "Mech no verificado" : ""}
-                </Text>
-              </View>
-            )}
-          />
-          <View></View>
-        </View>
-      </SafeAreaView>
-    );
 };
-
-export default Profile;

@@ -8,7 +8,7 @@ import { images, styles } from "../../constants";
 import { signIn } from "../../api/apiUsers";
 import { useGlobalContext } from "../../api/GlobalProvider";
 
-const SignIn = () => {
+export default () => {
   const { setUser, setIsLogged } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
@@ -91,5 +91,3 @@ const SignIn = () => {
     </SafeAreaView>
   );
 };
-
-export default SignIn;

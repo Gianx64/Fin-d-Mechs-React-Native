@@ -65,13 +65,13 @@ const TabLayout = () => {
           }}
         />
         <Tabs.Screen
-          name="create"
+          name="map"
           options={{
-            title: "Crear",
+            title: "Mapa",
             headerShown: false,
             tabBarIcon: ({color}) => (
               <Image
-                source={icons.plus}
+                source={icons.rightArrow}
                 resizeMode="contain"
                 tintColor={color}
                 style={{height: 40}}

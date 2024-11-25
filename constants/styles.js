@@ -38,19 +38,16 @@ export default StyleSheet.create({
   },
   mainButton: {
     alignSelf: "center",
-    alignItems: "center",
     backgroundColor: colors.primary[100],
     borderRadius: 16,
-    justifyContent: "center",
     paddingVertical: 16,
     paddingHorizontal: 64,
     zIndex: 1
   },
   normalButton: {
-    alignItems: "center",
+    alignSelf: "center",
     backgroundColor: colors.primary[100],
     borderRadius: 8,
-    justifyContent: "center",
     paddingVertical: 4,
     paddingHorizontal: 8,
     zIndex: 1

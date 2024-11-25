@@ -66,8 +66,10 @@ export async function getCurrentUser() {
       }).catch(error => {
         if (error.code === "ERR_NETWORK")
           Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
-        else
+        else {
           Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
+          deleteItemAsync("Token");
+        }
         return null;
       });
     } catch (error) {
@@ -75,4 +77,60 @@ export async function getCurrentUser() {
       return null;
     }
   } else { console.log("No token stored."); }
+}
+
+// Get Administration panel data
+export async function getAdminData() {
+  const token = await getItemAsync("Token");
+  if (token) {
+    try {
+      return await apiManager.get('/auth/admindata', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).then((res) => {
+        return res.data;
+      }).catch(error => {
+        if (error.code === "ERR_NETWORK")
+          Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+        else
+          Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
+        return null;
+      });
+    } catch (error) {
+      console.log("getAdminData", error);
+      return null;
+    }
+  } else {
+    Alert.alert("Error", "Inicie sesión nuevamente.");
+    return 401;
+  }
+}
+
+// Get Administration panel data
+export async function setMech(id) {
+  const token = await getItemAsync("Token");
+  if (token) {
+    try {
+      return await apiManager.get(`/auth/setmech/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).then((res) => {
+        return res.data;
+      }).catch(error => {
+        if (error.code === "ERR_NETWORK")
+          Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+        else
+          Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
+        return null;
+      });
+    } catch (error) {
+      console.log("getAdminData", error);
+      return null;
+    }
+  } else {
+    Alert.alert("Error", "Inicie sesión nuevamente.");
+    return 401;
+  }
 }

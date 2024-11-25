@@ -7,7 +7,7 @@ import { CustomButton } from "../components";
 import { colors, images, styles } from "../constants";
 import { useGlobalContext } from "../api/GlobalProvider";
 
-const Welcome = () => {
+export default () => {
   const { loading, isLogged } = useGlobalContext();
 
   if (!loading && isLogged) return <Redirect href="/home" />;
@@ -50,5 +50,3 @@ const Welcome = () => {
     </SafeAreaView>
   );
 };
-
-export default Welcome;
