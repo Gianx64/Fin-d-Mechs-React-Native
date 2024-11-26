@@ -1,4 +1,4 @@
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Image, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -26,15 +26,43 @@ export default () => {
       setRefreshing(false);
     }
   }
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
   const handleRefresh = async () => {
     setRefreshing(true);
     await fetchAppointments();
     setRefreshing(false);
   }
+  useEffect(() => {
+    if (user?.rol !== "01")
+      fetchAppointments();
+  }, []);
 
+  if (user?.rol === "01")
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={{padding: 10}}>
+          <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+            <View>
+              <Text style={styles.normalText}>
+                Bienvenid@ de vuelta
+              </Text>
+              <Text style={{color: "white", fontSize: 16}}>
+                {user?.nombre}
+              </Text>
+            </View>
+            <View>
+              <Image
+                source={images.logo}
+                style={[styles.tinyLogo, {alignSelf: "flex-end"}]}
+                resizeMode="contain"
+              />
+            </View>
+          </View>
+          <View style={{alignItems: "flex-start"}}>
+            <Text style={[styles.normalText]}>Para empezar a aceptar citas debe ser verificado por un administrador.</Text>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
   return (
     <SafeAreaView style={styles.container}>
       <View style={{padding: 10}}>

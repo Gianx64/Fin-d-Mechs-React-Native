@@ -34,7 +34,7 @@ export default () => {
       setRefreshing(false);
     }
   }
-  const handleRefresh = async () => {
+  const handleCarRefresh = async () => {
     if (user?.rol === "11" || user?.rol === "00") {
       setRefreshing(true);
       await fetchCarData();
@@ -46,116 +46,93 @@ export default () => {
       fetchCarData()
   }, []);
 
-  switch (user?.rol) {
-    case "11":
-    case "00":
-      return (
-        <SafeAreaView style={styles.container}>
-          <View style={{padding: 10}}>
-            <View style={{flexDirection: "row", justifyContent: "space-between", padding: 2}}>
-              <View>
-                <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
-                  Nombre: {user?.nombre}
-                </Text>
-                <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
-                  Celular: {user?.celular}
-                </Text>
-                <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
-                  Correo: {user?.correo}
-                </Text>
-                <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
-                  Rol: {user?.rol === "11" ? "Administrador" : "Usuario"}
-                </Text>
-              </View>
-              <View>
-                <TouchableOpacity
-                  onPress={logout}
-                  style={{flexDirection:'row', justifyContent: "flex-end", paddingRight: 8, paddingTop: 8}}
-                >
-                  <Image
-                    source={icons.logout}
-                    resizeMode="contain"
-                    style={{height: 50, width: 50}}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={{alignItems: "flex-end"}}>
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={{padding: 10}}>
+        <View style={{flexDirection: "row", justifyContent: "space-between", padding: 2}}>
+          <View>
+            <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
+              Nombre: {user?.nombre}
+            </Text>
+            <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
+              Celular: {user?.celular}
+            </Text>
+            <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
+              Correo: {user?.correo}
+            </Text>
+            <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
+              Rol: {user?.rol === "11" ? "Administrador" : user?.rol === "10" ? "Mech verificado" : user?.rol === "01" ? "Mech no verificado" : "Usuario"}
+            </Text>
+          </View>
+          <View>
+            <TouchableOpacity
+              onPress={logout}
+              style={{flexDirection:'row', justifyContent: "flex-end", paddingRight: 8, paddingTop: 8, position: "relative"}}
+            >
+              <Image
+                source={icons.logout}
+                resizeMode="contain"
+                style={{height: 50, width: 50}}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        { (user?.rol === "11" || user?.rol === "00") &&
+        <View>
+          <View style={{alignItems: "flex-end", flexDirection:'row', justifyContent: "space-between"}}>
+            <CustomButton
+              title={"Registrar auto"}
+              buttonStyles={[styles.normalButton, {paddingVertical: 8, paddingHorizontal: 16}]}
+              handlePress={() => {
+                router.push("/carCreate");
+              }}
+            />
+            { user?.rol === "11" &&
               <CustomButton
-                title={"Registrar auto"}
+                title={"Panel de administración"}
                 buttonStyles={[styles.normalButton, {paddingVertical: 8, paddingHorizontal: 16}]}
                 handlePress={() => {
-                  router.push("/carCreate");
+                  router.push("/administration");
                 }}
               />
-            </View>
-            <View>
-              {carList.length > 0 &&
-                <View style={{flexDirection: "row", justifyContent: "space-between"}}>
-                  <Text style={[styles.normalText]}>Patente</Text>
-                  <Text style={[styles.normalText]}>Marca</Text>
-                  <Text style={[styles.normalText]}>Modelo</Text>
-                  <Text style={[styles.normalText]}>Acción</Text>
-                </View>
-              }
-              <FlatList
-                refreshing={refreshing}
-                onRefresh={handleRefresh}
-                data = {carList}
-                keyExtractor={(item) => item.id}
-                renderItem={({item}) => (
-                  <View style={{alignItems: "center", flexDirection: "row", justifyContent: "space-between"}}>
-                    <Text style={[styles.normalText]}>{item.patente}</Text>
-                    <Text style={[styles.normalText]}>{item.marca}</Text>
-                    <Text style={[styles.normalText]}>{item.modelo}</Text>
-                    <CustomButton
-                      title={"Editar"}
-                      buttonStyles={styles.normalButton}
-                      handlePress={() => {
-                        router.push({pathname: "/carEdit", params: item});
-                      }}
-                    />
-                  </View>
-                )}
-                ListEmptyComponent={
-                  <Text style={[styles.normalText, {flex: 1}]}>¡Registre su auto para pedir una cita!</Text>
-                }
-              />
-            </View>
+            }
           </View>
-        </SafeAreaView>
-      );
-    case "10":
-    case "01":
-      return (
-        <SafeAreaView style={styles.container}>
-          <View style={{padding: 10}}>
-            <View>
-              <View style={{flexDirection:'row', justifyContent: "flex-end", padding: 16}}>
-                <TouchableOpacity onPress={logout} >
-                  <Image
-                    source={icons.logout}
-                    resizeMode="contain"
-                    style={{height: 50, width: 50}}
-                  />
-                </TouchableOpacity>
+          <View>
+            {carList.length > 0 &&
+              <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+                <Text style={[styles.normalText]}>Patente</Text>
+                <Text style={[styles.normalText]}>Marca</Text>
+                <Text style={[styles.normalText]}>Modelo</Text>
+                <Text style={[styles.normalText]}>Acción</Text>
               </View>
-              <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
-                Nombre: {user?.nombre}
-              </Text>
-              <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
-                Celular: {user?.celular}
-              </Text>
-              <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
-                Correo: {user?.correo}
-              </Text>
-              <Text style={[styles.titleText, {paddingVertical: 8, textAlign: "flex-start"}]}>
-                Rol: {user?.rol === "10" ? "Mech verificado": "Mech no verificado"}
-              </Text>
-            </View>
-            <View></View>
+            }
+            <FlatList
+              refreshing={refreshing}
+              onRefresh={handleCarRefresh}
+              data = {carList}
+              keyExtractor={(item) => item.id}
+              renderItem={({item}) => (
+                <View style={{alignItems: "center", flexDirection: "row", justifyContent: "space-between"}}>
+                  <Text style={[styles.normalText]}>{item.patente}</Text>
+                  <Text style={[styles.normalText]}>{item.marca}</Text>
+                  <Text style={[styles.normalText]}>{item.modelo}</Text>
+                  <CustomButton
+                    title={"Editar"}
+                    buttonStyles={styles.normalButton}
+                    handlePress={() => {
+                      router.push({pathname: "/carEdit", params: item});
+                    }}
+                  />
+                </View>
+              )}
+              ListEmptyComponent={
+                <Text style={[styles.normalText, {flex: 1}]}>¡Registre su auto para pedir una cita!</Text>
+              }
+            />
           </View>
-        </SafeAreaView>
-      );
-    }
+        </View>
+        }
+      </View>
+    </SafeAreaView>
+  );
 };
