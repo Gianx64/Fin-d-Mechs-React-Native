@@ -15,10 +15,12 @@ const RootLayout = () => {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="administration" options={{ headerShown: false }} />
         <Stack.Screen name="appointmentCreate" options={{ headerShown: false }} />
         <Stack.Screen name="appointmentEdit" options={{ headerShown: false }} />
         <Stack.Screen name="carCreate" options={{ headerShown: false }} />
         <Stack.Screen name="carEdit" options={{ headerShown: false }} />
+        <Stack.Screen name="mechReview" options={{ headerShown: false }} />
       </Stack>
     </GlobalProvider>
   );
