@@ -1,27 +1,23 @@
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
-import { Text, ScrollView, Alert, TouchableOpacity, Image } from 'react-native'
+import { useState } from "react";
+import { Image, ScrollView, Text, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomButton } from "../components";
 import { icons, styles } from "../constants";
 import { setMech } from "../api/apiUsers";
 
-export default ({ route }) => {
+export default () => {
   const [isSubmitting, setSubmitting] = useState(false);
   const params = useLocalSearchParams();
 
   const submit = async () => {
     setSubmitting(true);
-    try {
-      const result = await setMech(params.id);
-      if (result)
+    await setMech(params.id).then(response => {
+      if (response)
         router.back();
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    } finally {
       setSubmitting(false);
-    }
+    });
   };
 
   return (

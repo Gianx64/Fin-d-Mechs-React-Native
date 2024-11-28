@@ -1,13 +1,13 @@
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
-import { Text, ScrollView, Alert, TouchableOpacity, Image } from 'react-native'
+import { useState } from "react";
+import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomButton, FormField } from "../components";
 import { icons, styles } from "../constants";
-import { modifyCar } from "../api/apiCars";
+import { disableCar, updateCar } from "../api/apiCars";
 
-export default ({ route }) => {
+export default () => {
   const [isSubmitting, setSubmitting] = useState(false);
   const params = useLocalSearchParams();
   const [form, setForm] = useState({
@@ -20,23 +20,31 @@ export default ({ route }) => {
   });
 
   const submit = async () => {
-    if (form.patente === "" ||
-      form.vin === "" ||
-      form.marca === "" ||
-      form.modelo === "") {
-      Alert.alert("Error", "Por favor llene todos los campos");
-    } else {
+    try {
+      if (form.patente === "" ||
+        form.vin === "" ||
+        form.marca === "" ||
+        form.modelo === "")
+        throw new Error("Por favor llene todos los campos");
       setSubmitting(true);
-      try {
-        const result = await modifyCar(form);
-        if (result)
+      await updateCar(form).then(response => {
+        if (response)
           router.back();
-      } catch (error) {
-        Alert.alert("Error", error.message);
-      } finally {
-        setSubmitting(false);
-      }
+      });
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setSubmitting(false);
     }
+  };
+  
+  const disable = async () => {
+    setSubmitting(true);
+    await disableCar(params.id).then(response => {
+      if (response)
+        router.back();
+      setSubmitting(false);
+    });
   };
 
   return (
@@ -85,13 +93,22 @@ export default ({ route }) => {
           maxLength={32}
         />
 
-        <CustomButton
-          title="Actualizar"
-          handlePress={submit}
-          containerStyles={{paddingBottom: 40, paddingTop: 20}}
-          buttonStyles={styles.mainButton}
-          isLoading={isSubmitting}
-        />
+        <View style={{alignSelf: "center", flexDirection: "row", justifyContent: "space-between", paddingBottom: 40, paddingTop: 16}}>
+          <CustomButton
+            title="Eliminar"
+            handlePress={disable}
+            containerStyles={{paddingBottom: 40, paddingTop: 20}}
+            buttonStyles={styles.mainButton}
+            isLoading={isSubmitting}
+          />
+          <CustomButton
+            title="Actualizar"
+            handlePress={submit}
+            containerStyles={{paddingBottom: 40, paddingTop: 20}}
+            buttonStyles={styles.mainButton}
+            isLoading={isSubmitting}
+          />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

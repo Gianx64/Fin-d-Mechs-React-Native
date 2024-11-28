@@ -10,6 +10,7 @@ import { useGlobalContext } from "../../api/GlobalProvider";
 
 export default () => {
   const { setUser, setIsLogged } = useGlobalContext();
+  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     correo: "",
@@ -17,23 +18,24 @@ export default () => {
   });
 
   const submit = async () => {
-    if (form.correo === "" || form.clave === "") {
-      Alert.alert("Error", "Por favor llene todos los campos");
-    } else {
+    try {
+      if (form.correo === "" || form.clave === "")
+        throw new Error("Por favor llene todos los campos");
+      if (form.correo.indexOf('@') === -1 || form.correo.indexOf('.') === -1)
+        throw new Error("Correo inválido");
       setSubmitting(true);
-      try {
-        let result = await signIn(form.correo, form.clave);
-        if (result) {
-          delete result["token"];
-          setUser(result);
+      await signIn(form.correo, form.clave).then(response => {
+        if (response) {
+          delete response["token"];
+          setUser(response);
           setIsLogged(true);
           router.replace("/home");
         }
-      } catch (error) {
-        Alert.alert("Error de cliente", error.message);
-      } finally {
-        setSubmitting(false);
-      }
+      });
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -55,7 +57,6 @@ export default () => {
             title="Correo"
             value={form.correo}
             handleChangeText={(e) => setForm({ ...form, correo: e.toLowerCase() })}
-            otherStyles="mt-7"
             keyboardType="email-address"
             maxLength={64}
           />
@@ -65,6 +66,8 @@ export default () => {
             value={form.clave}
             handleChangeText={(e) => setForm({ ...form, clave: e })}
             otherStyles={{paddingBottom: 50}}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
             maxLength={64}
           />
 

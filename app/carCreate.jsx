@@ -1,6 +1,6 @@
 import { router } from "expo-router";
-import React, { useState } from "react";
-import { Text, ScrollView, Alert, TouchableOpacity, Image } from 'react-native'
+import { useState } from "react";
+import { Alert, Image, Platform, ScrollView, Text, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomButton, FormField } from "../components";
@@ -8,7 +8,7 @@ import { useGlobalContext } from "../api/GlobalProvider";
 import { icons, styles } from "../constants";
 import { createCar } from "../api/apiCars";
 
-export default ({ route }) => {
+export default () => {
   const { user } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
@@ -17,25 +17,25 @@ export default ({ route }) => {
     vin: "",
     marca: "",
     modelo: "",
+    anualidad: 0
   });
 
   const submit = async () => {
-    if (form.patente === "" ||
-      form.vin === "" ||
-      form.marca === "" ||
-      form.modelo === "") {
-      Alert.alert("Error", "Por favor llene todos los campos");
-    } else {
+    try {
+      if (form.patente === "" ||
+        form.vin === "" ||
+        form.marca === "" ||
+        form.modelo === "")
+        throw new Error("Por favor llene todos los campos");
       setSubmitting(true);
-      try {
-        const result = await createCar(form);
-        if (result)
+      await createCar(form).then(response => {
+        if (response)
           router.back();
-      } catch (error) {
-        Alert.alert("Error", error.message);
-      } finally {
-        setSubmitting(false);
-      }
+      });
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -65,7 +65,7 @@ export default ({ route }) => {
         />
 
         <FormField
-          title="VIN"
+          title="VIN (opcional)"
           value={form.vin}
           handleChangeText={(e) => setForm({ ...form, vin: e.toUpperCase() })}
           maxLength={17}
@@ -83,6 +83,15 @@ export default ({ route }) => {
           value={form.modelo}
           handleChangeText={(e) => setForm({ ...form, modelo: e })}
           maxLength={32}
+        />
+
+        <FormField
+          title="Año de vehículo"
+          value={form.anualidad}
+          handleChangeText={(e) => setForm({ ...form, anualidad: parseInt(e) })}
+          inputmode="numeric"
+          keyboardType={Platform.OS === "android" ? "numeric" : "number-pad"}
+          maxLength={4}
         />
 
         <CustomButton

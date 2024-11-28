@@ -1,40 +1,30 @@
-import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomButton } from "../components";
 import { icons, styles } from "../constants";
 import { getAdminData } from "../api/apiUsers";
-import { useGlobalContext } from "../api/GlobalProvider";
 
-export default ({ route }) => {
-  const { setLoading } = useGlobalContext();
+export default () => {
   const [refreshing, setRefreshing] = useState(true);
   const [mechsList, setMechsList] = useState([]);
 
   async function fetchAdminData() {
-    setLoading(true);
-    try {
-      const response = await getAdminData();
+    setRefreshing(true);
+    await getAdminData().then(response => {
       if (response) {
         setMechsList(response.mechs);
       }
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setLoading(false);
       setRefreshing(false);
-    }
+    });
   }
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await fetchAdminData();
-    setRefreshing(false);
-  }
-  useEffect(() => {
-    fetchAdminData()
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchAdminData();
+    }, [])
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -62,7 +52,7 @@ export default ({ route }) => {
           }
           <FlatList
             refreshing={refreshing}
-            onRefresh={handleRefresh}
+            onRefresh={fetchAdminData}
             data = {mechsList}
             keyExtractor={(item) => item.id}
             renderItem={({item}) => (
@@ -79,7 +69,7 @@ export default ({ route }) => {
               </View>
             )}
             ListEmptyComponent={
-              <Text style={[styles.normalText, {flex: 1}]}>¡No quedan mechs para verificar!</Text>
+              <Text style={styles.subtitleText}>¡No quedan mechs para verificar!</Text>
             }
           />
         </View>

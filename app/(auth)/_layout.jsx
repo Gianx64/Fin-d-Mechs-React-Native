@@ -30,7 +30,7 @@ const AuthLayout = () => {
       {loading && <ActivityIndicator
         animating={loading}
         color="#fff"
-        size={Platform.OS === "ios" ? "large" : 50}
+        size={Platform.OS === "android" ? 50 : "large"}
         style={styles.loader}
       />}
       <StatusBar backgroundColor={colors.secondary} style="light" />

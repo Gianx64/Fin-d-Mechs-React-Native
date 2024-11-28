@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, Dimensions } from "react-native";
 
 import { icons, styles } from "../constants";
@@ -10,12 +9,12 @@ const FormField = ({
   placeholder,
   handleChangeText,
   otherStyles,
+  showPassword,
+  setShowPassword,
   ...props
 }) => {
-  const [showPassword, setShowPassword] = useState(false);
-
   return (
-    <View style={[{}, otherStyles]}>
+    <View style={otherStyles}>
       <Text style={styles.subtitleText}>{title}</Text>
 
       <View style={{flexDirection:'row', justifyContent:'center'}}>
@@ -26,7 +25,7 @@ const FormField = ({
           placeholder={placeholder}
           placeholderTextColor="white"
           onChangeText={handleChangeText}
-          secureTextEntry={title === "Contraseña" && !showPassword}
+          secureTextEntry={(title === "Contraseña" || title === "Confirmar Contraseña") && !showPassword}
           {...props}
         />
 

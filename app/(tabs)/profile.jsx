@@ -1,6 +1,6 @@
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
-import { View, Image, FlatList, TouchableOpacity, Text, Dimensions } from "react-native";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { icons, styles } from "../../constants";
@@ -10,7 +10,7 @@ import { useGlobalContext } from "../../api/GlobalProvider";
 import CustomButton from "../../components/CustomButton";
 
 export default () => {
-  const { user, setUser, setIsLogged, setLoading } = useGlobalContext();
+  const { user, setUser, setIsLogged } = useGlobalContext();
   const [refreshing, setRefreshing] = useState(true);
   const [carList, setCarList] = useState([]);
 
@@ -22,29 +22,19 @@ export default () => {
     router.replace("/sign-in");
   };
   async function fetchCarData() {
-    setLoading(true);
-    try {
-      const response = await getCars();
-      if (response)
-        setCarList(response);
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }
-  const handleCarRefresh = async () => {
-    if (user?.rol === "11" || user?.rol === "00") {
-      setRefreshing(true);
-      await fetchCarData();
-      setRefreshing(false);
-    }
-  }
-  useEffect(() => {
+    setRefreshing(true);
     if (user?.rol === "11" || user?.rol === "00")
+      await getCars().then(response => {
+        if (response)
+          setCarList(response);
+        setRefreshing(false);
+      });
+  }
+  useFocusEffect(
+    useCallback(() => {
       fetchCarData()
-  }, []);
+    }, [])
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -108,7 +98,7 @@ export default () => {
             }
             <FlatList
               refreshing={refreshing}
-              onRefresh={handleCarRefresh}
+              onRefresh={fetchCarData}
               data = {carList}
               keyExtractor={(item) => item.id}
               renderItem={({item}) => (
@@ -126,7 +116,7 @@ export default () => {
                 </View>
               )}
               ListEmptyComponent={
-                <Text style={[styles.normalText, {flex: 1}]}>¡Registre su auto para pedir una cita!</Text>
+                <Text style={styles.subtitleText}>¡Registre su auto para pedir una cita!</Text>
               }
             />
           </View>

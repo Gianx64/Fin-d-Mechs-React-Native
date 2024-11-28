@@ -1,8 +1,8 @@
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Dimensions, Alert, TouchableOpacity, Image } from 'react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect, useState } from "react";
+import { Alert, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { CustomButton, FormField } from "../components";
@@ -13,7 +13,7 @@ import { icons, styles } from "../constants";
 export default () => {
   const { user, setLoading } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
-  const [form, setForm] = useState({
+  const defaultForm = {
     id_usuario: user?.id,
     fecha: "Ingrese una fecha",
     ciudad: "",
@@ -23,40 +23,29 @@ export default () => {
     id_mech: null,
     servicio: "00",
     id_taller: null
-  });
+  };
+  const [form, setForm] = useState(defaultForm);
 
   const submit = async () => {
-    if (form.fecha === "Ingrese una fecha" ||
-      form.ciudad === "" ||
-      form.direccion === "" ||
-      !form.id_auto ||
-      form.detalles === "" ||
-      (form.servicio === "01" && form.id_taller == null)) {
-      Alert.alert("Error", "Por favor llene todos los campos");
-    } else {
+    try {
+      if (form.fecha === "Ingrese una fecha" ||
+        form.ciudad === "" ||
+        form.direccion === "" ||
+        !form.id_auto ||
+        form.detalles === "" ||
+        (form.servicio === "01" && form.id_taller == null))
+        throw new Error("Por favor llene todos los campos");
       setSubmitting(true);
-      try {
-        const result = await createAppointment(form);
-        if (result) {
+      await createAppointment(form).then(response => {
+        if (response) {
           router.replace("/home");
-          setForm({
-            usuario: user?.id,
-            fecha: "Ingrese una fecha",
-            ciudad: "",
-            direccion: "",
-            auto_marca: "",
-            auto_modelo: "",
-            detalles: "",
-            mech: null,
-            servicio: "01",
-            id_taller: null
-          });
+          setForm(defaultForm);
         }
-      } catch (error) {
-        Alert.alert("Error de cliente", error.message);
-      } finally {
-        setSubmitting(false);
-      }
+      });
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setSubmitting(false);
     }
   };
   
@@ -94,7 +83,7 @@ export default () => {
   //Dropdown de mech
   const [dropdownMech, setDropdownMech] = useState(0);
   const [isMechFocus, setIsMechFocus] = useState(false);
-  const [mechList, setMechList] = useState([{id: 0, usuario: "Primero que acepte.", correo: ""}]);
+  const [mechList, setMechList] = useState([{id: 0, usuario: "", correo: "Primero que acepte."}]);
 
   //Dropdown de talleres
   const [dropdownWorkshop, setDropdownWorkshop] = useState(0);
@@ -102,20 +91,25 @@ export default () => {
   const [workshopList, setWorkshopList] = useState([]);
 
   async function fetchFormData() {
-    setLoading(true);
     try {
-      const response = await getFormData();
-      if (response) {
-        setCarsList(response.cars);
-        if (response.cars.length > 0) {
-          setDropdownCars(response.cars[0].id);
-          setForm({...form, id_auto: response.cars[0].id});
+      setLoading(true);
+      await getFormData().then(response => {
+        if (response) {
+          setCarsList(response.cars);
+          if (response.cars.length > 0) {
+            setDropdownCars(response.cars[0].id);
+            setForm({...form, id_auto: response.cars[0].id});
+          } else {
+            router.back();
+            throw new Error("Para agendar una cita, primero debe registrar un auto en su perfil. Solo se permite una cita por auto.");
+          }
+          if (response.mechs.length > 0)
+            setMechList(mechList.concat(response.mechs));
+          setWorkshopList(response.workshops);
+          if (response.workshops.length > 0 || true) //TODO: remove true
+            setServiceList([{ label: "Servicio a domicilio", value: "00" }, { label: "Mecánico lleva a taller", value: "10" }, { label: "Cliente lleva a taller", value: "01" }])
         }
-        setMechList(mechList.concat(response.mechs));
-        setWorkshopList(response.workshops);
-        if (response.workshops.length > 0 || true) //TODO: remove true
-          setServiceList([{ label: "Servicio a domicilio", value: "00" }, { label: "Mecánico lleva a taller", value: "10" }, { label: "Cliente lleva a taller", value: "01" }])
-      }
+      });
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
@@ -277,7 +271,7 @@ export default () => {
               <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
                 <Dropdown
                   data={mechList}
-                  labelField="usuario"
+                  labelField="correo"
                   placeholderStyle={styles.formField}
                   selectedTextStyle={styles.formField}
                   valueField="id"
