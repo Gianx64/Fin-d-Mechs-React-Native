@@ -4,7 +4,7 @@ import { View, Text, Image, ActivityIndicator, Platform, ScrollView, Dimensions 
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomButton } from "../components";
-import { colors, images, styles } from "../constants";
+import { colors, icons, styles } from "../constants";
 import { useGlobalContext } from "../api/GlobalProvider";
 
 export default () => {
@@ -17,7 +17,7 @@ export default () => {
       <ScrollView>
         <View style={{justifyContent: "center", height: Dimensions.get("window").height-20}}>
           <Image
-            source={images.logo}
+            source={icons.logo}
             style={styles.welcomeLogo}
             resizeMode="contain"
           />

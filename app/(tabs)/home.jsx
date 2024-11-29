@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { FlatList, Image, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { images, styles } from "../../constants";
+import { icons, styles } from "../../constants";
 import { getAppointments } from "../../api/apiAppointments";
 import { useGlobalContext } from "../../api/GlobalProvider";
 import CustomButton from "../../components/CustomButton";
@@ -42,7 +42,7 @@ export default () => {
           </View>
           <View>
             <Image
-              source={images.logo}
+              source={icons.logo}
               style={[styles.tinyLogo, {alignSelf: "flex-end"}]}
               resizeMode="contain"
             />

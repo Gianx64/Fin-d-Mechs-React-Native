@@ -11,7 +11,7 @@ export async function createCar(car) {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then((res) => {
+    }).then(res => {
       Alert.alert("Éxito", "Auto creado exitosamente.");
       console.log("Car created, ID: "+res.data.id);
       return res.data;
@@ -36,7 +36,7 @@ export const getCars = async () => {
       headers: {
         Authorization: `Bearer ${token}`
       },
-    }).then((res) => {
+    }).then(res => {
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
@@ -59,7 +59,7 @@ export const updateCar = async (car) => {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then((res) => {
+    }).then(res => {
       Alert.alert("Éxito", "Auto actualizado exitosamente.");
       return res.data;
     }).catch(error => {
@@ -83,7 +83,7 @@ export const disableCar = async (id) => {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then((res) => {
+    }).then(res => {
       Alert.alert("Éxito", "Auto eliminado exitosamente.");
       return res.data;
     }).catch(error => {

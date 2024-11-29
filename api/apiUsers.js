@@ -11,7 +11,7 @@ export async function getCurrentUser() {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then((res) => {
+    }).then(res => {
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
@@ -27,7 +27,7 @@ export async function getCurrentUser() {
 
 // Register user
 export async function signUp(form) {
-  return await apiManager.post('/auth/signup', form).then((res) => {
+  return await apiManager.post('/auth/signup', form).then(res => {
     setItemAsync("Token", res.data.token);
     Alert.alert("Éxito", "Usuario creado exitosamente.");
     return res.data;
@@ -45,7 +45,7 @@ export async function signIn(email, password) {
   return await apiManager.post('/auth/signin', {
     correo: email,
     clave: password
-  }).then((res) => {
+  }).then(res => {
     setItemAsync("Token", res.data.token);
     Alert.alert("Éxito", "Sesión iniciada exitosamente");
     return res.data;
@@ -71,7 +71,7 @@ export async function getAdminData() {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then((res) => {
+    }).then(res => {
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
@@ -94,7 +94,7 @@ export async function setMech(id) {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then((res) => {
+    }).then(res => {
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")

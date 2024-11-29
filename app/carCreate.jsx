@@ -17,15 +17,15 @@ export default () => {
     vin: "",
     marca: "",
     modelo: "",
-    anualidad: 0
+    anualidad: null
   });
 
   const submit = async () => {
     try {
       if (form.patente === "" ||
-        form.vin === "" ||
         form.marca === "" ||
-        form.modelo === "")
+        form.modelo === "" ||
+        !form.anualidad)
         throw new Error("Por favor llene todos los campos");
       setSubmitting(true);
       await createCar(form).then(response => {

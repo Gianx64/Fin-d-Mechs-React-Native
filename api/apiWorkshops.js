@@ -11,7 +11,7 @@ export async function createWorkshop(workshop) {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then((res) => {
+    }).then(res => {
       Alert.alert("Éxito", "Auto creado exitosamente.");
       console.log("Workshop created, ID: "+res.data.id);
       return res.data;
@@ -36,7 +36,7 @@ export const getWorkshops = async () => {
       headers: {
         Authorization: `Bearer ${token}`
       },
-    }).then((res) => {
+    }).then(res => {
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
@@ -59,7 +59,7 @@ export const modifyWorkshop = async (workshop) => {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then((res) => {
+    }).then(res => {
       Alert.alert("Éxito", "Auto modificado exitosamente.");
       return res.data;
     }).catch(error => {
@@ -83,7 +83,7 @@ export const updateWorkshop = async (workshop) => {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then((res) => {
+    }).then(res => {
       Alert.alert("Éxito", "Auto actualizado exitosamente.");
       return res.data;
     }).catch(error => {

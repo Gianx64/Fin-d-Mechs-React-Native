@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomButton, FormField } from "../components";
@@ -14,15 +14,14 @@ export default () => {
     id: params.id,
     id_usuario: params.id_usuario,
     patente: params.patente,
-    vin: params.vin,
     marca: params.marca,
     modelo: params.modelo,
+    anualidad: params.anualidad
   });
 
   const submit = async () => {
     try {
       if (form.patente === "" ||
-        form.vin === "" ||
         form.marca === "" ||
         form.modelo === "")
         throw new Error("Por favor llene todos los campos");
@@ -73,13 +72,6 @@ export default () => {
         />
 
         <FormField
-          title="VIN"
-          value={form.vin}
-          handleChangeText={(e) => setForm({ ...form, vin: e.toUpperCase() })}
-          maxLength={17}
-        />
-
-        <FormField
           title="Marca de vehículo"
           value={form.marca}
           handleChangeText={(e) => setForm({ ...form, marca: e })}
@@ -91,6 +83,15 @@ export default () => {
           value={form.modelo}
           handleChangeText={(e) => setForm({ ...form, modelo: e })}
           maxLength={32}
+        />
+
+        <FormField
+          title="Año de vehículo"
+          value={form.anualidad}
+          handleChangeText={(e) => setForm({ ...form, anualidad: parseInt(e) })}
+          inputmode="numeric"
+          keyboardType={Platform.OS === "android" ? "numeric" : "number-pad"}
+          maxLength={4}
         />
 
         <View style={{alignSelf: "center", flexDirection: "row", justifyContent: "space-between", paddingBottom: 40, paddingTop: 16}}>

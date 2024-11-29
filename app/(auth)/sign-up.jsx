@@ -5,7 +5,7 @@ import { CheckBox } from "react-native-btr";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomButton, FormField } from "../../components";
-import { colors, images, styles } from "../../constants";
+import { colors, icons, styles } from "../../constants";
 import { signUp } from "../../api/apiUsers";
 import { useGlobalContext } from "../../api/GlobalProvider";
 
@@ -47,7 +47,7 @@ export default () => {
     <SafeAreaView style={styles.container}>
       <ScrollView style={{paddingVertical: 20}}>
         <Image
-          source={images.logo}
+          source={icons.logo}
           style={[styles.tinyLogo, {alignSelf: "center"}]}
           resizeMode="contain"
         />

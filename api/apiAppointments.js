@@ -2,16 +2,17 @@ import { Alert } from "react-native";
 import { getItemAsync } from "expo-secure-store";
 
 import apiManager from "./apiManager";
+import axios from "axios";
 
 // Get Appointments Form Data
 export const getFormData = async () => {
   const token = await getItemAsync("Token");
   if (token) {
-    return await apiManager.get('/appointments/formdata', {
+    let data = await apiManager.get('/appointments/formdata', {
       headers: {
         Authorization: `Bearer ${token}`
       },
-    }).then((res) => {
+    }).then(res => {
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
@@ -20,6 +21,16 @@ export const getFormData = async () => {
         Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
+    const cities = await axios.get("https://gist.githubusercontent.com/juanbrujo/0fd2f4d126b3ce5a95a7dd1f28b3d8dd/raw/b8575eb82dce974fd2647f46819a7568278396bd/comunas-regiones.json").then(res => {
+        var comunas = new Array();
+        for(var c in res.data.regiones[15].comunas) {
+          var jsonObj = new Object();
+          jsonObj.label = res.data.regiones[15].comunas[c];
+          comunas.push(jsonObj);
+        }
+        return comunas;
+      });
+    return {... data, cities: cities};
   } else {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
@@ -34,7 +45,7 @@ export async function createAppointment(appointment) {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then((res) => {
+    }).then(res => {
       Alert.alert("Éxito", "Cita creada exitosamente.");
       console.log("Appointment created, ID: "+res.data.id);
       return res.data;
@@ -59,7 +70,7 @@ export const getAppointments = async () => {
       headers: {
         Authorization: `Bearer ${token}`
       },
-    }).then((res) => {
+    }).then(res => {
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
@@ -85,7 +96,7 @@ export const updateAppointment = async (appointment, action) => {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then((res) => {
+    }).then(res => {
       switch(action) {
         case 0:
           Alert.alert("Éxito", "Cita modificada exitosamente.");
@@ -119,7 +130,7 @@ export const flagAppointment = async (id, flag) => {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then((res) => {
+    }).then(res => {
       switch(flag) {
         case 1:
           Alert.alert("Éxito", "Cita cancelada exitosamente.");

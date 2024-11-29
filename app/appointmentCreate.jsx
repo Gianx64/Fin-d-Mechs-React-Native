@@ -70,6 +70,11 @@ export default () => {
     showMode('time');
   };
 
+  //Dropdown de ciudades
+  const [dropdownCities, setDropdownCities] = useState("Seleccione una ciudad");
+  const [isCitiesFocus, setIsCitiesFocus] = useState(false);
+  const [citiesList, setCitiesList] = useState([]);
+
   //Dropdown de servicio
   const [dropdownService, setDropdownService] = useState("00");
   const [isServiceFocus, setIsServiceFocus] = useState(false);
@@ -95,6 +100,7 @@ export default () => {
       setLoading(true);
       await getFormData().then(response => {
         if (response) {
+          setCitiesList(response.cities);
           setCarsList(response.cars);
           if (response.cars.length > 0) {
             setDropdownCars(response.cars[0].id);
@@ -174,12 +180,27 @@ export default () => {
             />
           }
 
-          <FormField
-            title="Ciudad"
-            value={form.ciudad}
-            handleChangeText={(e) => setForm({ ...form, ciudad: e })}
-            maxLength={32}
-          />
+          <View style={{paddingBottom: 8}}>
+            <Text style={styles.subtitleText}>Ciudad</Text>
+            <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
+              <Dropdown
+                data={citiesList}
+                labelField="label"
+                placeholderStyle={styles.formField}
+                selectedTextStyle={styles.formField}
+                valueField="value"
+                value={dropdownCities}
+                onFocus={() => setIsCitiesFocus(true)}
+                onBlur={() => setIsCitiesFocus(false)}
+                placeholder={!isCitiesFocus ? 'Seleccionar item' : '...'}
+                onChange={(e) => {
+                  setDropdownCities(e.value);
+                  setForm({ ...form, ciudad: e.value });
+                  setIsCitiesFocus(false);
+                }}
+              />
+            </View>
+          </View>
 
           <FormField
             title="Dirección"
