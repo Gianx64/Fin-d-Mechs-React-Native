@@ -1,14 +1,15 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import { Dropdown } from 'react-native-element-dropdown';
+import { Alert, Dimensions, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 import { CustomButton, FormField } from "../components";
-import { flagAppointment, getFormData, updateAppointment } from "../api/apiAppointments";
-import { useGlobalContext } from "../api/GlobalProvider";
 import { icons, styles } from "../constants";
+import { flagAppointment, getFormData, updateAppointment } from "../api/apiAppointments";
+import { updateCarVIN } from "../api/apiCars";
+import { useGlobalContext } from "../api/GlobalProvider";
 
 export default () => {
   const { user, setLoading } = useGlobalContext();
@@ -17,6 +18,7 @@ export default () => {
   const [isConfirming, setConfirming] = useState(false);
   const [isCompleting, setCompleting] = useState(false);
   const params = useLocalSearchParams();
+  const [vin, setVIN] = useState(params.vin);
   const [form, setForm] = useState({
     id: params.id,
     id_usuario: params.id_usuario,
@@ -87,9 +89,13 @@ export default () => {
     });
   };
 
+  const updateVIN = async () => {
+    await updateCarVIN(vin, params.id_auto);
+  };
+
   //Picker de fechas y hora
   const [date, setDate] = useState(new Date(form.fecha));
-  const [mode, setPickerMode] = useState('date');
+  const [mode, setPickerMode] = useState("date");
   const [showPicker, setShowPicker] = useState(false);
   const onChangePicker = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -102,11 +108,16 @@ export default () => {
     setPickerMode(currentMode);
   };
   const showDatepicker = () => {
-    showMode('date');
+    showMode("date");
   };
   const showTimepicker = () => {
-    showMode('time');
+    showMode("time");
   };
+
+  //Dropdown de ciudades
+  const [dropdownCities, setDropdownCities] = useState("Seleccionar item");
+  const [isCitiesFocus, setIsCitiesFocus] = useState(false);
+  const [citiesList, setCitiesList] = useState([]);
 
   //Dropdown de servicio
   const [dropdownService, setDropdownService] = useState("00");
@@ -116,7 +127,7 @@ export default () => {
   //Dropdown de mech
   const [dropdownMech, setDropdownMech] = useState(0);
   const [isMechFocus, setIsMechFocus] = useState(false);
-  const [mechList, setMechList] = useState([{id: 0, usuario: "", correo: "Primero que acepte."}]);
+  const [mechList, setMechList] = useState([{id: 0, correo: "Primero que acepte."}]);
 
   //Dropdown de talleres
   const [dropdownWorkshop, setDropdownWorkshop] = useState(0);
@@ -128,6 +139,7 @@ export default () => {
       setLoading(true);
       await getFormData().then(response => {
         if (response) {
+          setCitiesList(response.cities);
           if (response.mechs.length > 0)
             setMechList(mechList.concat(response.mechs));
           setWorkshopList(response.workshops);
@@ -142,7 +154,8 @@ export default () => {
     }
   }
   useEffect(() => {
-    fetchFormData()
+    if (user?.id == params.id_usuario && !(params.cancelado || params.confirmado || params.completado))
+      fetchFormData()
   }, []);
 
   return (
@@ -150,7 +163,7 @@ export default () => {
       <ScrollView style={{padding: 10}}>
         <TouchableOpacity
           onPress={() => {router.back()}}
-          style={{flexDirection:'row', justifyContent: "flex-start", paddingLeft: 8, paddingTop: 8, position: "absolute", zIndex: 1}}
+          style={{flexDirection: "row", justifyContent: "flex-start", paddingLeft: 8, paddingTop: 8, position: "absolute", zIndex: 1}}
         >
           <Image
             source={icons.leftArrow}
@@ -166,43 +179,62 @@ export default () => {
         { (user?.rol === "10" || params.cancelado || params.confirmado || params.completado) &&
           <View>
             <Text style={[styles.subtitleText, {textAlign: "left"}]}>
-              Correo de usuario: {user?.rol === "10" ? params.user_correo : user?.correo}
+              { user?.id == params.id_usuario ?
+                params.id_mech ?
+                  `Mech: ${params.mech_nombre}${"\n"}Celular: ${params.mech_celular}${"\n"}Correo: ${params.mech_correo}`
+                  :
+                  "Esta cita aún no ha sido tomada por un mech, revise más tarde."
+                :
+                `Usuario: ${params.user_nombre}${"\n"}Celular: ${params.user_celular}${"\n"}Correo: ${params.user_correo}`
+              }
             </Text>
             <Text style={[styles.subtitleText, {textAlign: "left"}]}>
               Fecha y hora: {params.fecha.split('.')[0].split('T')[0]} {params.fecha.split('.')[0].split('T')[1]}
             </Text>
             <Text style={[styles.subtitleText, {textAlign: "left"}]}>
-              Ciudad: {params.ciudad}
-            </Text>
-            <Text style={[styles.subtitleText, {textAlign: "left"}]}>
+              Comuna: {params.ciudad}{"\n"}
               Dirección de cita: {params.direccion}
             </Text>
             <Text style={[styles.subtitleText, {textAlign: "left"}]}>
               Patente de auto: {params.patente}
             </Text>
+            { params.cancelado || params.completado || user?.id == params.id_usuario ?
+              params.vin && <Text style={[styles.subtitleText, {textAlign: "left"}]}>
+                VIN de auto: {params.vin}
+              </Text>
+              :
+            user?.id == params.id_mech && <View style={{alignItems: "center", flexDirection: "row", justifyContent: "space-between"}}>
+                <Text style={[styles.subtitleText, {textAlign: "left"}]}>
+                  VIN de auto:
+                </Text>
+                <TextInput
+                  maxLength={17}
+                  style={[styles.formField, {fontSize: 16, height: 40, minWidth: 160}]}
+                  value={vin}
+                  onChangeText={e => setVIN(e.toUpperCase())}
+                />
+                <CustomButton
+                  title={"Actualizar"}
+                  buttonStyles={styles.normalButton}
+                  handlePress={updateVIN}
+                />
+              </View>
+            }
             <Text style={[styles.subtitleText, {textAlign: "left"}]}>
-              VIN de auto: {params.vin}
-            </Text>
-            <Text style={[styles.subtitleText, {textAlign: "left"}]}>
-              Marca de auto: {params.marca}
-            </Text>
-            <Text style={[styles.subtitleText, {textAlign: "left"}]}>
+              Marca de auto: {params.marca}{"\n"}
               Modelo de auto: {params.modelo}
             </Text>
             <Text style={[styles.subtitleText, {textAlign: "left"}]}>
               Detalles de auto o cita: {params.detalles}
             </Text>
             <Text style={[styles.subtitleText, {textAlign: "left"}]}>
-              Tipo de servicio: {params.servicio === "01" ? "Cliente lleva a taller" : params.servicio === "00" ? "Atención a domicilio" : params.servicio === "00" ? "Mecánico lleva a taller" : "Indefinido"}
+              Tipo de servicio: {params.servicio === "00" ? "Atención a domicilio" : params.servicio === "10" ? "Mecánico lleva a taller" : params.servicio === "01" ? "Cliente lleva a taller" : "Indefinido"}
             </Text>
             {params.id_taller &&
               <Text style={[styles.subtitleText, {textAlign: "left"}]}>
                 Detalles de taller: {params.nombre}: {params.taller_direccion}
               </Text>
             }
-            <Text style={[styles.subtitleText, {textAlign: "left"}]}>
-              Mech: {user?.id == params.id_mech ? user?.nombre : params.id_mech ? params.mech_correo : "Sin mech"}
-            </Text>
           </View>
         }
 
@@ -221,7 +253,7 @@ export default () => {
               readOnly={true}
               onPress={showDatepicker}
             />
-            <View style={{flexDirection:'row', justifyContent: "space-between", paddingHorizontal: 16, paddingTop: 8}}>
+            <View style={{flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 16, paddingTop: 8}}>
               <CustomButton
                 title="Cambiar fecha"
                 handlePress={showDatepicker}
@@ -242,12 +274,28 @@ export default () => {
                 onChange={onChangePicker}
               />
             }
-            <FormField
-              title="Ciudad"
-              value={form.ciudad}
-              handleChangeText={(e) => setForm({ ...form, ciudad: e })}
-              maxLength={32}
-            />
+
+            <View style={{paddingBottom: 8}}>
+              <Text style={styles.subtitleText}>Comuna</Text>
+              <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
+                <Dropdown
+                  data={citiesList}
+                  labelField="label"
+                  placeholderStyle={styles.formField}
+                  selectedTextStyle={styles.formField}
+                  valueField="label"
+                  value={dropdownCities}
+                  onFocus={() => setIsCitiesFocus(true)}
+                  onBlur={() => setIsCitiesFocus(false)}
+                  placeholder={!isCitiesFocus ? "Seleccionar item" : "..."}
+                  onChange={(e) => {
+                    setDropdownCities(e.label);
+                    setForm({ ...form, ciudad: e.label });
+                    setIsCitiesFocus(false);
+                  }}
+                />
+              </View>
+            </View>
             <FormField
               title="Dirección"
               value={form.direccion}
@@ -257,7 +305,7 @@ export default () => {
             <View style={{paddingVertical: 16}}>
               <Text style={styles.subtitleText}>Auto:</Text>
               <Text style={styles.subtitleText}>
-                Patente: {params.patente}, VIN: {params.vin}
+                Patente: {params.patente} { params.vin && `, VIN: ${params.vin}`}
               </Text>
               <Text style={styles.subtitleText}>
                 Marca: {params.marca}, Modelo: {params.modelo}
@@ -281,7 +329,7 @@ export default () => {
                   value={dropdownService}
                   onFocus={() => setIsServiceFocus(true)}
                   onBlur={() => setIsServiceFocus(false)}
-                  placeholder={!isServiceFocus ? 'Seleccionar item' : '...'}
+                  placeholder={!isServiceFocus ? "Seleccionar item" : "..."}
                   onChange={(e) => {
                     setDropdownService(e.value);
                     if (e.value != "01")
@@ -305,7 +353,7 @@ export default () => {
                     value={dropdownWorkshop}
                     onFocus={() => setIsWorkshopFocus(true)}
                     onBlur={() => setIsWorkshopFocus(false)}
-                    placeholder={!isWorkshopFocus ? 'Seleccionar item' : '...'}
+                    placeholder={!isWorkshopFocus ? "Seleccionar item" : "..."}
                     onChange={(e) => {
                       setDropdownWorkshop(e.id);
                       setForm({ ...form, id_taller: e.id });
@@ -328,7 +376,7 @@ export default () => {
                     value={dropdownMech}
                     onFocus={() => setIsMechFocus(true)}
                     onBlur={() => setIsMechFocus(false)}
-                    placeholder={!isMechFocus ? 'Seleccionar item' : '...'}
+                    placeholder={!isMechFocus ? "Seleccionar item" : "..."}
                     onChange={(e) => {
                       setDropdownMech(e.id);
                       if (e.id === 0)
@@ -361,7 +409,7 @@ export default () => {
               isLoading={isSubmitting}
             />
           }
-          { user?.rol === "10" &&
+          { user?.rol === "10" && !params.cancelado &&
           <>
             { params.confirmado ?
               <CustomButton
@@ -395,4 +443,4 @@ export default () => {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};

@@ -18,6 +18,7 @@ export default () => {
     if (user?.rol !== "01")
       await getAppointments().then(response => {
         if (response)
+          response.sort((a, b) => b.fecha.localeCompare(a.fecha));
           setAppointments(response);
         setRefreshing(false);
       });

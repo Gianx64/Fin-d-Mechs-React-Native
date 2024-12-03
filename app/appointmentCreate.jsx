@@ -1,14 +1,14 @@
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
+import { Alert, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 import { CustomButton, FormField } from "../components";
+import { icons, styles } from "../constants";
 import { createAppointment, getFormData } from "../api/apiAppointments";
 import { useGlobalContext } from "../api/GlobalProvider";
-import { icons, styles } from "../constants";
 
 export default () => {
   const { user, setLoading } = useGlobalContext();
@@ -16,8 +16,8 @@ export default () => {
   const defaultForm = {
     id_usuario: user?.id,
     fecha: "Ingrese una fecha",
-    ciudad: "",
-    direccion: "",
+    ciudad: user?.ciudad || "Seleccionar item",
+    direccion: user?.direccion || "",
     id_auto: null,
     detalles: "",
     id_mech: null,
@@ -29,7 +29,7 @@ export default () => {
   const submit = async () => {
     try {
       if (form.fecha === "Ingrese una fecha" ||
-        form.ciudad === "" ||
+        form.ciudad === "Seleccionar item" ||
         form.direccion === "" ||
         !form.id_auto ||
         form.detalles === "" ||
@@ -50,8 +50,8 @@ export default () => {
   };
   
   //Picker de fechas y hora
-  const [date, setDate] = useState(new Date());
-  const [mode, setPickerMode] = useState('date');
+  const [date, setDate] = useState(new Date(new Date().valueOf() + 604800000));
+  const [mode, setPickerMode] = useState("date");
   const [showPicker, setShowPicker] = useState(false);
   const onChangePicker = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -64,21 +64,21 @@ export default () => {
     setPickerMode(currentMode);
   };
   const showDatepicker = () => {
-    showMode('date');
+    showMode("date");
   };
   const showTimepicker = () => {
-    showMode('time');
+    showMode("time");
   };
 
   //Dropdown de ciudades
-  const [dropdownCities, setDropdownCities] = useState("Seleccione una ciudad");
+  const [dropdownCities, setDropdownCities] = useState(form.ciudad);
   const [isCitiesFocus, setIsCitiesFocus] = useState(false);
   const [citiesList, setCitiesList] = useState([]);
 
   //Dropdown de servicio
   const [dropdownService, setDropdownService] = useState("00");
   const [isServiceFocus, setIsServiceFocus] = useState(false);
-  const [serviceList, setServiceList] = useState([{ label: "Servicio a domicilio", value: "00" }, { label: "Mecánico lleva a taller", value: "10" }]);
+  const [serviceList, setServiceList] = useState([{ label: "Servicio a domicilio", value: "00" }]);
 
   //Dropdown de autos
   const [dropdownCars, setDropdownCars] = useState(0);
@@ -131,7 +131,7 @@ export default () => {
       <ScrollView style={{padding: 10}}>
           <TouchableOpacity
             onPress={() => {router.back()}}
-            style={{flexDirection:'row', justifyContent: "flex-start", paddingLeft: 8, paddingTop: 8, position: "absolute", zIndex: 1}}
+            style={{flexDirection: "row", justifyContent: "flex-start", paddingLeft: 8, paddingTop: 8, position: "absolute", zIndex: 1}}
           >
             <Image
               source={icons.leftArrow}
@@ -158,7 +158,7 @@ export default () => {
             readOnly={true}
             onPress={showDatepicker}
           />
-          <View style={{flexDirection:'row', justifyContent: "space-between", paddingHorizontal: 16, paddingTop: 8}}>
+          <View style={{flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 16, paddingTop: 8}}>
             <CustomButton
               title="Cambiar fecha"
               handlePress={showDatepicker}
@@ -181,21 +181,21 @@ export default () => {
           }
 
           <View style={{paddingBottom: 8}}>
-            <Text style={styles.subtitleText}>Ciudad</Text>
+            <Text style={styles.subtitleText}>Comuna</Text>
             <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
               <Dropdown
                 data={citiesList}
                 labelField="label"
                 placeholderStyle={styles.formField}
                 selectedTextStyle={styles.formField}
-                valueField="value"
+                valueField="label"
                 value={dropdownCities}
                 onFocus={() => setIsCitiesFocus(true)}
                 onBlur={() => setIsCitiesFocus(false)}
-                placeholder={!isCitiesFocus ? 'Seleccionar item' : '...'}
+                placeholder={!isCitiesFocus ? "Seleccionar item" : "..."}
                 onChange={(e) => {
-                  setDropdownCities(e.value);
-                  setForm({ ...form, ciudad: e.value });
+                  setDropdownCities(e.label);
+                  setForm({ ...form, ciudad: e.label });
                   setIsCitiesFocus(false);
                 }}
               />
@@ -221,7 +221,7 @@ export default () => {
                 value={dropdownCars}
                 onFocus={() => setIsCarsFocus(true)}
                 onBlur={() => setIsCarsFocus(false)}
-                placeholder={!isCarsFocus ? 'Seleccionar item' : '...'}
+                placeholder={!isCarsFocus ? "Seleccionar item" : "..."}
                 onChange={(e) => {
                   setDropdownCars(e.id);
                   setForm({ ...form, id_auto: e.id });
@@ -250,7 +250,7 @@ export default () => {
                 value={dropdownService}
                 onFocus={() => setIsServiceFocus(true)}
                 onBlur={() => setIsServiceFocus(false)}
-                placeholder={!isServiceFocus ? 'Seleccionar item' : '...'}
+                placeholder={!isServiceFocus ? "Seleccionar item" : "..."}
                 onChange={(e) => {
                   setDropdownService(e.value);
                   if (e.value != "01")
@@ -275,7 +275,7 @@ export default () => {
                   value={dropdownWorkshop}
                   onFocus={() => setIsWorkshopFocus(true)}
                   onBlur={() => setIsWorkshopFocus(false)}
-                  placeholder={!isWorkshopFocus ? 'Seleccionar item' : '...'}
+                  placeholder={!isWorkshopFocus ? "Seleccionar item" : "..."}
                   onChange={(e) => {
                     setDropdownWorkshop(e.id);
                     setForm({ ...form, id_taller: e.id });
@@ -299,7 +299,7 @@ export default () => {
                   value={dropdownMech}
                   onFocus={() => setIsMechFocus(true)}
                   onBlur={() => setIsMechFocus(false)}
-                  placeholder={!isMechFocus ? 'Seleccionar item' : '...'}
+                  placeholder={!isMechFocus ? "Seleccionar item" : "..."}
                   onChange={(e) => {
                     setDropdownMech(e.id);
                     if (e.id === 0)
@@ -323,4 +323,4 @@ export default () => {
       </ScrollView>
     </SafeAreaView>
   )
-}
+};

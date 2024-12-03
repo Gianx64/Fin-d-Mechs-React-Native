@@ -1,6 +1,6 @@
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomButton } from "../components";
@@ -31,7 +31,7 @@ export default () => {
       <View style={{padding: 10}}>
         <TouchableOpacity
           onPress={() => {router.back()}}
-          style={{flexDirection:'row', justifyContent: "flex-start", paddingLeft: 8, paddingTop: 8, position: "absolute", zIndex: 1}}
+          style={{flexDirection: "row", justifyContent: "flex-start", paddingLeft: 8, paddingTop: 8, position: "absolute", zIndex: 1}}
         >
           <Image
             source={icons.leftArrow}
@@ -76,4 +76,4 @@ export default () => {
       </View>
     </SafeAreaView>
   );
-}
+};

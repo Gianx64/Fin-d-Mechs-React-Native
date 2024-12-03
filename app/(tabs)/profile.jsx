@@ -57,7 +57,7 @@ export default () => {
           <View>
             <TouchableOpacity
               onPress={logout}
-              style={{flexDirection:'row', justifyContent: "flex-end", paddingRight: 8, paddingTop: 8, position: "relative"}}
+              style={{flexDirection: "row", justifyContent: "flex-end", paddingRight: 8, paddingTop: 8, position: "relative"}}
             >
               <Image
                 source={icons.logout}
@@ -69,7 +69,14 @@ export default () => {
         </View>
         { (user?.rol === "11" || user?.rol === "00") &&
         <View>
-          <View style={{alignItems: "flex-end", flexDirection:'row', justifyContent: "space-between"}}>
+          <View style={{alignItems: "flex-end", flexDirection: "row", justifyContent: "space-between"}}>
+            <CustomButton
+              title={"Editar perfil"}
+              buttonStyles={[styles.normalButton, {paddingVertical: 8, paddingHorizontal: 16}]}
+              handlePress={() => {
+                router.push("/userEdit");
+              }}
+            />
             <CustomButton
               title={"Registrar auto"}
               buttonStyles={[styles.normalButton, {paddingVertical: 8, paddingHorizontal: 16}]}
@@ -79,7 +86,7 @@ export default () => {
             />
             { user?.rol === "11" &&
               <CustomButton
-                title={"Panel de administración"}
+                title={"Administración"}
                 buttonStyles={[styles.normalButton, {paddingVertical: 8, paddingHorizontal: 16}]}
                 handlePress={() => {
                   router.push("/administration");

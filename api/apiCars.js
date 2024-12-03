@@ -26,7 +26,7 @@ export async function createCar(car) {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};
 
 // Get Cars
 export const getCars = async () => {
@@ -49,13 +49,13 @@ export const getCars = async () => {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};
 
 // Update Car
 export const updateCar = async (car) => {
   const token = await getItemAsync("Token");
   if (token) {
-    return await apiManager.put(`/cars`, car, {
+    return await apiManager.put('/cars', car, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -73,7 +73,31 @@ export const updateCar = async (car) => {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};
+
+// Update Car VIN
+export const updateCarVIN = async (vin, id) => {
+  const token = await getItemAsync("Token");
+  if (token) {
+    return await apiManager.patch(`/cars/${id}`, {vin: vin}, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).then(res => {
+      Alert.alert("Éxito", "Auto actualizado exitosamente.");
+      return res.data;
+    }).catch(error => {
+      if (error.code === "ERR_NETWORK")
+        Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+      else
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
+      return null;
+    });
+  } else {
+    Alert.alert("Error", "Inicie sesión nuevamente.");
+    return 401;
+  }
+};
 
 // Disable Car
 export const disableCar = async (id) => {
@@ -97,4 +121,4 @@ export const disableCar = async (id) => {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};

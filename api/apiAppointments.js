@@ -1,8 +1,19 @@
 import { Alert } from "react-native";
 import { getItemAsync } from "expo-secure-store";
 
+import Chile from "../constants/chile.json"
 import apiManager from "./apiManager";
-import axios from "axios";
+
+export const getCities = () => {
+  //https://gist.githubusercontent.com/juanbrujo/0fd2f4d126b3ce5a95a7dd1f28b3d8dd/raw/b8575eb82dce974fd2647f46819a7568278396bd/comunas-regiones.json
+  var comunas = new Array();
+  for(var c in Chile.regiones[15].comunas) {
+    var jsonObj = new Object();
+    jsonObj.label = Chile.regiones[15].comunas[c];
+    comunas.push(jsonObj);
+  }
+  return comunas;
+};
 
 // Get Appointments Form Data
 export const getFormData = async () => {
@@ -21,21 +32,12 @@ export const getFormData = async () => {
         Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
       return null;
     });
-    const cities = await axios.get("https://gist.githubusercontent.com/juanbrujo/0fd2f4d126b3ce5a95a7dd1f28b3d8dd/raw/b8575eb82dce974fd2647f46819a7568278396bd/comunas-regiones.json").then(res => {
-        var comunas = new Array();
-        for(var c in res.data.regiones[15].comunas) {
-          var jsonObj = new Object();
-          jsonObj.label = res.data.regiones[15].comunas[c];
-          comunas.push(jsonObj);
-        }
-        return comunas;
-      });
-    return {... data, cities: cities};
+    return {... data, cities: getCities};
   } else {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};
 
 // Register Appointment
 export async function createAppointment(appointment) {
@@ -60,7 +62,7 @@ export async function createAppointment(appointment) {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};
 
 // Get Appointments
 export const getAppointments = async () => {
@@ -83,7 +85,7 @@ export const getAppointments = async () => {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};
 
 // Modify Appointment
 export const updateAppointment = async (appointment, action) => {
@@ -120,7 +122,7 @@ export const updateAppointment = async (appointment, action) => {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};
 
 // Flag Appointment
 export const flagAppointment = async (id, flag) => {
@@ -160,4 +162,4 @@ export const flagAppointment = async (id, flag) => {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};

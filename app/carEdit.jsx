@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Alert, Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomButton, FormField } from "../components";
@@ -51,7 +51,7 @@ export default () => {
       <ScrollView style={{padding: 10}}>
         <TouchableOpacity
           onPress={() => {router.back()}}
-          style={{flexDirection:'row', justifyContent: "flex-start", paddingLeft: 8, paddingTop: 8, position: "absolute", zIndex: 1}}
+          style={{flexDirection: "row", justifyContent: "flex-start", paddingLeft: 8, paddingTop: 8, position: "absolute", zIndex: 1}}
         >
           <Image
             source={icons.leftArrow}
@@ -113,4 +113,4 @@ export default () => {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};

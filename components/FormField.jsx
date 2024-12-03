@@ -17,7 +17,7 @@ const FormField = ({
     <View style={otherStyles}>
       <Text style={styles.subtitleText}>{title}</Text>
 
-      <View style={{flexDirection:'row', justifyContent:'center'}}>
+      <View style={{flexDirection: "row", justifyContent: "center"}}>
         <TextInput
           style={[styles.formField, title === "Contraseña" ? {width: Dimensions.get("window").width-110} : {width: Dimensions.get("window").width-50}]}
           readOnly={readOnly}

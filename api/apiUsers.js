@@ -23,7 +23,7 @@ export async function getCurrentUser() {
       return null;
     });
   } else { console.log("No token stored."); }
-}
+};
 
 // Register user
 export async function signUp(form) {
@@ -38,7 +38,7 @@ export async function signUp(form) {
       Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
     return null;
   });
-}
+};
 
 // Sign In
 export async function signIn(email, password) {
@@ -47,7 +47,7 @@ export async function signIn(email, password) {
     clave: password
   }).then(res => {
     setItemAsync("Token", res.data.token);
-    Alert.alert("Éxito", "Sesión iniciada exitosamente");
+    Alert.alert("Éxito", "Sesión iniciada exitosamente.");
     return res.data;
   }).catch(error => {
     if (error.code === "ERR_NETWORK")
@@ -56,12 +56,40 @@ export async function signIn(email, password) {
       Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
     return null;
   });
-}
+};
 
 // Sign Out
 export async function signOut() {
   await deleteItemAsync("Token");
-}
+};
+
+// Update User
+export async function updateUser(data, correo) {
+  const token = await getItemAsync("Token");
+  if (token) {
+    return await apiManager.post('/auth/profile', data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).then(res => {
+      if (data.correo !== correo) {
+        deleteItemAsync("Token"); //TODO: await fix
+        Alert.alert("Éxito", "Usuario actualizado exitosamente. Por favor, inicie sesión con sus nuevas credenciales.");
+      } else
+        Alert.alert("Éxito", "Usuario actualizado exitosamente.");
+      return res.data;
+    }).catch(error => {
+      if (error.code === "ERR_NETWORK")
+        Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+      else
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
+      return null;
+    });
+  } else {
+    Alert.alert("Error", "Inicie sesión nuevamente.");
+    return 401;
+  }
+};
 
 // Get Administration panel data
 export async function getAdminData() {
@@ -84,7 +112,7 @@ export async function getAdminData() {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};
 
 // Get Administration panel data
 export async function setMech(id) {
@@ -95,6 +123,7 @@ export async function setMech(id) {
         Authorization: `Bearer ${token}`
       }
     }).then(res => {
+      Alert.alert("Éxito", "Mech actualizado exitosamente.");
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
@@ -107,4 +136,4 @@ export async function setMech(id) {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};

@@ -26,7 +26,7 @@ export async function createWorkshop(workshop) {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};
 
 // Get Workshops
 export const getWorkshops = async () => {
@@ -49,7 +49,7 @@ export const getWorkshops = async () => {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};
 
 // Modify Workshop
 export const modifyWorkshop = async (workshop) => {
@@ -73,7 +73,7 @@ export const modifyWorkshop = async (workshop) => {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};
 
 // Update Workshop
 export const updateWorkshop = async (workshop) => {
@@ -97,4 +97,4 @@ export const updateWorkshop = async (workshop) => {
     Alert.alert("Error", "Inicie sesión nuevamente.");
     return 401;
   }
-}
+};

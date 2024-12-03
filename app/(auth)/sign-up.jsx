@@ -24,7 +24,7 @@ export default () => {
 
   const submit = async () => {
     try {
-      if (form.nombre === "" || form.correo === "" || form.clave === "" || form.confirmar === "")
+      if (form.nombre === "" || form.celular === "" || form.correo === "" || form.clave === "" || form.confirmar === "")
         throw new Error("Por favor llene todos los campos.");
       if (form.clave !== form.confirmar)
         throw new Error("Las contraseñas no coinciden.");
