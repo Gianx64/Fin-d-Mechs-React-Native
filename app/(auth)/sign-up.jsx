@@ -15,7 +15,7 @@ export default () => {
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     nombre: "",
-    celular: "",
+    celular: "+ 56 9 ",
     correo: "",
     clave: "",
     confirmar: "",

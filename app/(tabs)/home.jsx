@@ -20,8 +20,8 @@ export default () => {
         if (response)
           response.sort((a, b) => b.fecha.localeCompare(a.fecha));
           setAppointments(response);
-        setRefreshing(false);
-      });
+        });
+    setRefreshing(false);
   }
   useFocusEffect(
     useCallback(() => {

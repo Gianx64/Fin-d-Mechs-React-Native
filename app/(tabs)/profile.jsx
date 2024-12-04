@@ -57,7 +57,7 @@ export default () => {
           <View>
             <TouchableOpacity
               onPress={logout}
-              style={{flexDirection: "row", justifyContent: "flex-end", paddingRight: 8, paddingTop: 8, position: "relative"}}
+              style={{flexDirection: "row", justifyContent: "flex-end", paddingTop: 8, position: "relative"}}
             >
               <Image
                 source={icons.logout}
@@ -67,16 +67,26 @@ export default () => {
             </TouchableOpacity>
           </View>
         </View>
-        { (user?.rol === "11" || user?.rol === "00") &&
-        <View>
-          <View style={{alignItems: "flex-end", flexDirection: "row", justifyContent: "space-between"}}>
+        <View style={{alignItems: "flex-end", flexDirection: "row", justifyContent: "space-between"}}>
+          <CustomButton
+            title={"Editar perfil"}
+            buttonStyles={[styles.normalButton, {paddingVertical: 8, paddingHorizontal: 16}]}
+            handlePress={() => {
+              router.push("/userEdit");
+            }}
+          />
+          { user?.rol === "11" &&
             <CustomButton
-              title={"Editar perfil"}
+              title={"Administración"}
               buttonStyles={[styles.normalButton, {paddingVertical: 8, paddingHorizontal: 16}]}
               handlePress={() => {
-                router.push("/userEdit");
+                router.push("/administration");
               }}
             />
+          }
+        </View>
+        {(user?.rol === "11" || user?.rol === "00") &&
+          <View style={{paddingTop: 16}}>
             <CustomButton
               title={"Registrar auto"}
               buttonStyles={[styles.normalButton, {paddingVertical: 8, paddingHorizontal: 16}]}
@@ -84,17 +94,6 @@ export default () => {
                 router.push("/carCreate");
               }}
             />
-            { user?.rol === "11" &&
-              <CustomButton
-                title={"Administración"}
-                buttonStyles={[styles.normalButton, {paddingVertical: 8, paddingHorizontal: 16}]}
-                handlePress={() => {
-                  router.push("/administration");
-                }}
-              />
-            }
-          </View>
-          <View>
             {carList.length > 0 &&
               <View style={{flexDirection: "row", justifyContent: "space-between"}}>
                 <Text style={[styles.normalText]}>Patente</Text>
@@ -127,7 +126,6 @@ export default () => {
               }
             />
           </View>
-        </View>
         }
       </View>
     </SafeAreaView>

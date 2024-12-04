@@ -33,11 +33,11 @@ export default () => {
             dependiendo de sus necesidades.
           </Text>
 
-          <CustomButton
+          {!loading && <CustomButton
             title="Continuar con Email"
             handlePress={() => router.push("/sign-in")}
             buttonStyles={styles.mainButton}
-          />
+          />}
         </View>
       </ScrollView>
       {loading && <ActivityIndicator

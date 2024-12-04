@@ -1,6 +1,6 @@
 import { Link, router } from "expo-router";
 import { useState } from "react";
-import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
+import { View, Text, ScrollView, Alert, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomButton, FormField } from "../../components";
@@ -42,17 +42,15 @@ export default () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <View style={{justifyContent: "center", height: Dimensions.get("window").height-20}}>
+        <View style={{justifyContent: "center"}}>
           <Image
             source={icons.logo}
             style={styles.welcomeLogo}
             resizeMode="contain"
           />
-
           <Text style={styles.titleText}>
             Iniciar sesión en Fin-d-Mechs
           </Text>
-
           <FormField
             title="Correo"
             value={form.correo}
@@ -60,37 +58,34 @@ export default () => {
             keyboardType="email-address"
             maxLength={64}
           />
-
           <FormField
             title="Contraseña"
             value={form.clave}
             handleChangeText={(e) => setForm({ ...form, clave: e })}
-            otherStyles={{paddingBottom: 50}}
             showPassword={showPassword}
             setShowPassword={setShowPassword}
             maxLength={64}
           />
-
           <CustomButton
             title="Iniciar Sesión"
             handlePress={submit}
+            containerStyles={{paddingTop: 32}}
             buttonStyles={styles.mainButton}
             isLoading={isSubmitting}
           />
-
-          <View style={{flexDirection: "row", justifyContent: "center", paddingTop: 32}}>
-            <Text style={[styles.normalText, {paddingRight: 32}]}>
-              ¿No tiene una cuenta?
-            </Text>
-            <Link
-              href="/sign-up"
-              style={styles.linkText}
-            >
-              Registrarse
-            </Link>
-          </View>
         </View>
       </ScrollView>
+      <View style={{flexDirection: "row", justifyContent: "center"}}>
+        <Text style={[styles.normalText, {paddingRight: 32}]}>
+          ¿No tiene una cuenta?
+        </Text>
+        <Link
+          href="/sign-up"
+          style={styles.linkText}
+        >
+          Registrarse
+        </Link>
+      </View>
     </SafeAreaView>
   );
 };
