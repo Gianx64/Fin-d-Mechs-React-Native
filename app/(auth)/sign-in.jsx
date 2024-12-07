@@ -41,7 +41,7 @@ export default () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView style={{paddingVertical: 20}}>
         <View style={{justifyContent: "center"}}>
           <Image
             source={icons.logo}
@@ -69,7 +69,7 @@ export default () => {
           <CustomButton
             title="Iniciar Sesión"
             handlePress={submit}
-            containerStyles={{paddingTop: 32}}
+            containerStyles={{paddingTop: 20, paddingBottom: 40}}
             buttonStyles={styles.mainButton}
             isLoading={isSubmitting}
           />

@@ -45,10 +45,10 @@ export default () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={{paddingVertical: 20}}>
+      <ScrollView style={{paddingTop: 20}}>
         <Image
           source={icons.logo}
-          style={[styles.tinyLogo, {alignSelf: "center"}]}
+          style={[styles.welcomeLogo]}
           resizeMode="contain"
         />
         <Text style={styles.titleText}>
@@ -105,21 +105,22 @@ export default () => {
         <CustomButton
           title="Registrarse"
           handlePress={submit}
+          containerStyles={{paddingBottom: 40}}
           buttonStyles={styles.mainButton}
           isLoading={isSubmitting}
         />
-        <View style={{flexDirection: "row", justifyContent: "center", paddingVertical: 32}}>
-          <Text style={[styles.normalText, {paddingRight: 32}]}>
-            ¿Ya tiene una cuenta?
-          </Text>
-          <Link
-            href="/sign-in"
-            style={styles.linkText}
-          >
-            Iniciar sesión
-          </Link>
-        </View>
       </ScrollView>
+      <View style={{flexDirection: "row", justifyContent: "center"}}>
+        <Text style={[styles.normalText, {paddingRight: 32}]}>
+          ¿Ya tiene una cuenta?
+        </Text>
+        <Link
+          href="/sign-in"
+          style={styles.linkText}
+        >
+          Iniciar sesión
+        </Link>
+      </View>
     </SafeAreaView>
   );
 };
