@@ -60,7 +60,7 @@ export default () => {
     <SafeAreaView style={styles.container}>
       <ScrollView style={{paddingVertical: 20}}>
         <TouchableOpacity
-          onPress={() => {router.back()}}
+          onPress={() => router.back()}
           style={{flexDirection: "row", justifyContent: "flex-start", paddingLeft: 8, paddingTop: 8, position: "absolute", zIndex: 1}}
         >
           <Image

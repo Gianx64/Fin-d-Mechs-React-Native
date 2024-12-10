@@ -40,7 +40,7 @@ export default () => {
         !form.id_auto ||
         form.detalles === "" ||
         (form.servicio === "01" && form.id_taller == null))
-        throw new Error("Por favor llene todos los campos");
+        throw new Error("Por favor llene todos los campos.");
       setSubmitting(true);
       await updateAppointment(form, 0).then(response => {
         if (response)
@@ -162,7 +162,7 @@ export default () => {
     <SafeAreaView style={styles.container}>
       <ScrollView style={{padding: 10}}>
         <TouchableOpacity
-          onPress={() => {router.back()}}
+          onPress={() => router.back()}
           style={{flexDirection: "row", justifyContent: "flex-start", paddingLeft: 8, paddingTop: 8, position: "absolute", zIndex: 1}}
         >
           <Image
