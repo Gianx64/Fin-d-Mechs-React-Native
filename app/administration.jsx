@@ -2,7 +2,6 @@ import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import { CustomButton } from "../components";
 import { icons, styles } from "../constants";
 import { getAdminData } from "../api/apiUsers";

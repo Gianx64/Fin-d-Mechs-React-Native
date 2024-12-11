@@ -2,11 +2,10 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useGlobalContext } from "./GlobalProvider";
 import { CustomButton, FormField } from "../components";
 import { icons, styles } from "../constants";
 import { updateUser } from "../api/apiUsers";
-import { useGlobalContext } from "../api/GlobalProvider";
 import { Dropdown } from "react-native-element-dropdown";
 import { getCities } from "../api/apiAppointments";
 

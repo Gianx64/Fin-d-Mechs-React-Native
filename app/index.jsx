@@ -2,10 +2,9 @@ import { Redirect, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { View, Text, Image, ActivityIndicator, Platform, ScrollView, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useGlobalContext } from "./GlobalProvider";
 import { CustomButton } from "../components";
 import { colors, icons, styles } from "../constants";
-import { useGlobalContext } from "../api/GlobalProvider";
 
 export default () => {
   const { loading, isLogged } = useGlobalContext();

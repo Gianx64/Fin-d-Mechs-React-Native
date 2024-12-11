@@ -1,8 +1,7 @@
 import { Redirect, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ActivityIndicator, Platform } from "react-native";
-
-import { useGlobalContext } from "../../api/GlobalProvider";
+import { useGlobalContext } from "../GlobalProvider";
 import { colors, styles } from "../../constants";
 
 const AuthLayout = () => {

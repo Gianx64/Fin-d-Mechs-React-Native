@@ -1,6 +1,6 @@
 import { Image, Text, View } from "react-native";
 import { icons, styles } from "../constants";
-import { useGlobalContext } from "../api/GlobalProvider";
+import { useGlobalContext } from "../app/GlobalProvider";
 
 const WelcomeBar = () => {
   const { user } = useGlobalContext();

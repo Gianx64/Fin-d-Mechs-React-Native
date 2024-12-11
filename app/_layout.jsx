@@ -1,7 +1,6 @@
 import { SplashScreen, Stack } from "expo-router";
 import "react-native-url-polyfill/auto";
-
-import GlobalProvider from "../api/GlobalProvider";
+import GlobalProvider from "./GlobalProvider";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -22,6 +21,8 @@ const RootLayout = () => {
         <Stack.Screen name="carEdit" options={{ headerShown: false }} />
         <Stack.Screen name="mechReview" options={{ headerShown: false }} />
         <Stack.Screen name="userEdit" options={{ headerShown: false }} />
+        <Stack.Screen name="workshopCreate" options={{ headerShown: false }} />
+        <Stack.Screen name="workshopScreen" options={{ headerShown: false }} />
       </Stack>
     </GlobalProvider>
   );

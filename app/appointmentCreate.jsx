@@ -1,28 +1,28 @@
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker from "@react-native-community/datetimepicker";
-
+import { useGlobalContext } from "./GlobalProvider";
 import { CustomButton, FormField } from "../components";
 import { icons, styles } from "../constants";
 import { createAppointment, getFormData } from "../api/apiAppointments";
-import { useGlobalContext } from "../api/GlobalProvider";
 
 export default () => {
   const { user, setLoading } = useGlobalContext();
+  const params = useLocalSearchParams();
   const [isSubmitting, setSubmitting] = useState(false);
   const defaultForm = {
     id_usuario: user?.id,
-    fecha: "Ingrese una fecha",
-    ciudad: user?.ciudad || "Seleccionar item",
-    direccion: user?.direccion || "",
     id_auto: null,
-    detalles: "",
+    servicio: params.id ? "01" : "00",
+    id_taller: params.id || null,
     id_mech: null,
-    servicio: "00",
-    id_taller: null
+    fecha: "Ingrese una fecha",
+    ciudad: params.ciudad || user?.ciudad || "Seleccionar item",
+    direccion: params.direccion || user?.direccion || "",
+    detalles: ""
   };
   const [form, setForm] = useState(defaultForm);
 
@@ -149,9 +149,149 @@ export default () => {
             value={user?.correo}
             editable={false}
             readOnly={true}
-            keyboardType="email-address"
           />
-
+          <View style={{paddingBottom: 8}}>
+            <Text style={styles.subtitleText}>Vehículo</Text>
+            <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
+              <Dropdown
+                data={carsList}
+                labelField="modelo"
+                placeholderStyle={styles.formField}
+                selectedTextStyle={styles.formField}
+                valueField="id"
+                value={dropdownCars}
+                onFocus={() => setIsCarsFocus(true)}
+                onBlur={() => setIsCarsFocus(false)}
+                placeholder={!isCarsFocus ? "Seleccionar item" : "..."}
+                onChange={(e) => {
+                  setDropdownCars(e.id);
+                  setForm({ ...form, id_auto: e.id });
+                  setIsCarsFocus(false);
+                }}
+              />
+            </View>
+          </View>
+          <View style={{paddingBottom: 8}}>
+            <Text style={styles.subtitleText}>Tipo de servicio</Text>
+            <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
+              <Dropdown
+                data={serviceList}
+                labelField="label"
+                placeholderStyle={styles.formField}
+                selectedTextStyle={styles.formField}
+                valueField="value"
+                value={dropdownService}
+                onFocus={() => setIsServiceFocus(true)}
+                onBlur={() => setIsServiceFocus(false)}
+                placeholder={!isServiceFocus ? "Seleccionar item" : "..."}
+                onChange={(e) => {
+                  setDropdownService(e.value);
+                  if (e.value != "01")
+                    setForm({ ...form, id_taller: null });
+                  setForm({ ...form, servicio: e.value });
+                  setIsServiceFocus(false);
+                }}
+              />
+            </View>
+          </View>
+          { dropdownService === "01" && (workshopList.length > 0 || true) && //TODO: remove true
+            <View style={{paddingBottom: 8}}>
+              <Text style={styles.subtitleText}>Taller</Text>
+              <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
+                <Dropdown
+                  data={workshopList}
+                  labelField="direccion"
+                  placeholderStyle={styles.formField}
+                  selectedTextStyle={styles.formField}
+                  valueField="id"
+                  value={dropdownWorkshop}
+                  onFocus={() => setIsWorkshopFocus(true)}
+                  onBlur={() => setIsWorkshopFocus(false)}
+                  placeholder={!isWorkshopFocus ? "Seleccionar item" : "..."}
+                  onChange={(e) => {
+                    setDropdownWorkshop(e.id);
+                    setForm({ ...form, id_taller: e.id, comuna: e.comuna, direccion: e.direccion });
+                    setDropdownCities(e.comuna);
+                    setIsWorkshopFocus(false);
+                  }}
+                />
+              </View>
+            </View>
+          }
+          { dropdownService !== "01" &&
+            <View style={{paddingBottom: 8}}>
+              <Text style={styles.subtitleText}>Mecánico</Text>
+              <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
+                <Dropdown
+                  data={mechList}
+                  labelField="correo"
+                  placeholderStyle={styles.formField}
+                  selectedTextStyle={styles.formField}
+                  valueField="id"
+                  value={dropdownMech}
+                  onFocus={() => setIsMechFocus(true)}
+                  onBlur={() => setIsMechFocus(false)}
+                  placeholder={!isMechFocus ? "Seleccionar item" : "..."}
+                  onChange={(e) => {
+                    setDropdownMech(e.id);
+                    if (e.id === 0)
+                      setForm({ ...form, id_mech: null });
+                    else
+                      setForm({ ...form, id_mech: e.id });
+                    setIsMechFocus(false);
+                  }}
+                />
+              </View>
+            </View>
+          }
+          { form.id_taller ?
+            <>
+              <FormField
+                title="Comuna"
+                value={form.ciudad}
+                editable={false}
+                readOnly={true}
+                maxLength={64}
+              />
+              <FormField
+                title="Dirección"
+                value={form.direccion}
+                editable={false}
+                readOnly={true}
+                maxLength={64}
+              />
+            </>
+            :
+            <>
+              <View style={{paddingBottom: 8}}>
+                <Text style={styles.subtitleText}>Comuna</Text>
+                <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
+                  <Dropdown
+                    data={citiesList}
+                    labelField="label"
+                    placeholderStyle={styles.formField}
+                    selectedTextStyle={styles.formField}
+                    valueField="label"
+                    value={dropdownCities}
+                    onFocus={() => setIsCitiesFocus(true)}
+                    onBlur={() => setIsCitiesFocus(false)}
+                    placeholder={!isCitiesFocus ? "Seleccionar item" : "..."}
+                    onChange={(e) => {
+                      setDropdownCities(e.label);
+                      setForm({ ...form, ciudad: e.label });
+                      setIsCitiesFocus(false);
+                    }}
+                  />
+                </View>
+              </View>
+              <FormField
+                title="Dirección"
+                value={form.direccion}
+                handleChangeText={(e) => setForm({ ...form, direccion: e })}
+                maxLength={64}
+              />
+            </>
+          }
           <FormField
             title="Fecha, hora"
             value={form.fecha}
@@ -179,140 +319,12 @@ export default () => {
               onChange={onChangePicker}
             />
           }
-
-          <View style={{paddingBottom: 8}}>
-            <Text style={styles.subtitleText}>Comuna</Text>
-            <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
-              <Dropdown
-                data={citiesList}
-                labelField="label"
-                placeholderStyle={styles.formField}
-                selectedTextStyle={styles.formField}
-                valueField="label"
-                value={dropdownCities}
-                onFocus={() => setIsCitiesFocus(true)}
-                onBlur={() => setIsCitiesFocus(false)}
-                placeholder={!isCitiesFocus ? "Seleccionar item" : "..."}
-                onChange={(e) => {
-                  setDropdownCities(e.label);
-                  setForm({ ...form, ciudad: e.label });
-                  setIsCitiesFocus(false);
-                }}
-              />
-            </View>
-          </View>
-
-          <FormField
-            title="Dirección"
-            value={form.direccion}
-            handleChangeText={(e) => setForm({ ...form, direccion: e })}
-            maxLength={64}
-          />
-
-          <View style={{paddingBottom: 8}}>
-            <Text style={styles.subtitleText}>Vehículo</Text>
-            <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
-              <Dropdown
-                data={carsList}
-                labelField="modelo"
-                placeholderStyle={styles.formField}
-                selectedTextStyle={styles.formField}
-                valueField="id"
-                value={dropdownCars}
-                onFocus={() => setIsCarsFocus(true)}
-                onBlur={() => setIsCarsFocus(false)}
-                placeholder={!isCarsFocus ? "Seleccionar item" : "..."}
-                onChange={(e) => {
-                  setDropdownCars(e.id);
-                  setForm({ ...form, id_auto: e.id });
-                  setIsCarsFocus(false);
-                }}
-              />
-            </View>
-          </View>
-
           <FormField
             title="Descripción del agendamiento"
             value={form.detalles}
             handleChangeText={(e) => setForm({ ...form, detalles: e })}
             maxLength={128}
           />
-
-          <View style={{paddingBottom: 8}}>
-            <Text style={styles.subtitleText}>Tipo de servicio</Text>
-            <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
-              <Dropdown
-                data={serviceList}
-                labelField="label"
-                placeholderStyle={styles.formField}
-                selectedTextStyle={styles.formField}
-                valueField="value"
-                value={dropdownService}
-                onFocus={() => setIsServiceFocus(true)}
-                onBlur={() => setIsServiceFocus(false)}
-                placeholder={!isServiceFocus ? "Seleccionar item" : "..."}
-                onChange={(e) => {
-                  setDropdownService(e.value);
-                  if (e.value != "01")
-                    setForm({ ...form, id_taller: null });
-                  setForm({ ...form, servicio: e.value });
-                  setIsServiceFocus(false);
-                }}
-              />
-            </View>
-          </View>
-
-          { dropdownService === "01" && (workshopList.length > 0 || true) && //TODO: remove true
-            <View style={{paddingBottom: 8}}>
-              <Text style={styles.subtitleText}>Taller</Text>
-              <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
-                <Dropdown
-                  data={workshopList}
-                  labelField="direccion"
-                  placeholderStyle={styles.formField}
-                  selectedTextStyle={styles.formField}
-                  valueField="id"
-                  value={dropdownWorkshop}
-                  onFocus={() => setIsWorkshopFocus(true)}
-                  onBlur={() => setIsWorkshopFocus(false)}
-                  placeholder={!isWorkshopFocus ? "Seleccionar item" : "..."}
-                  onChange={(e) => {
-                    setDropdownWorkshop(e.id);
-                    setForm({ ...form, id_taller: e.id });
-                    setIsWorkshopFocus(false);
-                  }}
-                />
-              </View>
-            </View>
-          }
-
-          { dropdownService !== "01" &&
-            <View style={{paddingBottom: 8}}>
-              <Text style={styles.subtitleText}>Mecánico</Text>
-              <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
-                <Dropdown
-                  data={mechList}
-                  labelField="correo"
-                  placeholderStyle={styles.formField}
-                  selectedTextStyle={styles.formField}
-                  valueField="id"
-                  value={dropdownMech}
-                  onFocus={() => setIsMechFocus(true)}
-                  onBlur={() => setIsMechFocus(false)}
-                  placeholder={!isMechFocus ? "Seleccionar item" : "..."}
-                  onChange={(e) => {
-                    setDropdownMech(e.id);
-                    if (e.id === 0)
-                      setForm({ ...form, id_mech: null });
-                    else
-                      setForm({ ...form, id_mech: e.id });
-                    setIsMechFocus(false);
-                  }}
-                />
-              </View>
-            </View>
-          }
-
           <CustomButton
             title="Agendar"
             handlePress={submit}

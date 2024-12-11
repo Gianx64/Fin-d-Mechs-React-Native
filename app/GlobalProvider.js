@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-
-import { getCurrentUser } from "./apiUsers";
+import { getCurrentUser } from "../api/apiUsers";
 
 const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);

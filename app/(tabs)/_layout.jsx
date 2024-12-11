@@ -1,9 +1,8 @@
 import { Redirect, Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ActivityIndicator, Image, Platform } from "react-native";
-
+import { useGlobalContext } from "../GlobalProvider";
 import { colors, icons, styles } from "../../constants";
-import { useGlobalContext } from "../../api/GlobalProvider";
 
 const TabLayout = () => {
   const { loading, isLogged } = useGlobalContext();

@@ -1,5 +1,4 @@
 import { View, Text, TextInput, TouchableOpacity, Image, Dimensions } from "react-native";
-
 import { icons, styles } from "../constants";
 
 const FormField = ({

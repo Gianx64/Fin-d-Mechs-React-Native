@@ -2,7 +2,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, Image, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import { CustomButton, FormField } from "../components";
 import { icons, styles } from "../constants";
 import { disableCar, updateCar } from "../api/apiCars";

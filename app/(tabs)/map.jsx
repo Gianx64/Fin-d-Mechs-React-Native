@@ -3,15 +3,14 @@ import { useCallback, useState } from "react";
 import { Alert, Text, TouchableOpacity } from "react-native";
 import MapView, { Callout, Marker } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useGlobalContext } from "../GlobalProvider";
 import { styles } from "../../constants";
 import { router, useFocusEffect } from "expo-router";
-import { useGlobalContext } from "../../api/GlobalProvider";
 
 export default () => {
   const { setLoading } = useGlobalContext();
   const [granted, setGranted] = useState(false);
-  const [workshops, setWorkshops] = useState([{id: 0, nombre: "Eso tilín", coords: {
+  const [workshops, setWorkshops] = useState([{id: 1, nombre: "Eso tilín", coords: {
     latitude: -33.44,
     longitude: -70.65
 }}]);

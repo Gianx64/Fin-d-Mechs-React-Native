@@ -3,11 +3,10 @@ import { useState } from "react";
 import { Alert, Image, ScrollView, Text, View } from "react-native";
 import { CheckBox } from "react-native-btr";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useGlobalContext } from "../GlobalProvider";
 import { CustomButton, FormField } from "../../components";
 import { colors, icons, styles } from "../../constants";
 import { signUp } from "../../api/apiUsers";
-import { useGlobalContext } from "../../api/GlobalProvider";
 
 export default () => {
   const { setUser, setIsLogged } = useGlobalContext();

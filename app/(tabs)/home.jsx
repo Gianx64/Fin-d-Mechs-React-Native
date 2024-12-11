@@ -2,10 +2,9 @@ import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useGlobalContext } from "../GlobalProvider";
 import { styles } from "../../constants";
 import { getAppointments } from "../../api/apiAppointments";
-import { useGlobalContext } from "../../api/GlobalProvider";
 import { AppointmentsComponent, WelcomeBar } from "../../components";
 
 export default () => {

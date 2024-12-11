@@ -2,9 +2,8 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Image, Platform, ScrollView, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useGlobalContext } from "./GlobalProvider";
 import { CustomButton, FormField } from "../components";
-import { useGlobalContext } from "../api/GlobalProvider";
 import { icons, styles } from "../constants";
 import { createCar } from "../api/apiCars";
 

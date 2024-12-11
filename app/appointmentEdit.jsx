@@ -4,12 +4,11 @@ import { Alert, Dimensions, Image, ScrollView, Text, TextInput, TouchableOpacity
 import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker from "@react-native-community/datetimepicker";
-
+import { useGlobalContext } from "./GlobalProvider";
 import { CustomButton, FormField } from "../components";
 import { icons, styles } from "../constants";
 import { flagAppointment, getFormData, updateAppointment } from "../api/apiAppointments";
 import { updateCarVIN } from "../api/apiCars";
-import { useGlobalContext } from "../api/GlobalProvider";
 
 export default () => {
   const { user, setLoading } = useGlobalContext();

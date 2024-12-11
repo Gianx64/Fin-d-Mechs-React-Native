@@ -2,11 +2,10 @@ import { Link, router } from "expo-router";
 import { useState } from "react";
 import { View, Text, ScrollView, Alert, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useGlobalContext } from "../GlobalProvider";
 import { CustomButton, FormField } from "../../components";
 import { icons, styles } from "../../constants";
 import { signIn } from "../../api/apiUsers";
-import { useGlobalContext } from "../../api/GlobalProvider";
 
 export default () => {
   const { setUser, setIsLogged } = useGlobalContext();

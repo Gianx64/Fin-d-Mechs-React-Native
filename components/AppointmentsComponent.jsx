@@ -1,6 +1,6 @@
 import { FlatList, Text, View } from "react-native";
 import CustomButton from "./CustomButton";
-import { useGlobalContext } from "../api/GlobalProvider";
+import { useGlobalContext } from "../app/GlobalProvider";
 import { styles } from "../constants";
 
 const AppointmentsComponent = ({

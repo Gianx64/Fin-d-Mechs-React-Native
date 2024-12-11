@@ -2,11 +2,10 @@ import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useGlobalContext } from "../GlobalProvider";
 import { getCars } from "../../api/apiCars";
 import { getWorkshops } from "../../api/apiWorkshops";
 import { signOut } from "../../api/apiUsers";
-import { useGlobalContext } from "../../api/GlobalProvider";
 import { icons, styles } from "../../constants";
 import { CarsComponent, CustomButton, WorkshopsComponent } from "../../components";
 
@@ -52,7 +51,7 @@ export default () => {
     <SafeAreaView style={styles.container}>
       <View style={{padding: 10}}>
         <View style={{flexDirection: "row", justifyContent: "space-between"}}>
-          <Text style={[styles.titleText, {textAlign: "flex-start"}]}>
+          <Text style={[styles.titleText, {height: 150, textAlign: "flex-start"}]}>
             Rol: {user?.rol === "11" ? "Administrador" : user?.rol === "10" ? "Mech verificado" : user?.rol === "01" ? "Mech no verificado" : "Usuario"}{"\n"}
             Celular: {user?.celular}{"\n"}
             Nombre: {user?.nombre}{"\n"}
