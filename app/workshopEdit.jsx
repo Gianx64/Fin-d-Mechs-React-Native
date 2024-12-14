@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,15 +11,15 @@ import { updateWorkshop } from "../api/apiWorkshops";
 
 export default () => {
   const params = useLocalSearchParams();
-  const { user, setLoading } = useGlobalContext();
+  const { setLoading } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
-    id_usuario: user?.id,
+    id: params.id,
     nombre: params.nombre,
     ciudad: params.ciudad,
     direccion: params.direccion,
     ubicacion: params.ubicacion,
-    descripcion: params.descripcion
+    detalles: params.detalles
   });
 
   const submit = async () => {
@@ -110,8 +110,8 @@ export default () => {
         />
         <FormField
           title="Descripción"
-          value={form.descripcion}
-          handleChangeText={(e) => setForm({ ...form, descripcion: e })}
+          value={form.detalles}
+          handleChangeText={(e) => setForm({ ...form, detalles: e })}
           maxLength={128}
         />
         <CustomButton

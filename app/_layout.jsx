@@ -22,6 +22,7 @@ const RootLayout = () => {
         <Stack.Screen name="mechReview" options={{ headerShown: false }} />
         <Stack.Screen name="userEdit" options={{ headerShown: false }} />
         <Stack.Screen name="workshopCreate" options={{ headerShown: false }} />
+        <Stack.Screen name="workshopEdit" options={{ headerShown: false }} />
         <Stack.Screen name="workshopScreen" options={{ headerShown: false }} />
       </Stack>
     </GlobalProvider>

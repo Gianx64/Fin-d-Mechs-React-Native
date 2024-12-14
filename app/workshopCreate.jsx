@@ -18,7 +18,7 @@ export default () => {
     ciudad: "",
     direccion: "",
     ubicacion: null,
-    descripcion: ""
+    detalles: ""
   });
 
   const submit = async () => {
@@ -109,8 +109,8 @@ export default () => {
         />
         <FormField
           title="Descripción"
-          value={form.descripcion}
-          handleChangeText={(e) => setForm({ ...form, descripcion: e })}
+          value={form.detalles}
+          handleChangeText={(e) => setForm({ ...form, detalles: e })}
           maxLength={128}
         />
         <CustomButton
