@@ -19,7 +19,8 @@ const RootLayout = () => {
         <Stack.Screen name="appointmentEdit" options={{ headerShown: false }} />
         <Stack.Screen name="carCreate" options={{ headerShown: false }} />
         <Stack.Screen name="carEdit" options={{ headerShown: false }} />
-        <Stack.Screen name="mechReview" options={{ headerShown: false }} />
+        <Stack.Screen name="reviewMech" options={{ headerShown: false }} />
+        <Stack.Screen name="reviewWorkshop" options={{ headerShown: false }} />
         <Stack.Screen name="userEdit" options={{ headerShown: false }} />
         <Stack.Screen name="workshopCreate" options={{ headerShown: false }} />
         <Stack.Screen name="workshopEdit" options={{ headerShown: false }} />

@@ -4,7 +4,7 @@ import { Image, ScrollView, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomButton } from "../components";
 import { icons, styles } from "../constants";
-import { setMech } from "../api/apiUsers";
+import { upgradeWorkshop } from "../api/apiWorkshops";
 
 export default () => {
   const [isSubmitting, setSubmitting] = useState(false);
@@ -12,7 +12,7 @@ export default () => {
 
   const submit = async () => {
     setSubmitting(true);
-    await setMech(params.id).then(response => {
+    await upgradeWorkshop(params.id).then(response => {
       if (response)
         router.back();
       setSubmitting(false);
@@ -32,36 +32,26 @@ export default () => {
             style={{height: 40, width: 40}}
           />
         </TouchableOpacity>
-
         <Text style={styles.titleText}>
-          Revisar Mech
+          Revisar Taller
         </Text>
-
         <Text style={styles.normalText}>
-          Nombre: {params.nombre}
+          Dueño:{"\n"}
+          Nombre: {params.user_nombre}{"\n"}
+          Celular: {params.user_celular}{"\n"}
+          Correo: {params.user_correo}{"\n"}
         </Text>
-
         <Text style={styles.normalText}>
-          Celular: {params.celular}
+          Taller:{"\n"}
+          Nombre: {params.nombre}{"\n"}
+          Comuna: {params.ciudad}{"\n"}
+          Dirección: {params.direccion}{"\n"}
+          Ubicación: {params.ubicacion}{"\n"}
+          Detalles: {params.detalles}{"\n"}
         </Text>
-
-        <Text style={styles.normalText}>
-          Correo: {params.correo}
-        </Text>
-
-        { params.verificado &&
-          <Text style={styles.normalText}>
-            Fecha de verificación: {params.verificado.split(".")[0].split("T")[0]} {params.verificado.split(".")[0].split("T")[1]}
-          </Text>
-        }
-        { !params.verificado &&
-          <Text style={styles.normalText}>
-            Usuario sin verificación.
-          </Text>
-        }
 
         <CustomButton
-          title="Promover"
+          title="Verificar"
           handlePress={submit}
           containerStyles={{paddingBottom: 40, paddingTop: 20}}
           buttonStyles={styles.mainButton}

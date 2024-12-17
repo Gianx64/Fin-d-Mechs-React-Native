@@ -91,15 +91,16 @@ export async function updateUser(data, correo) {
   }
 };
 
-// Get Administration panel data
-export async function getAdminData() {
+// Verify mech as admin
+export async function upgradeMech(id) {
   const token = await getItemAsync("Token");
   if (token) {
-    return await apiManager.get('/auth/admindata', {
+    return await apiManager.patch(`/auth/upgrade`, {mech: id}, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     }).then(res => {
+      Alert.alert("Éxito", "Mech verificado exitosamente.");
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
@@ -115,15 +116,14 @@ export async function getAdminData() {
 };
 
 // Get Administration panel data
-export async function setMech(id) {
+export async function getAdminData() {
   const token = await getItemAsync("Token");
   if (token) {
-    return await apiManager.patch(`/auth/setmech`, {mech: id}, {
+    return await apiManager.get('/auth/admindata', {
       headers: {
         Authorization: `Bearer ${token}`
       }
     }).then(res => {
-      Alert.alert("Éxito", "Mech actualizado exitosamente.");
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")
