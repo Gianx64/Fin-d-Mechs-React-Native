@@ -4,12 +4,13 @@ import CustomButton from "./CustomButton";
 import { styles } from "../constants";
 
 const CarsComponent = ({
-  refreshing,
+  containerStyles,
+  fetchData,
   list,
-  fetchData
+  refreshing
 }) => {
   return (
-    <View style={{paddingTop: 16}}>
+    <View style={[containerStyles, {paddingTop: 16}]}>
       <CustomButton
       title={"Registrar auto"}
       containerStyles={{alignSelf: "flex-start"}}

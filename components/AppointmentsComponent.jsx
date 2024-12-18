@@ -4,9 +4,10 @@ import { useGlobalContext } from "../app/GlobalProvider";
 import { styles } from "../constants";
 
 const AppointmentsComponent = ({
-  refreshing,
+  containerStyles,
+  fetchData,
   list,
-  fetchData
+  refreshing
 }) => {
   const { user } = useGlobalContext();
   if (user?.rol === "01")
@@ -16,7 +17,7 @@ const AppointmentsComponent = ({
       </Text>
     );
   return (
-    <View>
+    <View style={containerStyles}>
       {(user?.rol === "11" || user?.rol === "00") &&
         <CustomButton
           title={"Agendar cita"}

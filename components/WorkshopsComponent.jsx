@@ -4,12 +4,13 @@ import CustomButton from "./CustomButton";
 import { styles } from "../constants";
 
 const WorkshopsComponent = ({
-  refreshing,
+  containerStyles,
+  fetchData,
   list,
-  fetchData
+  refreshing
 }) => {
   return (
-    <View style={{paddingTop: 16}}>
+    <View style={[containerStyles, {paddingTop: 16}]}>
       <CustomButton
       title={"Registrar taller"}
       containerStyles={{alignSelf: "flex-start"}}
