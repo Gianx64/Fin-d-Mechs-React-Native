@@ -4,7 +4,7 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGlobalContext } from "../GlobalProvider";
 import { getCars } from "../../api/apiCars";
-import { getWorkshops } from "../../api/apiWorkshops";
+import { getMechWorkshops } from "../../api/apiWorkshops";
 import { signOut } from "../../api/apiUsers";
 import { icons, styles } from "../../constants";
 import { CarsComponent, CustomButton, WorkshopsComponent } from "../../components";
@@ -32,7 +32,7 @@ export default () => {
   }
   async function fetchWorkshopData() {
     setRefreshing(true);
-    await getWorkshops().then(response => {
+    await getMechWorkshops().then(response => {
       if (response)
         setList(response);
       setRefreshing(false);

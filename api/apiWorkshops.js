@@ -51,6 +51,29 @@ export const getWorkshops = async () => {
   }
 };
 
+// Get Workshops
+export const getMechWorkshops = async () => {
+  const token = await getItemAsync("Token");
+  if (token) {
+    return await apiManager.get('/workshops/mech', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    }).then(res => {
+      return res.data;
+    }).catch(error => {
+      if (error.code === "ERR_NETWORK")
+        Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+      else
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
+      return null;
+    });
+  } else {
+    Alert.alert("Error", "Inicie sesión nuevamente.");
+    return 401;
+  }
+};
+
 // Get Workshop Mechs
 export const getWorkshopMechs = async (id) => {
   const token = await getItemAsync("Token");
@@ -84,6 +107,30 @@ export const updateWorkshop = async (workshop) => {
       }
     }).then(res => {
       Alert.alert("Éxito", "Taller actualizado exitosamente.");
+      return res.data;
+    }).catch(error => {
+      if (error.code === "ERR_NETWORK")
+        Alert.alert("Error de servidor", "El servidor no se encuentra disponible, intente ingresar más tarde.");
+      else
+        Alert.alert("Error de servidor", error.response.data.message || "Por favor, intente más tarde.");
+      return null;
+    });
+  } else {
+    Alert.alert("Error", "Inicie sesión nuevamente.");
+    return 401;
+  }
+};
+
+// Verify workshop as admin
+export const upgradeWorkshop = async (id) => {
+  const token = await getItemAsync("Token");
+  if (token) {
+    return await apiManager.patch(`/workshops/upgrade`, {workshop: id}, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).then(res => {
+      Alert.alert("Éxito", "Taller verificado exitosamente.");
       return res.data;
     }).catch(error => {
       if (error.code === "ERR_NETWORK")

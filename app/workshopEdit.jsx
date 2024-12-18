@@ -1,3 +1,4 @@
+import { getCurrentPositionAsync, requestForegroundPermissionsAsync } from "expo-location";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
@@ -13,12 +14,14 @@ export default () => {
   const params = useLocalSearchParams();
   const { setLoading } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
+  const [ubicacion, setUbicacion] = useState(params.latitud+", "+params.longitud);
   const [form, setForm] = useState({
     id: params.id,
     nombre: params.nombre,
     ciudad: params.ciudad,
     direccion: params.direccion,
-    ubicacion: params.ubicacion,
+    latitud: params.latitud,
+    longitud: params.longitud,
     detalles: params.detalles
   });
 
@@ -45,6 +48,27 @@ export default () => {
   const [isCitiesFocus, setIsCitiesFocus] = useState(false);
   const [citiesList, setCitiesList] = useState([]);
 
+  async function getLocationPermission() {
+    try {
+      await requestForegroundPermissionsAsync().then(petition => {
+        if (petition.status !== "granted") {
+          setLoading(false);
+          router.back();
+          throw new Error("Permiso denegado.");
+        }
+      });
+      await getCurrentPositionAsync().then(location => {
+        setUbicacion(location.coords.latitude.toString() +", "+ location.coords.longitude.toString());
+        setForm({...form,
+          latitud: location.coords.latitude,
+          longitud: location.coords.longitude
+        });
+        setLoading(false);
+      });
+    } catch (error) {
+      Alert.alert(error.message);
+    }
+  }
   async function fetchFormData() {
     try {
       setLoading(true);
@@ -56,7 +80,7 @@ export default () => {
     }
   }
   useEffect(() => {
-    fetchFormData()
+    fetchFormData();
   }, []);
 
   return (
@@ -107,6 +131,16 @@ export default () => {
           value={form.direccion}
           handleChangeText={(e) => setForm({ ...form, direccion: e })}
           maxLength={64}
+        />
+        <FormField
+          title="Ubicación"
+          value={ubicacion}
+          readOnly={true}
+        />
+        <CustomButton
+          title="Actualizar ubicaión"
+          handlePress={getLocationPermission}
+          buttonStyles={[styles.mainButton, {paddingHorizontal: 32, paddingVertical: 8}]}
         />
         <FormField
           title="Descripción"

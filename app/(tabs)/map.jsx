@@ -1,19 +1,17 @@
 import { getCurrentPositionAsync, requestForegroundPermissionsAsync } from "expo-location";
+import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { Alert, Text, TouchableOpacity } from "react-native";
 import MapView, { Callout, Marker } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGlobalContext } from "../GlobalProvider";
 import { styles } from "../../constants";
-import { router, useFocusEffect } from "expo-router";
+import { getWorkshops } from "../../api/apiWorkshops";
 
 export default () => {
   const { setLoading } = useGlobalContext();
   const [granted, setGranted] = useState(false);
-  const [workshops, setWorkshops] = useState([{id: 1, nombre: "Eso tilín", coords: {
-    latitude: -33.44,
-    longitude: -70.65
-}}]);
+  const [workshops, setWorkshops] = useState([]);
   const [ubicacion, setUbicacion] = useState({
       latitude: -33.44,
       longitude: -70.65
@@ -21,6 +19,7 @@ export default () => {
 
   async function getLocationPermission() {
     try {
+      setLoading(true);
       await requestForegroundPermissionsAsync().then(petition => {
         if (petition.status !== "granted") {
           setLoading(false);
@@ -39,10 +38,22 @@ export default () => {
       Alert.alert(error.message);
     }
   }
+  async function getWorkshopsData() {
+    try {
+      setLoading(true);
+      await getWorkshops().then(response => {
+        setWorkshops(response);
+      });
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
   useFocusEffect(
     useCallback(() => {
-      setLoading(true);
       getLocationPermission();
+      getWorkshopsData();
     }, [])
   );
 
@@ -64,7 +75,7 @@ export default () => {
               <Marker
                 key={workshop.id}
                 pinColor="blue"
-                coordinate={workshop.coords}
+                coordinate={{latitude: parseFloat(workshop.latitud), longitude: parseFloat(workshop.longitud)}}
                 title={`Taller: ${workshop.nombre}`}
                 description="Ver detalles."
               >
@@ -87,7 +98,7 @@ export default () => {
               <Marker
                 key={workshop.id}
                 pinColor="blue"
-                coordinate={workshop.coords}
+                coordinate={{latitude: parseFloat(workshop.latitud), longitude: parseFloat(workshop.longitud)}}
                 title={`Taller: ${workshop.nombre}`}
                 description="Ver detalles."
               >
