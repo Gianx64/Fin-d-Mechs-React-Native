@@ -8,7 +8,7 @@ import { CustomButton, FormField } from "../components";
 import { icons, styles } from "../constants";
 import { getCities } from "../api/apiAppointments";
 import { Dropdown } from "react-native-element-dropdown";
-import { updateWorkshop } from "../api/apiWorkshops";
+import { disableWorkshop, updateWorkshop } from "../api/apiWorkshops";
 
 export default () => {
   const params = useLocalSearchParams();
@@ -41,6 +41,15 @@ export default () => {
     } finally {
       setSubmitting(false);
     }
+  };
+  
+  const disable = async () => {
+    setSubmitting(true);
+    await disableWorkshop(params.id).then(response => {
+      if (response)
+        router.back();
+      setSubmitting(false);
+    });
   };
 
   //Dropdown de ciudades
@@ -138,7 +147,7 @@ export default () => {
           readOnly={true}
         />
         <CustomButton
-          title="Actualizar ubicaión"
+          title="Actualizar ubicación"
           handlePress={getLocationPermission}
           buttonStyles={[styles.mainButton, {paddingHorizontal: 32, paddingVertical: 8}]}
         />
@@ -148,13 +157,42 @@ export default () => {
           handleChangeText={(e) => setForm({ ...form, detalles: e })}
           maxLength={128}
         />
-        <CustomButton
-          title="Actualizar"
-          handlePress={submit}
-          containerStyles={{paddingBottom: 40, paddingTop: 20}}
-          buttonStyles={styles.mainButton}
-          isLoading={isSubmitting}
-        />
+        <View style={{alignSelf: "center", flexDirection: "row", justifyContent: "space-between", paddingBottom: 40, paddingTop: 16}}>
+          <CustomButton
+            title="Eliminar"
+            handlePress={
+              Alert.alert(
+                "Eliminar taller",
+                "¿Eliminar taller? Esta acción no se puede revertir.",
+                [
+                  { text: "Volver", style: "cancel" },
+                  { text: "OK", onPress: () => disable() }
+                ],
+                { cancelable: true }
+              )
+            }
+            containerStyles={{paddingBottom: 40, paddingTop: 20}}
+            buttonStyles={styles.mainButton}
+            isLoading={isSubmitting}
+          />
+          <CustomButton
+            title="Actualizar"
+            handlePress={
+              Alert.alert(
+                "Actualizar taller",
+                "Actualizar el taller requerirá verificación de un administrador. ¿Actualizar taller?",
+                [
+                  { text: "Volver", style: "cancel" },
+                  { text: "OK", onPress: () => submit() }
+                ],
+                { cancelable: true }
+              )
+            }
+            containerStyles={{paddingBottom: 40, paddingTop: 20}}
+            buttonStyles={styles.mainButton}
+            isLoading={isSubmitting}
+          />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

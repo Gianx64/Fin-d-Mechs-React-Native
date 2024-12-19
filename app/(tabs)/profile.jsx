@@ -1,6 +1,6 @@
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGlobalContext } from "../GlobalProvider";
 import { getCars } from "../../api/apiCars";
@@ -58,7 +58,17 @@ export default () => {
             Correo: {user?.correo}{"\n"}
           </Text>
           <TouchableOpacity
-            onPress={logout}
+            onPress={() => {
+              Alert.alert(
+                "Cerrar sesión",
+                "¿Cerrar sesión y volver a la página principal?",
+                [
+                  { text: "Volver", style: "cancel" },
+                  { text: "OK", onPress: () => logout() }
+                ],
+                { cancelable: true }
+              );
+            }}
             style={{paddingVertical: 16}}
           >
             <Image

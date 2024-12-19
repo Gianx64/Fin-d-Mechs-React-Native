@@ -202,7 +202,7 @@ export default () => {
                 VIN de auto: {params.vin}
               </Text>
               :
-            user?.id == params.id_mech && <View style={{alignItems: "center", flexDirection: "row", justifyContent: "space-between"}}>
+              user?.id == params.id_mech && <View style={{alignItems: "center", flexDirection: "row", justifyContent: "space-between"}}>
                 <Text style={[styles.subtitleText, {textAlign: "left"}]}>
                   VIN de auto:
                 </Text>
@@ -395,7 +395,17 @@ export default () => {
           { (user?.id == params.id_usuario || params.confirmado) && !params.cancelado &&
             <CustomButton
               title="Cancelar"
-              handlePress={cancel}
+              handlePress={
+                Alert.alert(
+                  "Cancelar cita",
+                  "¿Cancelar cita? Esta acción no se puede revertir.",
+                  [
+                    { text: "Volver", style: "cancel" },
+                    { text: "OK", onPress: () => cancel() }
+                  ],
+                  { cancelable: true }
+                )
+              }
               buttonStyles={styles.mainButton}
               isLoading={isCancelling}
             />
@@ -413,7 +423,17 @@ export default () => {
             { params.confirmado ?
               <CustomButton
                 title="Completar"
-                handlePress={complete}
+                handlePress={
+                  Alert.alert(
+                    "Completar cita",
+                    "¿Marcar cita como completada? Esta acción no se puede revertir.",
+                    [
+                      { text: "Volver", style: "cancel" },
+                      { text: "OK", onPress: () => complete() }
+                    ],
+                    { cancelable: true }
+                  )
+                }
                 buttonStyles={styles.mainButton}
                 isLoading={isCompleting}
               />
@@ -422,14 +442,34 @@ export default () => {
                 { params.id_mech ?
                   <CustomButton
                     title="Confirmar"
-                    handlePress={confirm}
+                    handlePress={
+                      Alert.alert(
+                        "Confirmar cita",
+                        "¿Confirmar cita? Esta acción no se puede revertir.",
+                        [
+                          { text: "Volver", style: "cancel" },
+                          { text: "OK", onPress: () => confirm() }
+                        ],
+                        { cancelable: true }
+                      )
+                    }
                     buttonStyles={styles.mainButton}
                     isLoading={isConfirming}
                   />
                   :
                   <CustomButton
                     title="Tomar cita"
-                    handlePress={take}
+                    handlePress={
+                      Alert.alert(
+                        "Tomar cita",
+                        "¿Tomar cita? Esta acción no se puede revertir.",
+                        [
+                          { text: "Volver", style: "cancel" },
+                          { text: "OK", onPress: () => take() }
+                        ],
+                        { cancelable: true }
+                      )
+                    }
                     buttonStyles={styles.mainButton}
                     isLoading={isConfirming}
                   />

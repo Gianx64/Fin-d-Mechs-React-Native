@@ -36,7 +36,7 @@ export default () => {
       setSubmitting(false);
     }
   };
-  
+
   const disable = async () => {
     setSubmitting(true);
     await disableCar(params.id).then(response => {
@@ -59,32 +59,27 @@ export default () => {
             style={{height: 40, width: 40}}
           />
         </TouchableOpacity>
-
         <Text style={styles.titleText}>
           Editar auto
         </Text>
-
         <FormField
           title="Patente"
           value={form.patente}
           handleChangeText={(e) => setForm({ ...form, patente: e.toUpperCase() })}
           maxLength={10}
         />
-
         <FormField
           title="Marca de vehículo"
           value={form.marca}
           handleChangeText={(e) => setForm({ ...form, marca: e })}
           maxLength={16}
         />
-
         <FormField
           title="Modelo de vehículo"
           value={form.modelo}
           handleChangeText={(e) => setForm({ ...form, modelo: e })}
           maxLength={32}
         />
-
         <FormField
           title="Año de vehículo"
           value={form.anualidad}
@@ -93,11 +88,20 @@ export default () => {
           keyboardType={Platform.OS === "android" ? "numeric" : "number-pad"}
           maxLength={4}
         />
-
         <View style={{alignSelf: "center", flexDirection: "row", justifyContent: "space-between", paddingBottom: 40, paddingTop: 16}}>
           <CustomButton
             title="Eliminar"
-            handlePress={disable}
+            handlePress={
+              Alert.alert(
+                "Eliminar auto",
+                "¿Eliminar auto? Esta acción no se puede revertir.",
+                [
+                  { text: "Volver", style: "cancel" },
+                  { text: "OK", onPress: () => disable() }
+                ],
+                { cancelable: true }
+              )
+            }
             containerStyles={{paddingBottom: 40, paddingTop: 20}}
             buttonStyles={styles.mainButton}
             isLoading={isSubmitting}
