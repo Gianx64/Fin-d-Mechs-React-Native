@@ -2,6 +2,7 @@ import { FlatList, Text, View } from "react-native";
 import CustomButton from "./CustomButton";
 import { useGlobalContext } from "../app/GlobalProvider";
 import { styles } from "../constants";
+import { router } from "expo-router";
 
 const AppointmentsComponent = ({
   containerStyles,

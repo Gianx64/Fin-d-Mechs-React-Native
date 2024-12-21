@@ -13,19 +13,25 @@ export default () => {
   const [appointments, setAppointments] = useState([]);
 
   const fetchAppointments = async () => {
-    setRefreshing(true);
     await getAppointments().then(response => {
       if (response) {
         response.sort((a, b) => b.fecha.localeCompare(a.fecha));
         setAppointments(response);
       }
-      setRefreshing(false);
     });
   }
   useFocusEffect(
     useCallback(() => {
-      if (user?.rol !== "01")
-        fetchAppointments();
+      setRefreshing(true);
+      const refresh = setTimeout(() => {
+        if (user?.rol !== "01")
+          fetchAppointments();
+        setRefreshing(false);
+      }, 1000);
+      return () => {
+        clearTimeout(refresh);
+        setRefreshing(false);
+      };
     }, [])
   );
 

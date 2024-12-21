@@ -64,9 +64,9 @@ export default StyleSheet.create({
   loader: {
     alignSelf: "center",
     backgroundColor: colors.secondary+"50",
-    height: Dimensions.get("window").height+20,
+    height: Dimensions.get("screen").height,
     position: "absolute",
-    width: Dimensions.get("window").width
+    width: Dimensions.get("screen").width
   },
   formField: {
     color: "black",

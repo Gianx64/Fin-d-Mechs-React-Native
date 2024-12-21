@@ -23,27 +23,31 @@ export default () => {
   };
 
   async function fetchCarData() {
-    setRefreshing(true);
     await getCars().then(response => {
       if (response)
         setList(response);
-      setRefreshing(false);
     });
   }
   async function fetchWorkshopData() {
-    setRefreshing(true);
     await getMechWorkshops().then(response => {
       if (response)
         setList(response);
-      setRefreshing(false);
     });
   }
   useFocusEffect(
     useCallback(() => {
-      if (user?.rol === "11" || user?.rol === "00")
-        fetchCarData();
-      if (user?.rol === "10")
-        fetchWorkshopData();
+      setRefreshing(true);
+      const refresh = setTimeout(() => {
+        if (user?.rol === "11" || user?.rol === "00")
+          fetchCarData();
+        if (user?.rol === "10")
+          fetchWorkshopData();
+        setRefreshing(false);
+      }, 1000);
+      return () => {
+        clearTimeout(refresh);
+        setRefreshing(false);
+      };
     }, [])
   );
 
@@ -58,7 +62,7 @@ export default () => {
             Correo: {user?.correo}{"\n"}
           </Text>
           <TouchableOpacity
-            onPress={() => {
+            onPress={() =>
               Alert.alert(
                 "Cerrar sesión",
                 "¿Cerrar sesión y volver a la página principal?",
@@ -67,8 +71,8 @@ export default () => {
                   { text: "OK", onPress: () => logout() }
                 ],
                 { cancelable: true }
-              );
-            }}
+              )
+            }
             style={{paddingVertical: 16}}
           >
             <Image

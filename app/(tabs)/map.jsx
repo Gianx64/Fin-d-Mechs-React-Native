@@ -32,28 +32,34 @@ export default () => {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         });
-        setLoading(false);
       });
     } catch (error) {
       Alert.alert(error.message);
+    } finally {
+      setLoading(false);
     }
   }
   async function getWorkshopsData() {
     try {
-      setLoading(true);
       await getWorkshops().then(response => {
         setWorkshops(response);
       });
     } catch (error) {
       Alert.alert("Error", error.message);
-    } finally {
-      setLoading(false);
     }
   }
   useFocusEffect(
     useCallback(() => {
       getLocationPermission();
-      getWorkshopsData();
+      setLoading(true);
+      const refresh = setTimeout(() => {
+        getWorkshopsData();
+        setLoading(false);
+      }, 1000);
+      return () => {
+        clearTimeout(refresh);
+        setLoading(false);
+      };
     }, [])
   );
 

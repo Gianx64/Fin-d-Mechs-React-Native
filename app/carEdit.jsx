@@ -91,7 +91,7 @@ export default () => {
         <View style={{alignSelf: "center", flexDirection: "row", justifyContent: "space-between", paddingBottom: 40, paddingTop: 16}}>
           <CustomButton
             title="Eliminar"
-            handlePress={
+            handlePress={() =>
               Alert.alert(
                 "Eliminar auto",
                 "¿Eliminar auto? Esta acción no se puede revertir.",

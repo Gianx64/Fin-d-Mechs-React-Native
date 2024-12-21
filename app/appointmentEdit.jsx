@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import { Alert, Dimensions, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Dimensions, Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -11,7 +11,7 @@ import { flagAppointment, getFormData, updateAppointment } from "../api/apiAppoi
 import { updateCarVIN } from "../api/apiCars";
 
 export default () => {
-  const { user, setLoading } = useGlobalContext();
+  const { user, loading, setLoading } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const [isCancelling, setCancelling] = useState(false);
   const [isConfirming, setConfirming] = useState(false);
@@ -135,7 +135,6 @@ export default () => {
 
   async function fetchFormData() {
     try {
-      setLoading(true);
       await getFormData().then(response => {
         if (response) {
           setCitiesList(response.cities);
@@ -148,14 +147,23 @@ export default () => {
       });
     } catch (error) {
       Alert.alert("Error", error.message);
-    } finally {
-      setLoading(false);
     }
   }
-  useEffect(() => {
-    if (user?.id == params.id_usuario && !(params.cancelado || params.confirmado || params.completado))
-      fetchFormData()
-  }, []);
+  useEffect(
+    useCallback(() => {
+      if (user?.id == params.id_usuario && !(params.cancelado || params.confirmado || params.completado))
+        setLoading(true);
+      const refresh = setTimeout(() => {
+        if (user?.id == params.id_usuario && !(params.cancelado || params.confirmado || params.completado))
+          fetchFormData()
+        setLoading(false);
+      }, 1000);
+      return () => {
+        clearTimeout(refresh);
+        setLoading(false);
+      };
+    }, [])
+  , []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -392,10 +400,10 @@ export default () => {
         }
 
         <View style={{alignSelf: "center", flexDirection: "row", justifyContent: "space-between", paddingBottom: 40, paddingTop: 16}}>
-          { (user?.id == params.id_usuario || params.confirmado) && !params.cancelado &&
+          { ((user?.id == params.id_usuario || params.confirmado) && !params.cancelado) &&
             <CustomButton
               title="Cancelar"
-              handlePress={
+              handlePress={() =>
                 Alert.alert(
                   "Cancelar cita",
                   "¿Cancelar cita? Esta acción no se puede revertir.",
@@ -423,7 +431,7 @@ export default () => {
             { params.confirmado ?
               <CustomButton
                 title="Completar"
-                handlePress={
+                handlePress={() =>
                   Alert.alert(
                     "Completar cita",
                     "¿Marcar cita como completada? Esta acción no se puede revertir.",
@@ -442,7 +450,7 @@ export default () => {
                 { params.id_mech ?
                   <CustomButton
                     title="Confirmar"
-                    handlePress={
+                    handlePress={() =>
                       Alert.alert(
                         "Confirmar cita",
                         "¿Confirmar cita? Esta acción no se puede revertir.",
@@ -459,7 +467,7 @@ export default () => {
                   :
                   <CustomButton
                     title="Tomar cita"
-                    handlePress={
+                    handlePress={() =>
                       Alert.alert(
                         "Tomar cita",
                         "¿Tomar cita? Esta acción no se puede revertir.",
@@ -480,6 +488,12 @@ export default () => {
           }
         </View>
       </ScrollView>
+      {loading && <ActivityIndicator
+        animating={loading}
+        color="#fff"
+        size={Platform.OS === "android" ? 50 : "large"}
+        style={styles.loader}
+      />}
     </SafeAreaView>
   );
 };

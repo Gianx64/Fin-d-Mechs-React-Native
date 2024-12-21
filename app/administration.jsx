@@ -13,7 +13,6 @@ export default () => {
   const [workshopsList, setWorkshopsList] = useState([]);
 
   async function fetchAdminData() {
-    setRefreshing(true);
     await getAdminData().then(response => {
       if (response) {
         setMechsList(response.mechs);
@@ -24,7 +23,15 @@ export default () => {
   }
   useFocusEffect(
     useCallback(() => {
-      fetchAdminData();
+      setRefreshing(true);
+      const refresh = setTimeout(() => {
+        fetchAdminData();
+        setRefreshing(false);
+      }, 1000);
+      return () => {
+        clearTimeout(refresh);
+        setRefreshing(false);
+      };
     }, [])
   );
 

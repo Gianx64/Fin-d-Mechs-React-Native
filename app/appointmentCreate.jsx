@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import { Alert, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Dimensions, Image, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -10,7 +10,7 @@ import { icons, styles } from "../constants";
 import { createAppointment, getFormData } from "../api/apiAppointments";
 
 export default () => {
-  const { user, setLoading } = useGlobalContext();
+  const { user, loading, setLoading } = useGlobalContext();
   const params = useLocalSearchParams();
   const [isSubmitting, setSubmitting] = useState(false);
   const defaultForm = {
@@ -97,7 +97,6 @@ export default () => {
 
   async function fetchFormData() {
     try {
-      setLoading(true);
       await getFormData().then(response => {
         if (response) {
           setCitiesList(response.cities);
@@ -118,13 +117,22 @@ export default () => {
       });
     } catch (error) {
       Alert.alert("Error", error.message);
-    } finally {
-      setLoading(false);
     }
   }
-  useEffect(() => {
-    fetchFormData()
-  }, []);
+  useEffect(
+    useCallback(() => {
+      setLoading(true);
+      const refresh = setTimeout(() => {
+        if (user?.rol !== "01")
+          fetchFormData();
+        setLoading(false);
+      }, 1000);
+      return () => {
+        clearTimeout(refresh);
+        setLoading(false);
+      };
+    }, [])
+  , []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -333,6 +341,12 @@ export default () => {
             isLoading={isSubmitting}
           />
       </ScrollView>
+      {loading && <ActivityIndicator
+        animating={loading}
+        color="#fff"
+        size={Platform.OS === "android" ? 50 : "large"}
+        style={styles.loader}
+      />}
     </SafeAreaView>
   )
 };

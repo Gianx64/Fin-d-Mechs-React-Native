@@ -88,9 +88,7 @@ export default () => {
       setLoading(false);
     }
   }
-  useEffect(() => {
-    fetchFormData();
-  }, []);
+  useEffect(() => fetchFormData(), []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -160,7 +158,7 @@ export default () => {
         <View style={{alignSelf: "center", flexDirection: "row", justifyContent: "space-between", paddingBottom: 40, paddingTop: 16}}>
           <CustomButton
             title="Eliminar"
-            handlePress={
+            handlePress={() =>
               Alert.alert(
                 "Eliminar taller",
                 "¿Eliminar taller? Esta acción no se puede revertir.",
@@ -177,7 +175,7 @@ export default () => {
           />
           <CustomButton
             title="Actualizar"
-            handlePress={
+            handlePress={() =>
               Alert.alert(
                 "Actualizar taller",
                 "Actualizar el taller requerirá verificación de un administrador. ¿Actualizar taller?",
