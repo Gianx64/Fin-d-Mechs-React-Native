@@ -111,7 +111,7 @@ export default () => {
           if (response.mechs.length > 0)
             setMechList(mechList.concat(response.mechs));
           setWorkshopList(response.workshops);
-          if (response.workshops.length > 0 || true) //TODO: remove true
+          if (response.workshops.length > 0)
             setServiceList([{ label: "Servicio a domicilio", value: "00" }, { label: "Mecánico lleva a taller", value: "10" }, { label: "Cliente lleva a taller", value: "01" }])
         }
       });
@@ -202,7 +202,7 @@ export default () => {
               />
             </View>
           </View>
-          { dropdownService === "01" && (workshopList.length > 0 || true) && //TODO: remove true
+          { dropdownService === "01" && (workshopList.length > 0) &&
             <View style={{paddingBottom: 8}}>
               <Text style={styles.subtitleText}>Taller</Text>
               <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
