@@ -114,7 +114,7 @@ export default () => {
   };
 
   //Dropdown de ciudades
-  const [dropdownCities, setDropdownCities] = useState("Seleccionar item");
+  const [dropdownCities, setDropdownCities] = useState(params.ciudad);
   const [isCitiesFocus, setIsCitiesFocus] = useState(false);
   const [citiesList, setCitiesList] = useState([]);
 
@@ -363,7 +363,7 @@ export default () => {
                     placeholder={!isWorkshopFocus ? "Seleccionar item" : "..."}
                     onChange={(e) => {
                       setDropdownWorkshop(e.id);
-                      setForm({ ...form, id_taller: e.id });
+                      setForm({ ...form, id_taller: e.id, ciudad: e.ciudad, direccion: e.direccion });
                       setIsWorkshopFocus(false);
                     }}
                   />
