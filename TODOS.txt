@@ -1,6 +1,7 @@
+contraseñas alfanuméricas
+verificación de correo válido
+minimapa en registrar taller
 Mech lleva a taller (registre a cual)
-Menu taller
-Ubicacion por GPS
-Correos, SMS
-Rating y reviews
-Chat
+Notificaciones
+Rating y reviews?
+Chat?

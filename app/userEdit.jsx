@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useGlobalContext } from "./GlobalProvider";
 import { CustomButton, FormField } from "../components";
 import { icons, styles } from "../constants";
-import { updateUser } from "../api/apiUsers";
+import { signOut, updateUser } from "../api/apiUsers";
 import { Dropdown } from "react-native-element-dropdown";
 import { getCities } from "../api/apiAppointments";
 
@@ -37,6 +37,12 @@ export default () => {
       setSubmitting(true);
       await updateUser(form, user?.correo).then(response => {
         if (response) {
+          if (user.correo !== form.correo) {
+            signOut();
+            setUser(null);
+            setIsLogged(false);
+            router.replace("/index");
+          }
           setUser({...user,
             nombre: form.nombre,
             celular: form.celular,
@@ -44,8 +50,7 @@ export default () => {
             ciudad: form.ciudad,
             direccion: form.direccion
           });
-          setIsLogged(true);
-          router.replace("/profile"); //TODO: replace to login if mail changes
+          router.back();
         }
       });
     } catch (error) {

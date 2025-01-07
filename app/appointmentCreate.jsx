@@ -70,30 +70,30 @@ export default () => {
     showMode("time");
   };
 
-  //Dropdown de ciudades
-  const [dropdownCities, setDropdownCities] = useState(form.ciudad);
-  const [isCitiesFocus, setIsCitiesFocus] = useState(false);
-  const [citiesList, setCitiesList] = useState([]);
-
-  //Dropdown de servicio
-  const [dropdownService, setDropdownService] = useState("00");
-  const [isServiceFocus, setIsServiceFocus] = useState(false);
-  const [serviceList, setServiceList] = useState([{ label: "Servicio a domicilio", value: "00" }]);
-
   //Dropdown de autos
   const [dropdownCars, setDropdownCars] = useState(0);
   const [isCarsFocus, setIsCarsFocus] = useState(false);
   const [carsList, setCarsList] = useState([]);
+
+  //Dropdown de servicio
+  const [dropdownService, setDropdownService] = useState(params.id ? "01" : "00");
+  const [isServiceFocus, setIsServiceFocus] = useState(false);
+  const [serviceList, setServiceList] = useState([{ label: "Servicio a domicilio", value: "00" }]);
+
+  //Dropdown de talleres
+  const [dropdownWorkshop, setDropdownWorkshop] = useState(params.id || 0);
+  const [isWorkshopFocus, setIsWorkshopFocus] = useState(false);
+  const [workshopList, setWorkshopList] = useState([]);
 
   //Dropdown de mech
   const [dropdownMech, setDropdownMech] = useState(0);
   const [isMechFocus, setIsMechFocus] = useState(false);
   const [mechList, setMechList] = useState([{id: 0, usuario: "", correo: "Primero que acepte."}]);
 
-  //Dropdown de talleres
-  const [dropdownWorkshop, setDropdownWorkshop] = useState(0);
-  const [isWorkshopFocus, setIsWorkshopFocus] = useState(false);
-  const [workshopList, setWorkshopList] = useState([]);
+  //Dropdown de ciudades
+  const [dropdownCities, setDropdownCities] = useState(form.ciudad);
+  const [isCitiesFocus, setIsCitiesFocus] = useState(false);
+  const [citiesList, setCitiesList] = useState([]);
 
   async function fetchFormData() {
     try {
@@ -112,7 +112,8 @@ export default () => {
             setMechList(mechList.concat(response.mechs));
           setWorkshopList(response.workshops);
           if (response.workshops.length > 0)
-            setServiceList([{ label: "Servicio a domicilio", value: "00" }, { label: "Mecánico lleva a taller", value: "10" }, { label: "Cliente lleva a taller", value: "01" }])
+            setServiceList([{ label: "Servicio a domicilio", value: "00" }, { label: "Mecánico lleva a taller", value: "10" }, { label: "Cliente lleva a taller", value: "01" }]);
+          setDropdownWorkshop(params.id);
         }
       });
     } catch (error) {
@@ -208,7 +209,7 @@ export default () => {
               <View style={{alignSelf: "center", width: Dimensions.get("window").width-50}}>
                 <Dropdown
                   data={workshopList}
-                  labelField="direccion"
+                  labelField="nombre"
                   placeholderStyle={styles.formField}
                   selectedTextStyle={styles.formField}
                   valueField="id"
@@ -218,8 +219,8 @@ export default () => {
                   placeholder={!isWorkshopFocus ? "Seleccionar item" : "..."}
                   onChange={(e) => {
                     setDropdownWorkshop(e.id);
-                    setForm({ ...form, id_taller: e.id, comuna: e.comuna, direccion: e.direccion });
-                    setDropdownCities(e.comuna);
+                    setForm({ ...form, id_taller: e.id, ciudad: e.ciudad, direccion: e.direccion });
+                    setDropdownCities(e.ciudad);
                     setIsWorkshopFocus(false);
                   }}
                 />

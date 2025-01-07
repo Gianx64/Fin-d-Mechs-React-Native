@@ -73,7 +73,6 @@ export async function updateUser(data, correo) {
       }
     }).then(res => {
       if (data.correo !== correo) {
-        deleteItemAsync("Token"); //TODO: await fix
         Alert.alert("Éxito", "Usuario actualizado exitosamente. Por favor, inicie sesión con sus nuevas credenciales.");
       } else
         Alert.alert("Éxito", "Usuario actualizado exitosamente.");
