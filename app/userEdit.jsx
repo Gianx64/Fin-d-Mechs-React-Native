@@ -34,6 +34,8 @@ export default () => {
         throw new Error("Por favor llene todos los campos.");
       if (form.clave !== form.confirmar)
         throw new Error("Las contraseñas no coinciden.");
+      if (form.clave.length < 8)
+        throw new Error("La contraseña debe tener un mínimo de 8 caracteres.");
       setSubmitting(true);
       await updateUser(form, user?.correo).then(response => {
         if (response) {
